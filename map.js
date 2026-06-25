@@ -69,7 +69,7 @@
 
   // location.html: origin/destination preview
   async function initLocationMap() {
-    const map = baseMap("location-map", "light");
+    const map = baseMap("location-map", "dark");
     let anchors = [];
     try {
       anchors = await getJSON("/api/map/anchors");
