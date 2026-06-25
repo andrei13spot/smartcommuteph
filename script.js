@@ -124,9 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const destText = selects[1].options[selects[1].selectedIndex].text;
                 const finalOrigin = selects[0].selectedIndex > 0 ? originText : "Cubao Gateway";
                 const finalDest = selects[1].selectedIndex > 0 ? destText : "Pasay EDSA-Taft";
+                // save the station ids (the option values) too so the result map
+                // can ask the engine by id, not by display name
+                const finalOriginId = selects[0].selectedIndex > 0 ? selects[0].value : "cubao";
+                const finalDestId = selects[1].selectedIndex > 0 ? selects[1].value : "pasay";
 
                 localStorage.setItem('smartCommute_routeOrigin', finalOrigin);
                 localStorage.setItem('smartCommute_routeDest', finalDest);
+                localStorage.setItem('smartCommute_routeOriginId', finalOriginId);
+                localStorage.setItem('smartCommute_routeDestId', finalDestId);
             }
             window.location.href = 'result.html';
         });

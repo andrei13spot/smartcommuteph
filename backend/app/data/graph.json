@@ -1,0 +1,27 @@
+{
+  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php.",
+  "modes": ["LRT-1", "LRT-2", "MRT-3", "EDSA-Bus", "Jeepney"],
+  "edges": [
+    { "from": "doroteo_jose", "to": "cubao",    "mode": "LRT-2",    "fare": 25, "ridership": 0.55, "flood_risk": 0.15 },
+    { "from": "cubao",        "to": "antipolo", "mode": "LRT-2",    "fare": 25, "ridership": 0.45, "flood_risk": 0.12 },
+
+    { "from": "sm_north",     "to": "cubao",    "mode": "MRT-3",    "fare": 13, "ridership": 0.70, "flood_risk": 0.10 },
+    { "from": "cubao",        "to": "shaw",     "mode": "MRT-3",    "fare": 16, "ridership": 0.75, "flood_risk": 0.10 },
+    { "from": "shaw",         "to": "pasay",    "mode": "MRT-3",    "fare": 24, "ridership": 0.65, "flood_risk": 0.12 },
+
+    { "from": "monumento",    "to": "doroteo_jose", "mode": "LRT-1", "fare": 20, "ridership": 0.60, "flood_risk": 0.18 },
+    { "from": "doroteo_jose", "to": "pasay",    "mode": "LRT-1",    "fare": 30, "ridership": 0.62, "flood_risk": 0.20 },
+
+    { "from": "monumento",    "to": "sm_north", "mode": "EDSA-Bus", "fare": 15, "ridership": 0.50, "flood_risk": 0.45 },
+    { "from": "sm_north",     "to": "cubao",    "mode": "EDSA-Bus", "fare": 13, "ridership": 0.40, "flood_risk": 0.50 },
+    { "from": "cubao",        "to": "shaw",     "mode": "EDSA-Bus", "fare": 13, "ridership": 0.40, "flood_risk": 0.55 },
+    { "from": "shaw",         "to": "pasay",    "mode": "EDSA-Bus", "fare": 15, "ridership": 0.38, "flood_risk": 0.50 },
+    { "from": "pasay",        "to": "pitx",     "mode": "EDSA-Bus", "fare": 20, "ridership": 0.40, "flood_risk": 0.35 },
+
+    { "from": "sm_novaliches","to": "monumento","mode": "Jeepney",  "fare": 12, "ridership": 0.45, "flood_risk": 0.40 },
+    { "from": "sm_novaliches","to": "sm_north", "mode": "Jeepney",  "fare": 15, "ridership": 0.50, "flood_risk": 0.55 },
+    { "from": "pasig",        "to": "shaw",     "mode": "Jeepney",  "fare": 13, "ridership": 0.48, "flood_risk": 0.60 },
+    { "from": "pasig",        "to": "cubao",    "mode": "Jeepney",  "fare": 14, "ridership": 0.50, "flood_risk": 0.62 },
+    { "from": "pitx",         "to": "pasay",    "mode": "Jeepney",  "fare": 13, "ridership": 0.42, "flood_risk": 0.38 }
+  ]
+}

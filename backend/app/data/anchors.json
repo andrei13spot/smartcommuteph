@@ -1,0 +1,15 @@
+{
+  "description": "the ten transit anchor points (table 1 in the paper). coords are approx lat/lng, ids match the dropdown values in location.html. 'lines' is just the formal lines each hub serves, the real edges are in graph.json.",
+  "anchors": [
+    { "id": "antipolo",     "name": "Antipolo LRT-2",     "area": "Antipolo, Rizal",          "lat": 14.6255, "lng": 121.1245, "lines": ["LRT-2", "Jeepney"] },
+    { "id": "cubao",        "name": "Cubao Gateway",      "area": "Cubao, Quezon City",       "lat": 14.6199, "lng": 121.0510, "lines": ["LRT-2", "MRT-3", "EDSA-Bus", "Jeepney"] },
+    { "id": "doroteo_jose", "name": "Doroteo Jose",       "area": "Santa Cruz, Manila",       "lat": 14.6043, "lng": 120.9817, "lines": ["LRT-1", "LRT-2"] },
+    { "id": "monumento",    "name": "Monumento Circle",   "area": "Caloocan / Quezon City",   "lat": 14.6547, "lng": 120.9842, "lines": ["LRT-1", "EDSA-Bus", "Jeepney"] },
+    { "id": "shaw",         "name": "Shaw Boulevard",     "area": "Mandaluyong City",         "lat": 14.5818, "lng": 121.0535, "lines": ["MRT-3", "EDSA-Bus", "Jeepney"] },
+    { "id": "sm_north",     "name": "SM City North EDSA", "area": "North Avenue, Quezon City", "lat": 14.6566, "lng": 121.0306, "lines": ["LRT-1", "MRT-3", "Jeepney"] },
+    { "id": "sm_novaliches","name": "SM City Novaliches", "area": "Novaliches, Quezon City",  "lat": 14.7289, "lng": 121.0337, "lines": ["Jeepney"] },
+    { "id": "pasay",        "name": "Pasay EDSA-Taft",    "area": "EDSA-Taft Avenue, Pasay",  "lat": 14.5378, "lng": 120.9967, "lines": ["LRT-1", "MRT-3", "EDSA-Bus", "Jeepney"] },
+    { "id": "pasig",        "name": "Pasig Mega Market",  "area": "Caruncho Avenue, Pasig",   "lat": 14.5760, "lng": 121.0850, "lines": ["Jeepney"] },
+    { "id": "pitx",         "name": "PITX",               "area": "Kennedy Road, Parañaque", "lat": 14.5100, "lng": 120.9905, "lines": ["LRT-1", "EDSA-Bus", "Jeepney"] }
+  ]
+}
