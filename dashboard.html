@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCommutePH - Developer Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dev-console">
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand-row">SmartCommute PH <span class="tag">Dev Console</span></div>
+            <div class="topnav">
+                <a href="researcher.html">Research</a>
+                <a href="index.html">App ↗</a>
+                <span id="api-pill" class="pill offline"><span class="dot"></span><span id="api-pill-text">Connecting…</span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="wrap">
+        <div class="page-head">
+            <h1 class="page-title">System <span class="grad">status</span></h1>
+            <p class="page-sub">Live view of the routing engine and the machine-learning components powering SmartCommute PH.</p>
+            <p class="offline-note">⚠ Engine unreachable — start the Python service on port 8000 and the gateway on 8080.</p>
+        </div>
+
+        <div class="card intro" style="margin-top:14px;">
+            <div class="ic">💡</div>
+            <div>
+                <h3>What this page shows</h3>
+                <p>A live health check of the back end. The pill in the top-right reads <b>API Active</b> when the
+                routing engine is reachable. Below are the loaded transit graph, the two ML models, and every API
+                endpoint the app uses. It refreshes itself every 5 seconds. Click the <b>?</b> on any section for a
+                short explanation. For the research benchmark and routing playback, open the
+                <a href="researcher.html">Research console</a>.</p>
+            </div>
+        </div>
+
+        <div class="section-title">Engine
+            <span class="help-wrap"><button class="help" type="button">?</button>
+            <span class="help-pop">The routing engine's live state: whether it's <b>Active</b>, the size of the loaded transit graph (<b>nodes</b> = stations, <b>edges</b> = links between them), how many commuter <b>profiles</b> are available, the rainfall value feeding the flood model, and the API version.</span></span>
+        </div>
+        <div class="grid stat-grid">
+            <div class="card stat"><div class="label">Engine</div><div id="s-status" class="value">—</div></div>
+            <div class="card stat"><div class="label">Graph nodes</div><div id="s-nodes" class="value">—</div></div>
+            <div class="card stat"><div class="label">Graph edges</div><div id="s-edges" class="value">—</div></div>
+            <div class="card stat"><div class="label">Profiles</div><div id="s-profiles" class="value">—</div></div>
+            <div class="card stat"><div class="label">Rainfall · mm</div><div id="s-rain" class="value">—</div></div>
+            <div class="card stat"><div class="label">Version</div><div id="s-version" class="value mono">—</div></div>
+        </div>
+
+        <div class="section-title">Machine-learning models
+            <span class="help-wrap"><button class="help" type="button">?</button>
+            <span class="help-pop">The two models that supply live edge values to the router: the <b>LSTM</b> predicts station crowding, the <b>RFR</b> predicts flood risk. <b>Stub</b> means they aren't trained yet — placeholder predictors with the final interface, per the static-data-first plan.</span></span>
+        </div>
+        <div id="ml-grid" class="grid two-col"></div>
+
+        <div class="section-title">API endpoints
+            <span class="help-wrap"><button class="help" type="button">?</button>
+            <span class="help-pop">Every route the API exposes. <b>GET</b> reads data (status, profiles, network); <b>POST</b> runs a computation (route, compare, inspect). The frontend and dashboards call these through the Node gateway.</span></span>
+        </div>
+        <div class="card"><div id="endpoints" class="chips"></div></div>
+
+        <div class="foot">
+            <span id="last-updated">Last updated: —</span>
+            <span>· auto-refresh every 5s</span>
+            <a href="researcher.html">Researcher console →</a>
+        </div>
+    </div>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        function renderML(models) {
+            $('ml-grid').innerHTML = (models || []).map((m) => {
+                const badge = m.status === 'active' ? '<span class="badge ok">Active</span>' : '<span class="badge stub">Stub</span>';
+                return `<div class="card">
+                    <div class="row-head"><span class="ml-name">${m.name}</span>${badge}</div>
+                    <div class="ml-meta">
+                        Criterion <b>${m.criterion}</b><br>
+                        Framework <b>${m.framework}</b><br>
+                        Predictor <b>${m.predictor}</b><br>
+                        <span class="faint">${m.note}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderEndpoints(list) {
+            $('endpoints').innerHTML = (list || []).map((e) => {
+                const post = (e === '/api/route' || e === '/api/compare' || e === '/api/inspect');
+                const m = post ? '<span class="m post">POST</span>' : '<span class="m get">GET</span>';
+                return `<span class="chip">${m}${e}</span>`;
+            }).join('');
+        }
+
+        function setOnline(on, text) {
+            const pill = $('api-pill');
+            pill.classList.toggle('online', on);
+            pill.classList.toggle('offline', !on);
+            $('api-pill-text').innerText = text;
+            document.body.classList.toggle('is-offline', !on);
+        }
+
+        async function refresh() {
+            try {
+                const res = await fetch('/api/status', { cache: 'no-store' });
+                if (!res.ok) throw new Error('status ' + res.status);
+                const d = await res.json();
+                setOnline(true, 'API Active');
+                $('s-status').innerText = d.status === 'active' ? 'Active' : d.status;
+                $('s-nodes').innerText = d.graph?.nodes ?? '—';
+                $('s-edges').innerText = d.graph?.edges ?? '—';
+                $('s-profiles').innerText = d.profiles ?? '—';
+                $('s-rain').innerText = d.rainfall_mm ?? '—';
+                $('s-version').innerText = d.version ?? '—';
+                renderML(d.ml_models);
+                renderEndpoints(d.endpoints);
+                $('last-updated').innerText = 'Last updated: ' + new Date().toLocaleTimeString();
+            } catch (err) {
+                setOnline(false, 'Offline');
+                $('last-updated').innerText = 'Last updated: failed (' + err.message + ')';
+            }
+        }
+        refresh();
+        setInterval(refresh, 5000);
+
+        // click-to-explain help popovers
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.help');
+            if (btn) {
+                e.stopPropagation();
+                const pop = btn.parentElement.querySelector('.help-pop');
+                const wasOpen = pop && pop.classList.contains('show');
+                document.querySelectorAll('.help-pop.show').forEach(p => p.classList.remove('show'));
+                document.querySelectorAll('.help.on').forEach(x => x.classList.remove('on'));
+                if (pop && !wasOpen) { pop.classList.add('show'); btn.classList.add('on'); }
+                return;
+            }
+            document.querySelectorAll('.help-pop.show').forEach(p => p.classList.remove('show'));
+            document.querySelectorAll('.help.on').forEach(x => x.classList.remove('on'));
+        });
+    </script>
+</body>
+</html>

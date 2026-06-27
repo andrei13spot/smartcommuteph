@@ -318,9 +318,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 whyHeading.innerText = details.why.heading;
                 whyDescription.innerHTML = details.why.description;
                 
-                // Update the border color based on profile
-                whyContainer.style.borderLeftColor = details.why.color;
-                whyContainer.style.backgroundColor = `${details.why.color}14`; // 8% opacity hex
+                // light shade of the profile color, even border for visibility
+                whyContainer.style.borderColor = `${details.why.color}66`;
+                whyContainer.style.backgroundColor = `${details.why.color}24`;
+                // lighten the label so it reads on the tinted card
+                whyLabel.style.color = `color-mix(in srgb, ${details.why.color}, white 45%)`;
             }
         }
 

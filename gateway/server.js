@@ -44,11 +44,25 @@ async function getAnchorIndex() {
   return anchorIndex;
 }
 
+// color a node by its transit mode. for a route stop we know the arriving mode,
+// for a station we pick the highest-priority line it serves (rail before street).
+const MODE_PRIORITY = ["MRT-3", "LRT-2", "LRT-1", "EDSA-Bus", "Jeepney"];
+function nodeColor(mode, lines) {
+  if (mode && MODE_COLORS[mode]) return MODE_COLORS[mode];
+  if (lines && lines.length) {
+    for (const m of MODE_PRIORITY) if (lines.includes(m)) return MODE_COLORS[m];
+  }
+  return "#3b82f6";
+}
+
 function pointFeature(anchor, role, mode) {
   return {
     type: "Feature",
     geometry: { type: "Point", coordinates: [anchor.lng, anchor.lat] },
-    properties: { id: anchor.id, name: anchor.name, role, mode: mode || null },
+    properties: {
+      id: anchor.id, name: anchor.name, role, mode: mode || null,
+      lines: anchor.lines || null, color: nodeColor(mode, anchor.lines),
+    },
   };
 }
 
@@ -171,6 +185,31 @@ app.get("/api/map/anchors", async (_req, res) => {
 });
 app.get("/api/map/profiles", async (_req, res) => {
   const { status, data } = await callPython("/api/profiles");
+  res.status(status).json(data);
+});
+
+// dev dashboard status feed
+app.get("/api/status", async (_req, res) => {
+  try {
+    const { status, data } = await callPython("/api/status");
+    res.status(status).json(data);
+  } catch (err) {
+    res.status(502).json({ status: "down", error: "engine unreachable", detail: String(err) });
+  }
+});
+
+// researcher dashboard feeds
+app.get("/api/benchmark", async (req, res) => {
+  const qs = new URLSearchParams(req.query).toString();
+  const { status, data } = await callPython("/api/benchmark" + (qs ? "?" + qs : ""));
+  res.status(status).json(data);
+});
+app.get("/api/ml-metrics", async (_req, res) => {
+  const { status, data } = await callPython("/api/ml-metrics");
+  res.status(status).json(data);
+});
+app.post("/api/inspect", async (req, res) => {
+  const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
   res.status(status).json(data);
 });
 
