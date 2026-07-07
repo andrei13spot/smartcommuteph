@@ -12,6 +12,34 @@ Companion to `Group11_Delegation_Timeline.xlsx` (the full sheet).
 
 ---
 
+## Git workflow (everyone follows this)
+
+**Branches**
+- `main` — release / defense-ready. Only updated at Saturday gates, after QA sign-off.
+- `dev` — integration branch. Everything merges here first.
+- feature branches — **one per task**, always branched off `dev`.
+
+**Before you start any task — always:**
+```bash
+git checkout dev
+git pull origin dev
+git checkout -b <branch>      # branch off the latest dev
+```
+
+**Branch naming** (`<area>/<short-task>`):
+- Front end → `fe/route-query`, `fe/compare-view`
+- Backend / algorithm → `be/astar-core`, `be/compare-endpoint`
+- ML → `ml/ahp-weights`, `ml/lstm-ridership`
+- QA / tests → `qa/comparison-check`
+
+**While working:** commit small and often (lowercase messages); push your branch with `git push -u origin <branch>`.
+
+**To merge:** open a Pull Request into `dev`. **Dave (QA) reviews and signs off before it merges into `dev`.** Delete the feature branch after merge.
+
+**Releases:** `dev` → `main` only at the Saturday check-in gates, once QA has signed off. **Never commit directly to `main` or `dev` — always a feature branch + PR.**
+
+---
+
 ## Roles
 
 ### Luis — Full Front End (Figma + Bootstrap 5)
