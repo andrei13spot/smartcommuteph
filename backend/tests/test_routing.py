@@ -103,10 +103,24 @@ def test_api_route():
     assert body["summary"]["fare_php"] > 0
 
 
-def test_api_compare_returns_four():
+def test_api_compare_returns_five():
+    # 4 profiles + baseline
     r = client.post("/api/compare", json={"origin": "cubao", "destination": "pasay"})
     assert r.status_code == 200
-    assert len(r.json()["routes"]) == 4
+    body = r.json()
+    assert len(body["routes"]) == 5
+    ids = [x["profile"]["id"] for x in body["routes"]]
+    assert "baseline" in ids
+
+
+def test_api_route_has_exec_ms_and_discount():
+    r = client.post("/api/route", json={"origin": "cubao", "destination": "pasay",
+                                        "profile": "cheapest", "passenger_type": "student"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["exec_ms"] >= 0
+    # should be 20% off
+    assert abs(body["summary"]["fare_discounted_php"] - body["summary"]["fare_php"] * 0.8) < 0.11
 
 
 def test_api_unknown_profile_is_422():

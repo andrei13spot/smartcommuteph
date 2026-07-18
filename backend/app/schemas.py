@@ -17,6 +17,10 @@ class RouteRequest(BaseModel):
         None, ge=0,
         description="rainfall override in mm; defaults to the pagasa value",
     )
+    passenger_type: str | None = Field(
+        None,
+        description="regular | student | senior; student/senior gets 20% fare discount",
+    )
 
 
 class CompareRequest(BaseModel):
@@ -24,6 +28,7 @@ class CompareRequest(BaseModel):
     destination: str
     hour: int | None = Field(None, ge=0, le=23)
     rainfall_mm: float | None = Field(None, ge=0)
+    passenger_type: str | None = Field(None, description="regular | student | senior")
 
 
 # ----- response pieces -----
@@ -65,6 +70,9 @@ class RouteSummary(BaseModel):
     time_min: float
     distance_km: float
     fare_php: float
+    fare_discounted_php: float | None = Field(
+        None, description="fare after 20% discount, set when student/senior"
+    )
     transfers: int
     modes: list[str]
 
@@ -84,6 +92,7 @@ class RouteResponse(BaseModel):
     why: dict[str, str] = Field(..., description="heading + description")
     segments: list[SegmentOut]
     expanded_nodes: int = Field(..., description="a* states expanded (rq3 metric)")
+    exec_ms: float = Field(0.0, description="how long the a* query took")
 
 
 class CompareResponse(BaseModel):

@@ -112,7 +112,8 @@ def network() -> NetworkResponse:
 @router.post("/route", response_model=RouteResponse)
 def route(req: RouteRequest) -> RouteResponse:
     try:
-        return build_route(req.origin, req.destination, req.profile, req.hour, req.rainfall_mm)
+        return build_route(req.origin, req.destination, req.profile, req.hour,
+                           req.rainfall_mm, req.passenger_type)
     except KeyError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
@@ -141,11 +142,13 @@ def inspect_query(req: RouteRequest) -> dict:
 
 @router.post("/compare", response_model=CompareResponse)
 def compare(req: CompareRequest) -> CompareResponse:
-    # same origin/destination under all four profiles, for the compare screen
+    # same od across the 4 profiles + baseline, 5 results total
     try:
+        ids = list(PROFILES) + ["baseline"]
         routes = [
-            build_route(req.origin, req.destination, pid, req.hour, req.rainfall_mm)
-            for pid in PROFILES
+            build_route(req.origin, req.destination, pid, req.hour,
+                        req.rainfall_mm, req.passenger_type)
+            for pid in ids
         ]
     except KeyError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
