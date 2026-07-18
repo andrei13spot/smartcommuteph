@@ -128,6 +128,86 @@ function boundsOf(coords) {
   return [[minLat, minLng], [maxLat, maxLng]];
 }
 
+// ---- contract endpoints (the agreed api contract) ----
+// validate first before calling the engine
+function checkOd(req, res, needProfile) {
+  const { origin, destination, profile } = req.body || {};
+  if (!origin || !destination || (needProfile && !profile)) {
+    res.status(400).json({ error: "origin, destination" + (needProfile ? " and profile" : "") + " are required" });
+    return false;
+  }
+  if (origin === destination) {
+    res.status(400).json({ error: "origin and destination cannot be the same" });
+    return false;
+  }
+  return true;
+}
+
+// geometry = list of [lat,lng] from origin to destination
+async function routeGeometry(route) {
+  const anchors = await getAnchorIndex();
+  const segs = route.segments || [];
+  if (!segs.length) return [];
+  const ids = [segs[0].from_id, ...segs.map((s) => s.to_id)];
+  return ids.map((id) => anchors.get(id)).filter(Boolean).map((a) => [a.lat, a.lng]);
+}
+
+// 8 kpis mapped from the engine response
+function toKpis(route) {
+  const s = route.summary;
+  return {
+    travel_time_min: s.time_min,
+    distance_km: s.distance_km,
+    fare_php: s.fare_discounted_php ?? s.fare_php,
+    transfers: s.transfers,
+    flood_risk_score: route.criteria.R.value,
+    ridership_density_score: route.criteria.T.value,
+    nodes_expanded: route.expanded_nodes,
+    exec_ms: route.exec_ms,
+  };
+}
+
+async function toContractResult(route) {
+  return {
+    profile: route.profile.id,
+    origin: route.origin.id,
+    destination: route.destination.id,
+    geometry: await routeGeometry(route),
+    kpis: toKpis(route),
+    why_this_route: route.why,
+    criteria: {
+      T: route.criteria.T.value, F: route.criteria.F.value,
+      R: route.criteria.R.value, P: route.criteria.P.value,
+    },
+  };
+}
+
+// isang route + kpis
+app.post("/route", async (req, res) => {
+  if (!checkOd(req, res, true)) return;
+  try {
+    const { ok, status, data } = await callPython("/api/route", { method: "POST", body: req.body });
+    if (!ok) return res.status(status).json(data);
+    res.json(await toContractResult(data));
+  } catch (err) {
+    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+  }
+});
+
+// 4 profiles + baseline = 5 results
+app.post("/compare", async (req, res) => {
+  if (!checkOd(req, res, false)) return;
+  try {
+    const { ok, status, data } = await callPython("/api/compare", { method: "POST", body: req.body });
+    if (!ok) return res.status(status).json(data);
+    const results = [];
+    for (const r of data.routes) results.push(await toContractResult(r));
+    res.json({ origin: data.origin.id, destination: data.destination.id, results });
+  } catch (err) {
+    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+  }
+});
+
 // ---- map api ----
 app.get("/api/map/network", async (_req, res) => {
   try {

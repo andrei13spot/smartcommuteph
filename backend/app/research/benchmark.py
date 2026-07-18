@@ -8,16 +8,10 @@ from itertools import combinations
 import numpy as np
 from scipy import stats
 
-from ..profiles import PROFILES, Profile
+from ..profiles import BASELINE, PROFILES
 from ..routing.astar import shortest_route
 from ..routing.cost import CostContext
 from ..routing.graph import load_graph
-
-# distance-based baseline: all weights zero, so cost = base time (distance/speed)
-BASELINE = Profile(
-    id="baseline", name="Distance baseline", theme="gray", priority="-",
-    tagline="distance-based A*", w_T=0.0, w_F=0.0, w_R=0.0, w_P=0.0,
-)
 
 
 def _prioritized_value(ctx: CostContext, edges, priority: str) -> float:

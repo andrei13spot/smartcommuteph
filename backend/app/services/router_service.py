@@ -3,6 +3,7 @@
 # and the bits the result screen needs.
 from __future__ import annotations
 
+import time
 from datetime import datetime
 
 from ..ml.flood import fetch_pagasa_rainfall_mm
@@ -136,14 +137,18 @@ def _why(profile: Profile, summary: RouteSummary, criteria: dict[str, CriterionO
 
 
 def build_route(req_origin: str, req_destination: str, req_profile: str,
-                hour: int | None, rainfall_mm: float | None) -> RouteResponse:
+                hour: int | None, rainfall_mm: float | None,
+                passenger_type: str | None = None) -> RouteResponse:
     graph = load_graph()
     profile = resolve_profile(req_profile)
     h = hour if hour is not None else datetime.now().hour
     rain = rainfall_mm if rainfall_mm is not None else fetch_pagasa_rainfall_mm()
 
     ctx = CostContext(graph, hour=h, rainfall_mm=rain)
+    # time the actual a* run, this is kpi #8
+    t0 = time.perf_counter()
     result = shortest_route(graph, req_origin, req_destination, profile, ctx)
+    exec_ms = round((time.perf_counter() - t0) * 1000.0, 2)
 
     edges = result.edges
     # total time = in-vehicle time + the transfer friction we actually paid
@@ -152,10 +157,14 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
     for e in edges:
         transfer_minutes += transfer_friction(prev_mode, e.mode)
         prev_mode = e.mode
+    fare = round(sum(e.fare for e in edges), 1)
+    # 20% discount for student or senior
+    discounted = round(fare * 0.8, 1) if passenger_type in ("student", "senior") else None
     summary = RouteSummary(
         time_min=round(sum(e.base_time for e in edges) + transfer_minutes, 1),
         distance_km=round(sum(e.distance_km for e in edges), 1),
-        fare_php=round(sum(e.fare for e in edges), 1),
+        fare_php=fare,
+        fare_discounted_php=discounted,
         transfers=_count_transfers(edges),
         modes=_modes_in_order(edges),
     )
@@ -172,4 +181,5 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
         why=_why(profile, summary, criteria),
         segments=_segments(graph, edges),
         expanded_nodes=result.expanded_nodes,
+        exec_ms=exec_ms,
     )
