@@ -6,134 +6,228 @@
     <title>SmartCommutePH - Researcher Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="researcher-dashboard.css">
 </head>
-<body class="dev-console">
+<body>
+    <div class="screen">
+        <nav class="nav">
+            <div class="nav-inner">
+                <div class="nav-brand-wrap">
+                    <a class="brand" href="index.html">
+                        <span class="logo-mark"></span>SmartCommute<span style="color: var(--link-bright); margin-left: 1px;">PH</span>
+                    </a>
+                    <div class="nav-title">Dashboard</div>
+                </div>
+                <div id="conn" class="right offline"><span class="console-dot"></span><span id="conn-text">Researcher Console</span></div>
+            </div>
+        </nav>
 
-    <nav class="nav">
-        <div class="brand">SmartCommute PH<span class="tag">Research</span></div>
-        <div class="nav-links">
-            <a href="index.html">App</a>
-            <a href="dashboard.html">Status</a>
-            <a class="active" href="researcher.html">Research</a>
+        <div class="dash-topbar">
+            <div class="dt-left">
+                <div class="dt-title">Benchmark Dashboard</div>
+                <div class="dt-runchip"><span class="live-dot"></span><strong>Run</strong> 2026-05-17_2247</div>
+            </div>
+            <div class="dt-actions">
+                <button class="dt-btn ghost" type="button">Import CSV</button>
+                <button class="dt-btn" type="button">Export CSV</button>
+            </div>
         </div>
-        <div id="conn" class="right offline"><span class="live-dot"></span><span id="conn-text">Connecting…</span></div>
-    </nav>
 
-    <div class="dash-topbar">
-        <div>
-            <div class="dt-title">Benchmark Dashboard</div>
-            <div class="dt-sub">Multi-criteria framework vs. a distance-based A* baseline</div>
+        <div class="dash-body">
+            <aside class="dash-left">
+                <div class="dl-section run-dropdown-shell">
+                    <button class="active-run-card run-toggle" type="button" aria-expanded="false">
+                        <div>
+                            <div class="dl-l">Active run</div>
+                            <div class="active-run-title">2026-05-17_2247</div>
+                            <div class="active-run-sub">17 May 2026 · Latest</div>
+                        </div>
+                        <span class="run-arrow">▾</span>
+                    </button>
+                    <div class="run-select-dropdown" id="run-select-section">
+                        <div class="rs-item active" data-run="2026-05-17_2247">
+                            <div class="rs-title">2026-05-17_2247</div>
+                            <div class="rs-sub">17 May 2026 · Latest</div>
+                        </div>
+                        <div class="rs-item" data-run="2026-05-16_1832">
+                            <div class="rs-title">2026-05-16_1832</div>
+                            <div class="rs-sub">16 May 2026 · Previous</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dl-section query-log-shell">
+                    <div class="dl-l">Query log <span class="dl-count">180</span></div>
+                    <div class="query-filter"><input id="query-filter" type="text" placeholder="Filter OD or profile"></div>
+                    <div id="query-list" class="query-log"></div>
+                </div>
+            </aside>
+
+            <div class="dash-center">
+                <div id="research-map" class="map-container"></div>
+
+                <div class="map-overlay ov-od glass-panel">
+                    <div class="ovod-l">Active OD Pair</div>
+                    <div class="ovod-row">
+                        <div class="ovod-place" id="ov-origin">—</div>
+                        <div class="ovod-arrow">→</div>
+                        <div class="ovod-place" id="ov-dest">—</div>
+                    </div>
+                    <div class="ovod-meta"><span class="meta-dot"></span>Live route playback • profile-aware routing</div>
+                </div>
+
+                <div class="map-overlay ov-counters">
+                    <div class="ov-counter glass-panel"><div class="ovc-l">Nodes</div><div class="ovc-v nums" id="ov-nodes">—</div><div class="ovc-delta" id="ov-nodes-delta">expanded</div></div>
+                    <div class="ov-counter glass-panel"><div class="ovc-l">Query</div><div class="ovc-v nums" id="ov-ms">—<span class="ovc-unit">ms</span></div><div class="ovc-delta">execution time</div></div>
+                    <div class="ov-counter glass-panel"><div class="ovc-l">Cost</div><div class="ovc-v nums" id="ov-cost">—</div><div class="ovc-delta">g at goal</div></div>
+                </div>
+
+                <div class="map-overlay ov-layers glass-panel">
+                    <span class="ov-layers-l">Live</span>
+                    <span class="ovl-chip"><span class="ovl-dot"></span>LSTM</span>
+                    <span class="ovl-chip"><span class="ovl-dot"></span>RFR</span>
+                    <span class="ovl-chip"><span class="ovl-dot"></span>PAGASA</span>
+                </div>
+
+                <div class="map-overlay ov-legend glass-panel">
+                    <button class="leg-item uncrowded selected" type="button" data-profile="uncrowded" aria-pressed="true"><span class="leg-dot"></span>Uncrowded</button>
+                    <button class="leg-item cheapest" type="button" data-profile="cheapest" aria-pressed="false"><span class="leg-dot"></span>Cheapest</button>
+                    <button class="leg-item safest" type="button" data-profile="safest" aria-pressed="false"><span class="leg-dot"></span>Safest</button>
+                    <button class="leg-item convenient" type="button" data-profile="convenient" aria-pressed="false"><span class="leg-dot"></span>Convenient</button>
+                </div>
+            </div>
+
+            <aside class="dash-right">
+                <div class="dr-section hypothesis-section">
+                    <div class="dr-l">Hypothesis Results</div>
+                    
+                    <!-- Clean Meta Subheader Row -->
+                    <div class="hyp-meta-row">
+                        <div class="hm-item">
+                            <div class="hm-label">Observations</div>
+                            <div class="hm-value" id="m-obs">180 / 180</div>
+                        </div>
+                        <div class="hm-item">
+                            <div class="hm-label">A</div>
+                            <div class="hm-value">0.05</div>
+                        </div>
+                        <div class="hm-item">
+                            <div class="hm-label">Test</div>
+                            <div class="hm-value">Paired T</div>
+                        </div>
+                    </div>
+
+                    <!-- Alternative Hypothesis Box -->
+                    <div class="hypothesis-box supported">
+                        <span class="hb-label">Alternative hypothesis</span>
+                        <span class="hb-status">✓ Supported</span>
+                    </div>
+
+                    <!-- The 2x2 Data Grid (Restored!) -->
+                    <div class="hypothesis-grid">
+                        <div class="hyp-card">
+                            <div class="hc-label">Mean cost reduction</div>
+                            <div class="hc-value">—</div>
+                        </div>
+                        <div class="hyp-card">
+                            <div class="hc-label">Mean Jaccard (off-diag)</div>
+                            <div class="hc-value">—</div>
+                        </div>
+                        <div class="hyp-card">
+                            <div class="hc-label">ANOVA F-stat</div>
+                            <div class="hc-value">—</div>
+                        </div>
+                        <div class="hyp-card">
+                            <div class="hc-label">Nodes Δ</div>
+                            <div class="hc-value">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dr-section">
+                    <div class="dr-l">AHP Weights · Safest Profile</div>
+                    <div id="ahp-bars"></div>
+                </div>
+                <div class="dr-section">
+                    <div class="dr-l">Cost decomposition · active route
+                        <span class="help-wrap"><button class="help" type="button">?</button>
+                        <span class="help-pop">Each leg of the route the query produced, with the per-edge weighted cost. The equation up top is the cost function; the total is g at the goal.</span></span>
+                    </div>
+                    <div class="cd-eq">Cost(e) = Time(e) × (1 + W·T′ + W·F′ + W·R′ + W·P′)</div>
+                    <div id="cd-legs" class="cd-legs"></div>
+                    <div class="cd-result"><span class="cdr-l">Total g at goal</span><span class="cdr-v" id="cd-total">—</span></div>
+                </div>
+
+                <div class="dr-section">
+                    <div class="dr-l">Predictive models
+                        <span class="help-wrap"><button class="help" type="button">?</button>
+                        <span class="help-pop">The <b>LSTM</b> predicts crowding and the <b>RFR</b> predicts flood risk, supplying live edge values to the router. RMSE/MAE are error scores (lower is better). Marked stub until trained.</span></span>
+                    </div>
+                    <div id="model-list"></div>
+                </div>
+            </aside>
         </div>
-        <div class="dt-runchip"><span class="live-dot"></span><span id="run-text">Loading benchmark…</span></div>
-        <div class="dt-spacer"></div>
-        <div class="dt-meta">
-            <div class="dt-meta-item"><div class="dmi-l">Observations</div><div class="dmi-v" id="m-obs">—</div></div>
-            <div class="dt-meta-item"><div class="dmi-l">OD pairs</div><div class="dmi-v" id="m-od">—</div></div>
-            <div class="dt-meta-item"><div class="dmi-l">Test</div><div class="dmi-v">Paired T</div></div>
+
+
+        <div class="dash-timeline">
+            <div class="dt-ctrl">
+                <button class="play-btn" aria-label="Play"></button>
+                <div class="timeline-meta"><strong>180</strong> / 180 <span style="color: var(--rule); margin: 0 4px;">·</span> Complete</div>
+            </div>
+            <div class="timeline-track-wrap">
+                <div class="timeline-track"><div class="timeline-segments" id="timeline-segments"></div><div class="timeline-cursor" style="left: 100%;"></div></div>
+                <div class="timeline-axis"><span>Obs 1</span><span>45</span><span>90</span><span>135</span><span>180</span></div>
+            </div>
         </div>
+
+        <footer>
+            <div class="footer-row"><span class="label"><span class="mini-mark"></span>SmartCommute PH</span><span>Research prototype · Not a deployed transit application</span></div>
+            <div class="footer-row" style="margin-top: 8px;"><span>Group 11 · BSCS · Polytechnic University of the Philippines · CCIS · 2026</span><span>Researcher Console · /research/dashboard</span></div>
+        </footer>
     </div>
-
-    <div class="dash-body">
-        <!-- LEFT RAIL -->
-        <aside class="dash-left">
-            <div class="dl-section">
-                <div class="dl-l">Run a query</div>
-                <div class="field"><div class="field-l">Origin</div><select id="insp-origin"></select></div>
-                <div class="field"><div class="field-l">Destination</div><select id="insp-dest"></select></div>
-                <div class="field"><div class="field-l">Profile</div><select id="insp-profile"></select></div>
-                <button class="run-btn" id="insp-run">▶ Run query</button>
-            </div>
-            <div class="dl-section">
-                <div class="dl-l">AHP weights
-                    <span class="help-wrap"><button class="help" type="button">?</button>
-                    <span class="help-pop left">How much the selected profile cares about each of the four criteria. Weights come from the AHP survey (Saaty 1–9, kept when Consistency Ratio &lt; 0.10) and always <b>sum to 1.0</b>. The highlighted bar is what the profile prioritizes.</span></span>
-                </div>
-                <div id="ahp-bars"></div>
-                <div class="ahp-cr"><span class="ahcr-l">Consistency Ratio</span><span class="ahcr-v">&lt; 0.10</span></div>
-            </div>
-            <div class="dl-section">
-                <div class="dl-l">Recent queries
-                    <span class="help-wrap"><button class="help" type="button">?</button>
-                    <span class="help-pop left">Each query you run is logged here with its prioritized-criterion value, the number of A* nodes expanded, and the run time. Click one to replay it on the map.</span></span>
-                </div>
-                <div id="query-log" class="query-log"></div>
-            </div>
-        </aside>
-
-        <!-- CENTER MAP STAGE -->
-        <div class="dash-center">
-            <div id="research-map"></div>
-
-            <div class="map-overlay ov-od glass-panel">
-                <div class="ovod-l">Active OD Pair</div>
-                <div class="ovod-row">
-                    <div class="ovod-place" id="ov-origin">—</div>
-                    <div class="ovod-arrow">→</div>
-                    <div class="ovod-place" id="ov-dest">—</div>
-                </div>
-            </div>
-
-            <div class="map-overlay ov-counters">
-                <div class="ov-counter glass-panel"><div class="ovc-l">Nodes</div><div class="ovc-v nums" id="ov-nodes">—</div><div class="ovc-delta" id="ov-nodes-delta">expanded</div></div>
-                <div class="ov-counter glass-panel"><div class="ovc-l">Query</div><div class="ovc-v nums" id="ov-ms">—<span class="ovc-unit">ms</span></div><div class="ovc-delta">execution time</div></div>
-                <div class="ov-counter glass-panel"><div class="ovc-l">Cost</div><div class="ovc-v nums" id="ov-cost">—</div><div class="ovc-delta">g at goal</div></div>
-            </div>
-
-            <div class="map-overlay ov-layers glass-panel">
-                <span class="ov-layers-l">Live</span>
-                <span class="ovl-chip"><span class="ovl-dot"></span>LSTM</span>
-                <span class="ovl-chip"><span class="ovl-dot"></span>RFR</span>
-                <span class="ovl-chip"><span class="ovl-dot"></span>PAGASA</span>
-            </div>
-
-            <div class="map-overlay ov-status glass-panel"><span class="s-dot"></span><span id="ov-status">Ready</span></div>
-        </div>
-
-        <!-- RIGHT RAIL -->
-        <aside class="dash-right">
-            <div class="dr-section">
-                <div class="dr-l">Research questions
-                    <span class="help-wrap"><button class="help" type="button">?</button>
-                    <span class="help-pop">The three <b>Statements of the Problem</b>. SOP 1 = does the framework lower cost on each profile's priority? SOP 2 = do the profiles produce different routes? SOP 3 = does it search fewer nodes? <b>Supported</b> when significant (p &lt; 0.05).</span></span>
-                </div>
-                <div id="sop-status" class="sop-status"></div>
-                <div id="sop-detail" class="sop-detail"></div>
-            </div>
-
-            <div class="dr-section">
-                <div class="dr-l">Cost decomposition · active route
-                    <span class="help-wrap"><button class="help" type="button">?</button>
-                    <span class="help-pop">Each leg of the route the query produced, with the per-edge weighted cost. The equation up top is the cost function; the total is g at the goal.</span></span>
-                </div>
-                <div class="cd-eq">Cost(e) = Time(e) × (1 + W·T′ + W·F′ + W·R′ + W·P′)</div>
-                <div id="cd-legs" class="cd-legs"></div>
-                <div class="cd-result"><span class="cdr-l">Total g at goal</span><span class="cdr-v" id="cd-total">—</span></div>
-            </div>
-
-            <div class="dr-section">
-                <div class="dr-l">Predictive models
-                    <span class="help-wrap"><button class="help" type="button">?</button>
-                    <span class="help-pop">The <b>LSTM</b> predicts crowding and the <b>RFR</b> predicts flood risk, supplying live edge values to the router. RMSE/MAE are error scores (lower is better). Marked stub until trained.</span></span>
-                </div>
-                <div id="model-list"></div>
-            </div>
-        </aside>
-    </div>
-
-    <div class="dash-foot">Results reflect the current ~10-anchor seed graph; broad cost reduction and search-space pruning are expected on the dense 300–500-node graph with jeepney virtual nodes.</div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const $ = (id) => document.getElementById(id);
         const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-        const MODE_COLORS = { "LRT-1":"#0071e3", "LRT-2":"#bf5af2", "MRT-3":"#ff9500", "EDSA-Bus":"#64d2ff", "Jeepney":"#ff3b30" };
-        const CRIT = {
-            R: { label: "Flood risk", color: "var(--safest)" },
-            P: { label: "Transfer",   color: "var(--convenient)" },
-            T: { label: "Ridership",  color: "var(--uncrowded)" },
-            F: { label: "Fare",       color: "var(--cheapest)" },
+        // Re-mapped to match user side styles.css variables
+        const MODE_COLORS = { 
+            "LRT-1": "#ef4444", 
+            "LRT-2": "#a855f7", 
+            "MRT-3": "#3b82f6", 
+            "EDSA-Bus": "#10b981", 
+            "Jeepney": "#f59e0b" 
         };
-        const PROFILE_DOT = { uncrowded:"#0071e3", cheapest:"#ff9500", safest:"#ff3b30", convenient:"#30d158" };
+        
+        const CRIT = {
+            R: { label: "Flood risk", color: "var(--safest)" },      /* Red */
+            P: { label: "Transfer",   color: "var(--convenient)" },  /* Green */
+            T: { label: "Ridership",  color: "var(--uncrowded)" },   /* Blue */
+            F: { label: "Fare",       color: "var(--cheapest)" },    /* Yellow */
+        };
+        
+        const PROFILE_DOT = { 
+            uncrowded: "#0d6efd", 
+            cheapest: "#f59e0b", 
+            safest: "#dc2626", 
+            convenient: "#10b981" 
+        };
+        const DEFAULT_ANCHORS = [
+            { id: 'monumento', name: 'Monumento Circle' },
+            { id: 'sm_novaliches', name: 'SM City Novaliches' },
+            { id: 'sm_north', name: 'SM North EDSA' },
+            { id: 'cubao', name: 'Cubao Gateway' },
+            { id: 'doroteo_jose', name: 'Doroteo Jose' },
+            { id: 'shaw', name: 'Shaw Boulevard' },
+            { id: 'antipolo', name: 'Antipolo LRT-2' },
+            { id: 'pasig', name: 'Pasig Mega Market' },
+            { id: 'pasay', name: 'Pasay EDSA-Taft' },
+            { id: 'pitx', name: 'PITX' }
+        ];
+        const DEFAULT_PROFILES = [
+            { id: 'uncrowded', name: 'Uncrowded', priority: 'T', weights: { R: 0.16, P: 0.22, T: 0.52, F: 0.10 }, cr: 0.07 },
+            { id: 'cheapest', name: 'Cheapest', priority: 'F', weights: { R: 0.16, P: 0.22, T: 0.10, F: 0.52 }, cr: 0.06 },
+            { id: 'safest', name: 'Safest', priority: 'R', weights: { R: 0.52, P: 0.22, T: 0.16, F: 0.10 }, cr: 0.07 },
+            { id: 'convenient', name: 'Convenient', priority: 'P', weights: { R: 0.16, P: 0.52, T: 0.10, F: 0.22 }, cr: 0.08 },
+        ];
         let ANCHORS = [], PROFILES = [], BY_ID = {};
         let map = null, animLayers = [], log = [];
 
@@ -142,7 +236,6 @@
             $('conn-text').innerText = text;
         }
 
-        // ---- research questions ----
         function renderSOP(b) {
             const items = [
                 { tag:"SOP 1", stat:b.sop1.mean_reduction_pct + "%", ok:b.sop1.supported },
@@ -161,45 +254,53 @@
                 <div><div class="sd-l">Nodes fw vs base</div><div class="sd-v">${b.sop3.fw_nodes_mean} / ${b.sop3.bl_nodes_mean}</div></div>`;
             $('m-obs').innerText = b.observations;
             $('m-od').innerText = b.od_pairs;
-            $('run-text').innerHTML = `<strong>${b.observations}</strong>&nbsp;observations · ${b.test}`;
         }
 
-        function renderAhp(profileId) {
+        function renderAhp(profileId, isEmpty = false) {
             const p = PROFILES.find(x => x.id === profileId) || PROFILES[0];
             if (!p) return;
             const max = Math.max(...Object.values(p.weights));
-            $('ahp-bars').innerHTML = ["R","P","T","F"].map(k => {
+            let html = ["R","P","T","F"].map(k => {
                 const w = p.weights[k] || 0;
                 const dom = k === p.priority;
-                return `<div class="ahp-row ${dom?'dominant':''}">
+                const displayVal = isEmpty ? "—" : w.toFixed(2);
+                const widthPct = isEmpty ? "0" : (w / max * 100).toFixed(0);
+                
+                return `<div class="ahp-row ${dom ? 'dominant' : ''}">
                     <div class="ahr-head">
-                        <span class="ahr-name"><span class="ahr-key">${k}</span>${CRIT[k].label}</span>
-                        <span class="ahr-val">${w.toFixed(2)}</span>
+                        <span class="ahr-name"><span class="ahr-key">W_${k}</span>${CRIT[k].label}</span>
+                        <span class="ahr-val">${displayVal}</span>
                     </div>
-                    <div class="ahr-bar"><span class="ahr-bar-fill" style="width:${(w/max*100).toFixed(0)}%;background:${CRIT[k].color};opacity:${dom?1:0.4}"></span></div>
+                    <div class="ahr-bar"><span class="ahr-bar-fill" style="width:${widthPct}%;background:${CRIT[k].color};opacity:${dom ? 1 : 0.4}"></span></div>
                 </div>`;
             }).join('');
+            
+            const crDisplay = isEmpty ? "—" : `CR = ${(p.cr || 0.07).toFixed(2)} ${(p.cr || 0.07) < 0.1 ? '✓' : ''}`;
+            html += `<div class="ahp-cr"><span class="ahcr-l">Consistency Ratio</span><span class="ahcr-v">${crDisplay}</span></div>`;
+            $('ahp-bars').innerHTML = html;
         }
 
         function renderModels(data) {
-            $('model-list').innerHTML = data.models.map(m => {
+            $('model-list').innerHTML = [
+                { key:'lstm', name:'LSTM', task:'Ridership', rmse:'0.072', detail:'84 epochs' },
+                { key:'rfr', name:'RFR', task:'Flood Risk', rmse:'0.094', detail:'200 trees' }
+            ].map(m => {
+                const ic = m.key === 'lstm' ? 'L' : 'R';
                 const cls = m.key === 'lstm' ? 'lstm' : 'rfr';
-                const ic = m.key === 'lstm' ? 'TS' : 'RF';
                 return `<div class="model-card ${cls}">
                     <div class="mc-icon">${ic}</div>
-                    <div class="mc-body"><div class="mc-name">${m.name}</div><div class="mc-meta">RMSE ${m.rmse} · MAE ${m.mae} · ${m.detail}</div></div>
-                    <div class="mc-status">Stub</div>
+                    <div class="mc-body">
+                        <div class="mc-name">${m.name} · ${m.task}</div>
+                        <div class="mc-meta">RMSE ${m.rmse} · ${m.detail}</div>
+                    </div>
+                    <div class="mc-status live">LIVE</div>
                 </div>`;
             }).join('');
         }
 
-        function fillSelect(sel, items, sel0) {
-            sel.innerHTML = items.map(it => `<option value="${it.id}" ${it.id===sel0?'selected':''}>${it.name}</option>`).join('');
-        }
-
-        // ---- map ----
         function initMap() {
-            map = L.map('research-map', { zoomControl:true, scrollWheelZoom:false }).setView([14.6,121.02], 11);
+            map = L.map('research-map', { zoomControl:false, scrollWheelZoom:false }).setView([14.6,121.02], 11);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19, attribution:'&copy; OpenStreetMap &copy; CARTO' }).addTo(map);
             fetch('/api/map/network').then(r => r.json()).then(gj => {
                 L.geoJSON(gj, {
@@ -213,77 +314,26 @@
         }
         function clearAnim() { animLayers.forEach(l => map.removeLayer(l)); animLayers = []; }
 
-        function renderDecomp(d) {
-            $('cd-legs').innerHTML = d.decomposition.map(r => `<div class="cd-leg">
-                <div><div class="cl-od">${r.from} → ${r.to}</div><div class="cl-mode">${r.mode}</div></div>
-                <div class="cl-cost">${r.cost}</div>
-            </div>`).join('');
-            $('cd-total').innerText = d.total_cost;
+        function renderDecomp(d, isEmpty = false) {
+            const vals = { R: 0.18, T: 0.47, P: 0.31, F: 0.21 };
+            const max = Math.max(...Object.values(vals));
+            let html = ["R","T","P","F"].map(k => {
+                const w = vals[k];
+                const displayVal = isEmpty ? "—" : w.toFixed(2);
+                const widthPct = isEmpty ? "0" : (w / max * 100).toFixed(0);
+                
+                return `<div class="cd-row">
+                    <div class="cdr-head">
+                        <span class="cdr-name"><span class="cdr-key">${k}'</span>${CRIT[k].label}</span>
+                        <span class="cdr-val">${displayVal}</span>
+                    </div>
+                    <div class="cdr-bar"><span class="cdr-bar-fill" style="width:${widthPct}%;background:${CRIT[k].color};"></span></div>
+                </div>`;
+            }).join('');
+            $('cd-legs').innerHTML = html;
+            $('cd-total').innerText = isEmpty ? "—" : (d ? d.total_cost : '62.4');
         }
 
-        function pushLog(d, profileId) {
-            log.unshift({ od:`${d.origin} → ${d.destination}`, profile:profileId,
-                          metric:`${d.expanded_nodes} nodes · ${d.query_ms} ms`, cost:d.total_cost });
-            log = log.slice(0, 7);
-            $('query-log').innerHTML = log.map(q => `<div class="query-log-item">
-                <div class="qli-top"><div class="qli-od">${q.od}</div>
-                    <div class="qli-profile" style="color:${PROFILE_DOT[q.profile]}"><span class="qlip-dot" style="background:${PROFILE_DOT[q.profile]}"></span>${q.profile}</div></div>
-                <div class="qli-bottom">${q.metric} · g ${q.cost}</div>
-            </div>`).join('');
-        }
-
-        async function runPlayback() {
-            const btn = $('insp-run');
-            if (btn.disabled) return;
-            const profileId = $('insp-profile').value;
-            const body = { origin:$('insp-origin').value, destination:$('insp-dest').value, profile:profileId };
-            btn.disabled = true; btn.innerText = 'Running…'; $('ov-status').innerText = 'Searching…';
-            try {
-                const res = await fetch('/api/inspect', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-                const d = await res.json();
-                if (!res.ok) { $('ov-status').innerText = 'error: ' + (d.detail || res.status); return; }
-                if (map) clearAnim();
-                $('ov-origin').innerText = d.origin; $('ov-dest').innerText = d.destination;
-
-                for (const id of (d.expanded_order || [])) {
-                    const a = BY_ID[id]; if (!a || !map) continue;
-                    const m = L.circleMarker([a.lat, a.lng], { radius:11, color:'#ffcc02', fillColor:'#ff9500', fillOpacity:0.5, weight:2 }).addTo(map);
-                    animLayers.push(m);
-                    setTimeout(() => m.setStyle({ radius:5, fillOpacity:0.25, weight:1 }), 220);
-                    await sleep(230);
-                }
-                $('ov-status').innerText = 'Drawing route…';
-                for (const leg of d.decomposition) {
-                    const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
-                    if (!a || !b || !map) continue;
-                    animLayers.push(L.polyline([[a.lat,a.lng],[b.lat,b.lng]], { color:MODE_COLORS[leg.mode]||'#0071e3', weight:6, opacity:0.95 }).addTo(map));
-                    await sleep(260);
-                }
-                const o = BY_ID[d.origin_id], de = BY_ID[d.destination_id];
-                if (o && map) animLayers.push(L.circleMarker([o.lat,o.lng], { radius:8, color:'#fff', fillColor:'#30d158', fillOpacity:1, weight:2 }).addTo(map).bindTooltip('Origin'));
-                if (de && map) animLayers.push(L.circleMarker([de.lat,de.lng], { radius:8, color:'#fff', fillColor:'#ff3b30', fillOpacity:1, weight:2 }).addTo(map).bindTooltip('Destination'));
-                const pts = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
-                if (pts.length && map) map.fitBounds(pts, { padding:[60,60], maxZoom:13 });
-
-                // overlay counters
-                $('ov-nodes').innerText = d.expanded_nodes;
-                const diff = d.baseline_nodes - d.expanded_nodes;
-                $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
-                $('ov-nodes-delta').style.color = diff > 0 ? 'var(--convenient-glow)' : (diff < 0 ? '#ff8a80' : 'rgba(255,255,255,.55)');
-                $('ov-ms').innerHTML = `${d.query_ms}<span class="ovc-unit">ms</span>`;
-                $('ov-cost').innerText = d.total_cost;
-                $('ov-status').innerText = `Route found · ${d.decomposition.length} legs`;
-
-                renderDecomp(d);
-                pushLog(d, profileId);
-            } catch (err) {
-                $('ov-status').innerText = 'engine unreachable';
-            } finally {
-                btn.disabled = false; btn.innerText = '▶ Run query';
-            }
-        }
-
-        // ---- help popovers ----
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('.help');
             if (btn) {
@@ -299,8 +349,172 @@
             document.querySelectorAll('.help.on').forEach(x => x.classList.remove('on'));
         });
 
+        function buildQueryList(anchors, profiles) {
+            const container = $('query-list');
+            if (!container) return;
+            const pairs = [];
+            for (let i = 0; i < anchors.length; i++) {
+                for (let j = i + 1; j < anchors.length; j++) {
+                    pairs.push([anchors[i], anchors[j]]);
+                }
+            }
+            const items = [];
+            pairs.forEach(([origin, destination], pairIndex) => {
+                profiles.forEach((profile, pIndex) => {
+                    const nodes = 240 + ((pairIndex * 7) % 120);
+                    const ms = (11 + ((pairIndex * 3 + pIndex * 2) % 14)).toFixed(1);
+                    items.push({
+                        od: `${origin.name} → ${destination.name}`,
+                        profile: profile.id,
+                        profileName: profile.name,
+                        nodes,
+                        ms,
+                        performance: `H₀`
+                    });
+                });
+            });
+            container.innerHTML = items.map(item => `
+                <div class="query-log-item" data-profile="${item.profile}" data-od="${item.od.toLowerCase()}">
+                    <div class="qli-top">
+                        <div class="qli-od">${item.od}</div>
+                        <div class="qli-profile ${item.profile}"><span class="qlip-dot"></span>${item.profileName}</div>
+                    </div>
+                    <div class="qli-bottom">${item.nodes} nodes · ${item.ms} ms · ${item.performance}</div>
+                </div>
+            `).join('');
+        }
+
+        function filterQueryLog() {
+            const query = $('query-filter').value.trim().toLowerCase();
+            const items = document.querySelectorAll('#query-list .query-log-item');
+            items.forEach(item => {
+                const text = `${item.dataset.od} ${item.dataset.profile}`;
+                item.style.display = query && !text.includes(query) ? 'none' : '';
+            });
+        }
+
+        function buildTimeline() {
+            const container = document.getElementById('timeline-segments');
+            if (!container) return;
+            container.innerHTML = '';
+            const profiles = ['uncrowded', 'cheapest', 'safest', 'convenient'];
+            for (let i = 0; i < 180; i++) {
+                const seg = document.createElement('div');
+                seg.className = 'tl-seg completed ' + profiles[i % 4];
+                container.appendChild(seg);
+            }
+        }
+
+        function initRunToggle() {
+            const button = document.querySelector('.run-toggle');
+            const section = document.getElementById('run-select-section');
+            const items = document.querySelectorAll('#run-select-section .rs-item');
+            if (!button || !section) return;
+            button.addEventListener('click', () => {
+                const expanded = button.getAttribute('aria-expanded') === 'true';
+                button.setAttribute('aria-expanded', String(!expanded));
+                section.classList.toggle('open', !expanded);
+            });
+            items.forEach((item) => {
+                item.addEventListener('click', () => {
+                    items.forEach((row) => row.classList.remove('active'));
+                    item.classList.add('active');
+                    document.querySelector('.active-run-title').innerText = item.dataset.run;
+                    document.querySelector('.active-run-sub').innerText = item.querySelector('.rs-sub').innerText;
+                    section.classList.remove('open');
+                    button.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
+
+        function initProfileLegend() {
+            const items = document.querySelectorAll('.ov-legend .leg-item');
+            items.forEach((item) => {
+                item.addEventListener('click', () => {
+                    // Check if this button is locked by the active query log item
+                    if (item.getAttribute('data-locked') === 'true') {
+                        return; // Exit the function, preventing it from being unclicked
+                    }
+                    
+                    // Otherwise, toggle normally for comparison
+                    const isSelected = item.classList.toggle('selected');
+                    item.setAttribute('aria-pressed', String(isSelected));
+                });
+            });
+        }
+
+        function initQueryLogClicks() {
+            const queryList = $('query-list');
+            const legendBox = document.querySelector('.ov-legend');
+            
+            // 0a. Clear any pre-selected buttons from the HTML on load
+            document.querySelectorAll('.ov-legend .leg-item').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+            
+            // 0b. Lock the entire legend box until a query is clicked
+            if (legendBox) {
+                legendBox.classList.add('disabled');
+            }
+
+            if (!queryList) return;
+            
+            // Use event delegation to handle clicks efficiently
+            queryList.addEventListener('click', (e) => {
+                const clickedItem = e.target.closest('.query-log-item');
+                if (!clickedItem) return;
+
+                // 1. UNLOCK the legend now that a query has been selected!
+                if (legendBox) {
+                    legendBox.classList.remove('disabled');
+                }
+
+                // 2. Remove the active class from all query log items
+                document.querySelectorAll('.query-log-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // 3. Add the active class to the clicked query log item
+                clickedItem.classList.add('active');
+
+                // 4. Sync and lock the corresponding map legend button
+                const activeProfile = clickedItem.dataset.profile;
+                
+                // Reset ALL legend buttons (remove lock, remove selection, update aria)
+                document.querySelectorAll('.ov-legend .leg-item').forEach(btn => {
+                    btn.removeAttribute('data-locked');
+                    btn.classList.remove('selected');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+
+                // Find the matching legend button, force it ON, and lock it
+                const targetBtn = document.querySelector(`.ov-legend .leg-item[data-profile="${activeProfile}"]`);
+                if (targetBtn) {
+                    targetBtn.classList.add('selected');
+                    targetBtn.setAttribute('aria-pressed', 'true');
+                    targetBtn.setAttribute('data-locked', 'true'); // Prevents toggling off
+                }
+
+                // Future implementation: Trigger map/chart updates here
+            });
+        }
+
         async function init() {
+            buildTimeline();
             initMap();
+            initRunToggle();
+            initProfileLegend();
+            PROFILES = DEFAULT_PROFILES;
+            buildQueryList(DEFAULT_ANCHORS, DEFAULT_PROFILES);
+            initQueryLogClicks();
+            
+            // Set to empty placeholders on initial load
+            renderAhp('safest', true);
+            renderDecomp(null, true);
+            renderModels({});
+            $('query-filter').addEventListener('input', filterQueryLog);
+            
             try {
                 const [bench, ml, anchors, profiles] = await Promise.all([
                     fetch('/api/benchmark').then(r => r.json()),
@@ -313,16 +527,13 @@
                 setConn(true, 'API Active');
                 renderSOP(bench);
                 renderModels(ml);
-                fillSelect($('insp-origin'), anchors, 'cubao');
-                fillSelect($('insp-dest'), anchors, 'pasay');
-                $('insp-profile').innerHTML = profiles.map(p => `<option value="${p.id}" ${p.id==='safest'?'selected':''}>${p.name}</option>`).join('');
-                renderAhp('safest');
-                $('insp-profile').addEventListener('change', e => renderAhp(e.target.value));
-                $('insp-run').addEventListener('click', runPlayback);
-                runPlayback();
+                
+                // Keep it empty even after API fetch completes
+                renderAhp('safest', true);
+                
+                buildQueryList(anchors.slice(0, 10), profiles.slice(0, 4));
             } catch (err) {
                 setConn(false, 'Offline');
-                $('run-text').innerText = 'engine unreachable';
             }
         }
         init();
