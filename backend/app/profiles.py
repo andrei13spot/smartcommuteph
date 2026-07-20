@@ -51,6 +51,13 @@ PROFILES: dict[str, Profile] = {
     ),
 }
 
+# baseline = plain distance based a*, zero weights. this is what the
+# framework gets compared against in the benchmark and /compare
+BASELINE = Profile(
+    id="baseline", name="Baseline", theme="gray", priority="-",
+    tagline="distance-based A*", w_T=0.0, w_F=0.0, w_R=0.0, w_P=0.0,
+)
+
 # the frontend stores the display title ("Safest") and also matches loosely on
 # lowercased bits like "safe", "cheap", "fewer", so handle those too.
 _ALIASES = {
@@ -66,6 +73,8 @@ def resolve_profile(value: str) -> Profile:
     if not value:
         raise KeyError("empty profile")
     key = value.strip().lower()
+    if key == "baseline":
+        return BASELINE
     if key in PROFILES:
         return PROFILES[key]
     for fragment, profile_id in _ALIASES.items():
