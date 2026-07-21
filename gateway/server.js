@@ -284,6 +284,21 @@ app.get("/api/benchmark", async (req, res) => {
   const { status, data } = await callPython("/api/benchmark" + (qs ? "?" + qs : ""));
   res.status(status).json(data);
 });
+// 360 row benchmark log, csv or json (fetched raw since it can be csv text)
+app.get("/api/benchmark/log", async (req, res) => {
+  const qs = new URLSearchParams(req.query).toString();
+  try {
+    const r = await fetch(`${PYTHON_API_URL}/api/benchmark/log` + (qs ? "?" + qs : ""));
+    const text = await r.text();
+    res.status(r.status);
+    res.set("Content-Type", r.headers.get("content-type") || "application/json");
+    const cd = r.headers.get("content-disposition");
+    if (cd) res.set("Content-Disposition", cd);
+    res.send(text);
+  } catch (err) {
+    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+  }
+});
 app.get("/api/ml-metrics", async (_req, res) => {
   const { status, data } = await callPython("/api/ml-metrics");
   res.status(status).json(data);
