@@ -3,6 +3,9 @@
 # distinctness, sop3 search efficiency) over all c(10,2)=45 od pairs x 4 profiles.
 from __future__ import annotations
 
+import csv
+import io
+import time
 from itertools import combinations
 
 import numpy as np
@@ -10,7 +13,7 @@ from scipy import stats
 
 from ..profiles import BASELINE, PROFILES
 from ..routing.astar import shortest_route
-from ..routing.cost import CostContext
+from ..routing.cost import CostContext, transfer_friction
 from ..routing.graph import load_graph
 
 
@@ -129,3 +132,76 @@ def run_benchmark(hour: int = 8, rainfall_mm: float = 30.0) -> dict:
     }
     _CACHE[key] = result
     return result
+
+
+# ---- 360 row benchmark log ----
+# one row per (od pair, profile, algorithm): 45 x 4 x 2 = 360 rows,
+# each with the 8 kpis. this is what dave's data pipeline check reads.
+
+KPI_COLUMNS = [
+    "travel_time_min", "distance_km", "fare_php", "transfers",
+    "flood_risk_score", "ridership_density_score", "nodes_expanded", "exec_ms",
+]
+
+
+def _count_transfers(edges) -> int:
+    modes = []
+    for e in edges:
+        if not modes or modes[-1] != e.mode:
+            modes.append(e.mode)
+    return max(0, len(modes) - 1)
+
+
+def _kpis(ctx: CostContext, res, exec_ms: float) -> dict:
+    # the 8 kpis for one run
+    edges = res.edges
+    transfer_min = 0.0
+    prev = None
+    for e in edges:
+        transfer_min += transfer_friction(prev, e.mode)
+        prev = e.mode
+    return {
+        "travel_time_min": round(sum(e.base_time for e in edges) + transfer_min, 2),
+        "distance_km": round(sum(e.distance_km for e in edges), 2),
+        "fare_php": round(sum(e.fare for e in edges), 1),
+        "transfers": _count_transfers(edges),
+        "flood_risk_score": round(max((ctx.criteria[e.id].R for e in edges), default=0.0), 3),
+        "ridership_density_score": round(
+            sum(ctx.criteria[e.id].T for e in edges) / len(edges), 3) if edges else 0.0,
+        "nodes_expanded": res.expanded_nodes,
+        "exec_ms": exec_ms,
+    }
+
+
+_LOG_CACHE: dict[tuple[int, float], list[dict]] = {}
+
+
+def run_benchmark_log(hour: int = 8, rainfall_mm: float = 30.0) -> list[dict]:
+    key = (hour, round(rainfall_mm, 1))
+    if key in _LOG_CACHE:
+        return _LOG_CACHE[key]
+
+    graph = load_graph()
+    ctx = CostContext(graph, hour=hour, rainfall_mm=rainfall_mm)
+    rows: list[dict] = []
+    for o, d in combinations(graph.nodes, 2):
+        for pid, prof in PROFILES.items():
+            for algo, p in (("framework", prof), ("baseline", BASELINE)):
+                t0 = time.perf_counter()
+                res = shortest_route(graph, o, d, p, ctx)
+                ms = round((time.perf_counter() - t0) * 1000.0, 3)
+                rows.append({
+                    "od_pair": f"{o}->{d}", "profile": pid, "algorithm": algo,
+                    **_kpis(ctx, res, ms),
+                })
+    _LOG_CACHE[key] = rows
+    return rows
+
+
+def benchmark_log_csv(hour: int = 8, rainfall_mm: float = 30.0) -> str:
+    rows = run_benchmark_log(hour, rainfall_mm)
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=["od_pair", "profile", "algorithm", *KPI_COLUMNS])
+    w.writeheader()
+    w.writerows(rows)
+    return buf.getvalue()

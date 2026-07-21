@@ -127,3 +127,25 @@ def test_api_unknown_profile_is_422():
     r = client.post("/api/route", json={"origin": "cubao", "destination": "pasay",
                                         "profile": "teleport"})
     assert r.status_code == 422
+
+
+def test_benchmark_log_360_rows_8_kpis():
+    # 45 od pairs x 4 profiles x 2 algorithms = 360, dave's pipeline check
+    from app.research.benchmark import KPI_COLUMNS, run_benchmark_log
+
+    rows = run_benchmark_log(hour=8, rainfall_mm=30.0)
+    assert len(rows) == 360
+    algos = {r["algorithm"] for r in rows}
+    assert algos == {"framework", "baseline"}
+    for r in rows[:5] + rows[-5:]:
+        for k in KPI_COLUMNS:
+            assert k in r, f"missing kpi {k}"
+
+
+def test_api_benchmark_log_csv():
+    r = client.get("/api/benchmark/log?format=csv")
+    assert r.status_code == 200
+    lines = [ln for ln in r.text.strip().splitlines() if ln]
+    # header + 360 rows
+    assert len(lines) == 361
+    assert lines[0].startswith("od_pair,profile,algorithm,travel_time_min")

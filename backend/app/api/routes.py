@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import PlainTextResponse
 
 from ..config import API_TITLE, API_VERSION
 from ..ml import flood, ridership
 from ..profiles import PROFILES
-from ..research.benchmark import run_benchmark
+from ..research.benchmark import benchmark_log_csv, run_benchmark, run_benchmark_log
 from ..research.inspector import inspect
 from ..research.ml_metrics import ml_metrics
 from ..routing.graph import load_graph
@@ -122,6 +123,20 @@ def route(req: RouteRequest) -> RouteResponse:
 def benchmark(hour: int = 8, rainfall_mm: float = 30.0) -> dict:
     # framework vs distance-baseline over all od pairs x profiles (the three sops)
     return run_benchmark(hour=hour, rainfall_mm=rainfall_mm)
+
+
+@router.get("/benchmark/log")
+def benchmark_log(hour: int = 8, rainfall_mm: float = 30.0, format: str = "json"):
+    # the 360 row log (45 od x 4 profiles x 2 algos), 8 kpis per row.
+    # ?format=csv downloads it as csv for the paper / excel
+    if format == "csv":
+        return PlainTextResponse(
+            benchmark_log_csv(hour, rainfall_mm),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=benchmark_log.csv"},
+        )
+    rows = run_benchmark_log(hour, rainfall_mm)
+    return {"rows": len(rows), "data": rows}
 
 
 @router.get("/ml-metrics")
