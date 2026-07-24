@@ -16,11 +16,11 @@ from .graph import Edge, Graph
 # (changing jeepney lines still costs waiting and re-paying).
 _MODES = ["LRT-1", "LRT-2", "MRT-3", "EDSA-Bus", "Jeepney"]
 _FRICTION_MATRIX = {
-    "LRT-1":    {"LRT-1": 0.0, "LRT-2": 1.5, "MRT-3": 1.7, "EDSA-Bus": 1.3, "Jeepney": 2.0},
-    "LRT-2":    {"LRT-1": 1.5, "LRT-2": 0.0, "MRT-3": 1.4, "EDSA-Bus": 1.2, "Jeepney": 1.9},
-    "MRT-3":    {"LRT-1": 1.7, "LRT-2": 1.4, "MRT-3": 0.0, "EDSA-Bus": 1.0, "Jeepney": 1.8},
-    "EDSA-Bus": {"LRT-1": 1.3, "LRT-2": 1.2, "MRT-3": 1.0, "EDSA-Bus": 0.0, "Jeepney": 1.6},
-    "Jeepney":  {"LRT-1": 2.0, "LRT-2": 1.9, "MRT-3": 1.8, "EDSA-Bus": 1.6, "Jeepney": 0.5},
+    "LRT-1":    {"LRT-1": 0.0, "LRT-2": 0.5, "MRT-3": 0.6, "EDSA-Bus": 0.7, "Jeepney": 0.8},
+    "LRT-2":    {"LRT-1": 0.5, "LRT-2": 0.0, "MRT-3": 0.5, "EDSA-Bus": 0.7, "Jeepney": 0.8},
+    "MRT-3":    {"LRT-1": 0.6, "LRT-2": 0.5, "MRT-3": 0.0, "EDSA-Bus": 0.6, "Jeepney": 0.8},
+    "EDSA-Bus": {"LRT-1": 0.7, "LRT-2": 0.7, "MRT-3": 0.6, "EDSA-Bus": 0.0, "Jeepney": 0.5},
+    "Jeepney":  {"LRT-1": 0.8, "LRT-2": 0.8, "MRT-3": 0.8, "EDSA-Bus": 0.5, "Jeepney": 0.1},
 }
 # biggest entry, used to normalize P' into 0..1
 _MAX_FRICTION = max(v for row in _FRICTION_MATRIX.values() for v in row.values())
