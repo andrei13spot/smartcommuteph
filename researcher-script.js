@@ -62,18 +62,22 @@ function renderSOP(b) {
         { tag:"SOP 2", stat:b.sop2.mean_distinct_routes,     ok:b.sop2.supported },
         { tag:"SOP 3", stat:b.sop3.mean_reduction_pct + "%", ok:b.sop3.supported },
     ];
-    $('sop-status').innerHTML = items.map(s => `<div class="sop-pill ${s.ok?'ok':'no'}">
+    // guard each target: the dashboard rework dropped some of these containers,
+    // and one missing id must not knock the whole init into the offline catch
+    const sopStatus = $('sop-status');
+    if (sopStatus) sopStatus.innerHTML = items.map(s => `<div class="sop-pill ${s.ok?'ok':'no'}">
         <div class="sp-name">${s.tag}</div>
         <div class="sp-stat">${s.stat}</div>
         <div class="sp-verdict">${s.ok?'Supported':'Not yet'}</div>
     </div>`).join('');
-    $('sop-detail').innerHTML = `
+    const sopDetail = $('sop-detail');
+    if (sopDetail) sopDetail.innerHTML = `
         <div><div class="sd-l">Mean cost reduction</div><div class="sd-v">${b.sop1.mean_reduction_pct}%</div></div>
         <div><div class="sd-l">ANOVA F-stat</div><div class="sd-v">${b.sop1.anova_f}</div></div>
         <div><div class="sd-l">Route variance</div><div class="sd-v">${b.sop2.mean_distinct_routes} / 4</div></div>
         <div><div class="sd-l">Nodes fw vs base</div><div class="sd-v">${b.sop3.fw_nodes_mean} / ${b.sop3.bl_nodes_mean}</div></div>`;
-    $('m-obs').innerText = b.observations;
-    $('m-od').innerText = b.od_pairs;
+    if ($('m-obs')) $('m-obs').innerText = b.observations;
+    if ($('m-od')) $('m-od').innerText = b.od_pairs;
 }
 
 function renderAhp(profileId, isEmpty = false) {

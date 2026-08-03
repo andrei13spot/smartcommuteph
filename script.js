@@ -10,7 +10,7 @@ function validateRouteState() {
 
     if (pagesRequiringState.includes(currentPage)) {
         if (!localStorage.getItem('smartCommute_selectedProfile')) {
-            window.location.href = 'plan.html'; // Redirect to start if state is missing
+            window.location.href = 'profiles.html'; // Redirect to start if state is missing
         }
     }
 }
