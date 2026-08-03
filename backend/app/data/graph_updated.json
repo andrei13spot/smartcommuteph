@@ -1,0 +1,940 @@
+{
+  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php.",
+  "modes": [
+    "LRT-1",
+    "LRT-2",
+    "MRT-3",
+    "EDSA-Bus",
+    "Jeepney"
+  ],
+  "edges": [
+    {
+      "from": "doroteo_jose",
+      "to": "cubao",
+      "mode": "LRT-2",
+      "fare": 25,
+      "ridership": 0.55,
+      "flood_risk": 0.15
+    },
+    {
+      "from": "cubao",
+      "to": "antipolo",
+      "mode": "LRT-2",
+      "fare": 25,
+      "ridership": 0.45,
+      "flood_risk": 0.12
+    },
+    {
+      "from": "sm_north",
+      "to": "cubao",
+      "mode": "MRT-3",
+      "fare": 13,
+      "ridership": 0.7,
+      "flood_risk": 0.1
+    },
+    {
+      "from": "cubao",
+      "to": "shaw",
+      "mode": "MRT-3",
+      "fare": 16,
+      "ridership": 0.75,
+      "flood_risk": 0.1
+    },
+    {
+      "from": "shaw",
+      "to": "pasay",
+      "mode": "MRT-3",
+      "fare": 24,
+      "ridership": 0.65,
+      "flood_risk": 0.12
+    },
+    {
+      "from": "monumento",
+      "to": "doroteo_jose",
+      "mode": "LRT-1",
+      "fare": 20,
+      "ridership": 0.6,
+      "flood_risk": 0.18
+    },
+    {
+      "from": "doroteo_jose",
+      "to": "pasay",
+      "mode": "LRT-1",
+      "fare": 30,
+      "ridership": 0.62,
+      "flood_risk": 0.2
+    },
+    {
+      "from": "monumento",
+      "to": "sm_north",
+      "mode": "EDSA-Bus",
+      "fare": 15,
+      "ridership": 0.5,
+      "flood_risk": 0.45
+    },
+    {
+      "from": "sm_north",
+      "to": "cubao",
+      "mode": "EDSA-Bus",
+      "fare": 13,
+      "ridership": 0.4,
+      "flood_risk": 0.5
+    },
+    {
+      "from": "cubao",
+      "to": "shaw",
+      "mode": "EDSA-Bus",
+      "fare": 13,
+      "ridership": 0.4,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "shaw",
+      "to": "pasay",
+      "mode": "EDSA-Bus",
+      "fare": 15,
+      "ridership": 0.38,
+      "flood_risk": 0.5
+    },
+    {
+      "from": "pasay",
+      "to": "pitx",
+      "mode": "EDSA-Bus",
+      "fare": 20,
+      "ridership": 0.4,
+      "flood_risk": 0.35
+    },
+    {
+      "from": "sm_novaliches",
+      "to": "v_jeep_stop_1",
+      "mode": "Jeepney",
+      "fare": 12,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_1",
+      "to": "v_jeep_stop_2",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_2",
+      "to": "v_jeep_stop_3",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_3",
+      "to": "v_jeep_stop_4",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_4",
+      "to": "v_jeep_stop_5",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_5",
+      "to": "v_jeep_stop_6",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_6",
+      "to": "v_jeep_stop_7",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_7",
+      "to": "v_jeep_stop_8",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_8",
+      "to": "v_jeep_stop_9",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_9",
+      "to": "v_jeep_stop_10",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_10",
+      "to": "v_jeep_stop_11",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_11",
+      "to": "v_jeep_stop_12",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_12",
+      "to": "v_jeep_stop_13",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_13",
+      "to": "v_jeep_stop_14",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_14",
+      "to": "v_jeep_stop_15",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_15",
+      "to": "v_jeep_stop_16",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_16",
+      "to": "v_jeep_stop_17",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_17",
+      "to": "v_jeep_stop_18",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_18",
+      "to": "v_jeep_stop_19",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_19",
+      "to": "v_jeep_stop_20",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_20",
+      "to": "v_jeep_stop_21",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_21",
+      "to": "v_jeep_stop_22",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_22",
+      "to": "v_jeep_stop_23",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_23",
+      "to": "v_jeep_stop_24",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_24",
+      "to": "v_jeep_stop_25",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_25",
+      "to": "v_jeep_stop_26",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_26",
+      "to": "v_jeep_stop_27",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_27",
+      "to": "v_jeep_stop_28",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_28",
+      "to": "v_jeep_stop_29",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_29",
+      "to": "v_jeep_stop_30",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_30",
+      "to": "v_jeep_stop_31",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_31",
+      "to": "v_jeep_stop_32",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "v_jeep_stop_32",
+      "to": "monumento",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.45,
+      "flood_risk": 0.4
+    },
+    {
+      "from": "sm_novaliches",
+      "to": "v_jeep_stop_33",
+      "mode": "Jeepney",
+      "fare": 15,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_33",
+      "to": "v_jeep_stop_34",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_34",
+      "to": "v_jeep_stop_35",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_35",
+      "to": "v_jeep_stop_36",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_36",
+      "to": "v_jeep_stop_37",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_37",
+      "to": "v_jeep_stop_38",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_38",
+      "to": "v_jeep_stop_39",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_39",
+      "to": "v_jeep_stop_40",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_40",
+      "to": "v_jeep_stop_41",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_41",
+      "to": "v_jeep_stop_42",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_42",
+      "to": "v_jeep_stop_43",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_43",
+      "to": "v_jeep_stop_44",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_44",
+      "to": "v_jeep_stop_45",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_45",
+      "to": "v_jeep_stop_46",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_46",
+      "to": "v_jeep_stop_47",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_47",
+      "to": "v_jeep_stop_48",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_48",
+      "to": "v_jeep_stop_49",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_49",
+      "to": "v_jeep_stop_50",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_50",
+      "to": "v_jeep_stop_51",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_51",
+      "to": "v_jeep_stop_52",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_52",
+      "to": "v_jeep_stop_53",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_53",
+      "to": "v_jeep_stop_54",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_54",
+      "to": "v_jeep_stop_55",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_55",
+      "to": "v_jeep_stop_56",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_56",
+      "to": "v_jeep_stop_57",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_57",
+      "to": "v_jeep_stop_58",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "v_jeep_stop_58",
+      "to": "sm_north",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.55
+    },
+    {
+      "from": "pasig",
+      "to": "v_jeep_stop_59",
+      "mode": "Jeepney",
+      "fare": 13,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_59",
+      "to": "v_jeep_stop_60",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_60",
+      "to": "v_jeep_stop_61",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_61",
+      "to": "v_jeep_stop_62",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_62",
+      "to": "v_jeep_stop_63",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_63",
+      "to": "v_jeep_stop_64",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_64",
+      "to": "v_jeep_stop_65",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_65",
+      "to": "v_jeep_stop_66",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_66",
+      "to": "v_jeep_stop_67",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_67",
+      "to": "v_jeep_stop_68",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_68",
+      "to": "v_jeep_stop_69",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "v_jeep_stop_69",
+      "to": "shaw",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.48,
+      "flood_risk": 0.6
+    },
+    {
+      "from": "pasig",
+      "to": "v_jeep_stop_70",
+      "mode": "Jeepney",
+      "fare": 14,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_70",
+      "to": "v_jeep_stop_71",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_71",
+      "to": "v_jeep_stop_72",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_72",
+      "to": "v_jeep_stop_73",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_73",
+      "to": "v_jeep_stop_74",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_74",
+      "to": "v_jeep_stop_75",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_75",
+      "to": "v_jeep_stop_76",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_76",
+      "to": "v_jeep_stop_77",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_77",
+      "to": "v_jeep_stop_78",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_78",
+      "to": "v_jeep_stop_79",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_79",
+      "to": "v_jeep_stop_80",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_80",
+      "to": "v_jeep_stop_81",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_81",
+      "to": "v_jeep_stop_82",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_82",
+      "to": "v_jeep_stop_83",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_83",
+      "to": "v_jeep_stop_84",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_84",
+      "to": "v_jeep_stop_85",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_85",
+      "to": "v_jeep_stop_86",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_86",
+      "to": "v_jeep_stop_87",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_87",
+      "to": "v_jeep_stop_88",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_88",
+      "to": "v_jeep_stop_89",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "v_jeep_stop_89",
+      "to": "cubao",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.5,
+      "flood_risk": 0.62
+    },
+    {
+      "from": "pitx",
+      "to": "v_jeep_stop_90",
+      "mode": "Jeepney",
+      "fare": 13,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_90",
+      "to": "v_jeep_stop_91",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_91",
+      "to": "v_jeep_stop_92",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_92",
+      "to": "v_jeep_stop_93",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_93",
+      "to": "v_jeep_stop_94",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_94",
+      "to": "v_jeep_stop_95",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_95",
+      "to": "v_jeep_stop_96",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_96",
+      "to": "v_jeep_stop_97",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_97",
+      "to": "v_jeep_stop_98",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_98",
+      "to": "v_jeep_stop_99",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    },
+    {
+      "from": "v_jeep_stop_99",
+      "to": "pasay",
+      "mode": "Jeepney",
+      "fare": 0,
+      "ridership": 0.42,
+      "flood_risk": 0.38
+    }
+  ]
+}
