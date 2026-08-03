@@ -86,6 +86,12 @@ pip install -r requirements.txt
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
+**Then train the flood model** (one time, ~10 seconds — the trained file is too big for git so everyone generates it locally):
+```powershell
+python -m app.ml.train_flood
+```
+It should print `trained rfr flood model` with the metrics. Without this the engine still runs, it just uses the fallback heuristic for flood risk. (TensorFlow is optional — the ridership model ships trained; install `tensorflow-cpu` only if you want to retrain it.)
+
 ## Step 6 — Set up the Node gateway (one time)
 
 ```powershell
