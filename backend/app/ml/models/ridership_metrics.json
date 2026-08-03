@@ -1,0 +1,8 @@
+{
+  "test_mse": 0.00795,
+  "test_mae": 0.06742,
+  "n_hours": 1175,
+  "window": 24,
+  "peak_entries": 41418,
+  "source": "dotc-mrt3 hourly ridership reports (2024, 2025)"
+}

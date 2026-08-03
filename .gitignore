@@ -1,0 +1,13 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# node
+node_modules/
+
+# big trained model binaries: regenerate with
+#   python -m app.ml.train_flood
+# (the small lstm .keras and jsons are committed)
+backend/app/ml/models/flood_rfr.joblib
