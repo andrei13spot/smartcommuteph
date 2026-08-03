@@ -74,7 +74,9 @@
 
         function renderML(models) {
             $('ml-grid').innerHTML = (models || []).map((m) => {
-                const badge = m.status === 'active' ? '<span class="badge ok">Active</span>' : '<span class="badge stub">Stub</span>';
+                const badge = (m.status === 'active' || m.status === 'trained')
+                    ? `<span class="badge ok">${m.status === 'trained' ? 'Trained' : 'Active'}</span>`
+                    : '<span class="badge stub">Stub</span>';
                 return `<div class="card">
                     <div class="row-head"><span class="ml-name">${m.name}</span>${badge}</div>
                     <div class="ml-meta">
