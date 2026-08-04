@@ -45,6 +45,7 @@ def status() -> dict:
                   "anchors": len(graph.real_nodes), "virtual_stops": virtual},
         "profiles": len(PROFILES),
         "rainfall_mm": flood.fetch_pagasa_rainfall_mm(),
+        "rainfall_source": flood.rainfall_source(),
         "ml_models": [
             {
                 "key": "lstm",
@@ -62,7 +63,8 @@ def status() -> dict:
                 "status": "trained" if flood.predictor.trained else "heuristic fallback",
                 "framework": "scikit-learn",
                 "predictor": flood.predictor.name,
-                "note": "random forest on real mmda incident exposure (101 points); PAGASA tenday feed pending",
+                "note": "random forest on real mmda incident exposure (101 points); "
+                        "tenday feed live once SCPH_PAGASA_TOKEN is set (request pending)",
             },
         ],
         "endpoints": [
