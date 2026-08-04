@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from ..profiles import Profile
 from .cost import CostContext
 from .graph import Edge, Graph
-from .heuristic import time_heuristic
+from .heuristic import distance_heuristic, time_heuristic
 
 
 @dataclass
@@ -39,7 +39,10 @@ def shortest_route(
     came_from: dict[tuple[str, str | None], tuple[tuple[str, str | None], Edge]] = {}
 
     counter = 0  # tie-breaker so the ordering is stable
-    h0 = time_heuristic(graph, origin, destination)
+    # the baseline minimizes distance (paper's distance-based a*), so its
+    # heuristic must be a distance lower bound; everything else runs on time
+    h = distance_heuristic if profile.id == "baseline" else time_heuristic
+    h0 = h(graph, origin, destination)
     frontier: list[tuple[float, int, tuple[str, str | None]]] = [(h0, counter, start_state)]
     visited: set[tuple[str, str | None]] = set()
     expanded = 0
@@ -66,7 +69,7 @@ def shortest_route(
             if tentative < g_score.get(nxt, float("inf")):
                 g_score[nxt] = tentative
                 came_from[nxt] = (state, edge)
-                f = tentative + time_heuristic(graph, edge.dst, destination)
+                f = tentative + h(graph, edge.dst, destination)
                 counter += 1
                 heapq.heappush(frontier, (f, counter, nxt))
 

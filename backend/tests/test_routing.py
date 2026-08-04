@@ -85,6 +85,20 @@ def test_framework_can_produce_distinct_routes():
     assert divergent >= 1, "framework produced identical routes for every od/profile"
 
 
+def test_baseline_minimizes_distance():
+    # the paper's baseline is distance-based a*: its route can never be longer
+    # in km than any framework profile's route for the same od
+    from app.profiles import BASELINE
+
+    g = load_graph()
+    ctx = _ctx()
+    for o, d in [("cubao", "pasay"), ("monumento", "antipolo"), ("sm_novaliches", "pitx")]:
+        base_km = sum(e.distance_km for e in shortest_route(g, o, d, BASELINE, ctx).edges)
+        for pid in PROFILES:
+            fw_km = sum(e.distance_km for e in shortest_route(g, o, d, resolve_profile(pid), ctx).edges)
+            assert base_km <= fw_km + 1e-6, f"baseline longer than {pid} on {o}->{d}"
+
+
 def test_safest_avoids_more_flood_than_cheapest():
     g = load_graph()
     ctx = _ctx(hour=18, rainfall=45.0)

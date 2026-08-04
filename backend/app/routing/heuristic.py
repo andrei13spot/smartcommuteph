@@ -12,3 +12,10 @@ def time_heuristic(graph: Graph, node_id: str, goal_id: str) -> float:
     dist_km = graph.straight_line_km(node_id, goal_id)
     hours = dist_km / MAX_SPEED_KMH
     return hours * 60.0
+
+
+def distance_heuristic(graph: Graph, node_id: str, goal_id: str) -> float:
+    # lower bound on remaining distance in km, for the distance-based baseline.
+    # straight line <= any real path, so it's admissible; consistency again
+    # follows from the triangle inequality.
+    return graph.straight_line_km(node_id, goal_id)
