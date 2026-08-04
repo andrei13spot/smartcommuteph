@@ -88,7 +88,11 @@ class CostContext:
         return transfer_friction(arriving_mode, edge_mode) / _MAX_FRICTION
 
     def edge_cost(self, edge: Edge, arriving_mode: str | None, profile: Profile) -> float:
-        # profile-weighted cost of taking this edge
+        # profile-weighted cost of taking this edge.
+        # the baseline is the paper's distance-based a*: it minimizes km, no
+        # time basis and no criteria penalties at all.
+        if profile.id == "baseline":
+            return edge.distance_km
         c = self.criteria[edge.id]
         p = self.friction_norm(arriving_mode, edge.mode)
         multiplier = 1.0 + profile.w_T * c.T + profile.w_F * c.F + profile.w_R * c.R + profile.w_P * p
