@@ -2,7 +2,7 @@ import json
 import math
 import time
 from pathlib import Path
-import requests
+import httpx  # already in requirements, no extra install needed
 
 # Set automatic paths relative to backend/app/data/
 DATA_DIR = Path(__file__).resolve().parent
@@ -30,7 +30,7 @@ def get_street_route_geometry(lat1, lng1, lat2, lng2):
     """
     url = f"http://router.project-osrm.org/route/v1/driving/{lng1},{lat1};{lng2},{lat2}?geometries=geojson"
     try:
-        response = requests.get(url, timeout=10)
+        response = httpx.get(url, timeout=10)
         data = response.json()
         if data.get("code") == "Ok":
             coords = data["routes"][0]["geometry"]["coordinates"]

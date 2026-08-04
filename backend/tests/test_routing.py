@@ -20,10 +20,27 @@ def _ctx(hour: int = 8, rainfall: float = 30.0) -> CostContext:
 
 def test_graph_is_bidirectional_and_connected():
     g = load_graph()
-    assert len(g.nodes) == 10
+    # 10 real od anchors always; the dense graph adds the virtual jeepney stops
+    assert len(g.real_nodes) == 10
+    assert len(g.nodes) >= 10
     # every forward edge has a reverse
     for e in list(g.edges.values()):
         assert f"{e.dst}->{e.src}:{e.mode}" in g.edges
+
+
+def test_dense_graph_virtual_stops_are_wired():
+    g = load_graph()
+    virtual = [n for n in g.nodes.values() if n.virtual]
+    if not virtual:  # coarse graph fallback, nothing to check
+        return
+    # every virtual stop is a pass-through: exactly on a jeepney chain
+    for n in virtual[:20]:
+        edges = g.neighbors(n.id)
+        assert edges, f"virtual stop {n.id} has no edges"
+        assert all(e.mode == "Jeepney" for e in edges)
+    # a jeepney corridor route now walks through virtual stops
+    res = shortest_route(g, "pitx", "pasay", resolve_profile("cheapest"), _ctx())
+    assert res.found
 
 
 def test_route_found_cubao_to_pasay():
@@ -58,7 +75,7 @@ def test_framework_can_produce_distinct_routes():
     g = load_graph()
     ctx = _ctx(hour=18, rainfall=45.0)
     divergent = 0
-    for o, d in combinations(g.nodes, 2):
+    for o, d in combinations(g.real_nodes, 2):
         paths = {
             pid: tuple(e.id for e in shortest_route(g, o, d, resolve_profile(pid), ctx).edges)
             for pid in PROFILES

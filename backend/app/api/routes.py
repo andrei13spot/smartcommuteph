@@ -36,11 +36,13 @@ def status() -> dict:
     # snapshot for the dev dashboard: api liveness, graph size, ml model state
     graph = load_graph()
     undirected = len(graph.edges) // 2
+    virtual = len(graph.nodes) - len(graph.real_nodes)
     return {
         "status": "active",
         "service": API_TITLE,
         "version": API_VERSION,
-        "graph": {"nodes": len(graph.nodes), "edges": undirected},
+        "graph": {"nodes": len(graph.nodes), "edges": undirected,
+                  "anchors": len(graph.real_nodes), "virtual_stops": virtual},
         "profiles": len(PROFILES),
         "rainfall_mm": flood.fetch_pagasa_rainfall_mm(),
         "ml_models": [
@@ -84,10 +86,11 @@ def list_profiles() -> list[ProfileOut]:
 
 @router.get("/anchors", response_model=list[AnchorOut])
 def list_anchors() -> list[AnchorOut]:
+    # only the 10 real od anchors, the dropdowns must not list virtual stops
     graph = load_graph()
     return [
         AnchorOut(id=n.id, name=n.name, area=n.area, lat=n.lat, lng=n.lng, lines=list(n.lines))
-        for n in graph.nodes.values()
+        for n in graph.real_nodes.values()
     ]
 
 
