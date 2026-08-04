@@ -62,7 +62,7 @@ def status() -> dict:
                 "status": "trained" if flood.predictor.trained else "heuristic fallback",
                 "framework": "scikit-learn",
                 "predictor": flood.predictor.name,
-                "note": "random forest on the mmda flood pattern; live PAGASA feed pending",
+                "note": "random forest on real mmda incident exposure (101 points); PAGASA tenday feed pending",
             },
         ],
         "endpoints": [

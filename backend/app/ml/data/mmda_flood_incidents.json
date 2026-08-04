@@ -1,0 +1,611 @@
+{
+  "description": "flood incident points from the mmda flood reports in the group data drive (location, flood depth in inches, lat/lng). used to derive the per-edge flood risk baseline.",
+  "incidents": [
+    {
+      "location": "E-Rod Araneta Intersection",
+      "depth_in": 8,
+      "lat": 14.618884,
+      "lng": 121.014767
+    },
+    {
+      "location": "Edsa Oliveros NB Outermost Lane",
+      "depth_in": 8,
+      "lat": 14.657748,
+      "lng": 121.006576
+    },
+    {
+      "location": "Edsa Dario SB",
+      "depth_in": 8,
+      "lat": 14.656334,
+      "lng": 121.0262
+    },
+    {
+      "location": "EDSA Kamuning/Kamias nb/sb",
+      "depth_in": 8,
+      "lat": 14.630753,
+      "lng": 121.045897
+    },
+    {
+      "location": "EDSA East Ave. wb",
+      "depth_in": 8,
+      "lat": 14.63349,
+      "lng": 121.044983
+    },
+    {
+      "location": "EDSA Centris nb Metrobase Messenger 18:12 18:44 DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.644231,
+      "lng": 121.038015
+    },
+    {
+      "location": "NS Amoranto cor. Don Jose St. 10-13 CCTV/Metrobase Messenger 15:00 15:22 DOE Baduel",
+      "depth_in": 13,
+      "lat": 14.635455,
+      "lng": 121.007808
+    },
+    {
+      "location": "Camp Aguinaldo Gate 2 and Gate 3 19 Camp. Agunaldo CP Call 6:05 7:04 DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.613856,
+      "lng": 121.067436
+    },
+    {
+      "location": "Q.Ave biyak na biato E/W",
+      "depth_in": 12,
+      "lat": 14.625302,
+      "lng": 121.009728
+    },
+    {
+      "location": "Edsa Quezon Ave.",
+      "depth_in": 13,
+      "lat": 14.643861,
+      "lng": 121.037625
+    },
+    {
+      "location": "Edsa Quezon Tunnel",
+      "depth_in": 37,
+      "lat": 14.64399,
+      "lng": 121.037854
+    },
+    {
+      "location": "G.Araneta Ma.clara SB 45 above Metrobase Base radio 7:35 On going/ not passable DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.630471,
+      "lng": 121.010949
+    },
+    {
+      "location": "Edsa Oliveros NB",
+      "depth_in": 27,
+      "lat": 14.657631,
+      "lng": 121.006654
+    },
+    {
+      "location": "Victoria TM st.",
+      "depth_in": 8,
+      "lat": 14.657287,
+      "lng": 121.023075
+    },
+    {
+      "location": "Edsa shaw tunnel NB",
+      "depth_in": 10,
+      "lat": 14.58144,
+      "lng": 121.053365
+    },
+    {
+      "location": "Edsa Munoz",
+      "depth_in": 19,
+      "lat": 14.657774,
+      "lng": 121.018613
+    },
+    {
+      "location": "Edsa Centris NB",
+      "depth_in": 20,
+      "lat": 14.641816,
+      "lng": 121.03919
+    },
+    {
+      "location": "Mindanao Avenue cor. Congressional",
+      "depth_in": 8,
+      "lat": 14.667885,
+      "lng": 121.034154
+    },
+    {
+      "location": "Araneta del Monte 5-6 Metrobase/CCTV Viber 16:21 17:45 DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.638853,
+      "lng": 121.006975
+    },
+    {
+      "location": "Aurora Araneta 3-4 Metrobase/CCTV Viber 16:53 17:45 DOE Baduel",
+      "depth_in": 4,
+      "lat": 14.627876,
+      "lng": 121.012983
+    },
+    {
+      "location": "Araneta Ave near Victory Ave 08-Jan DOE FB Messenger 0957H As of 11:30 subsided DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.62235168,
+      "lng": 121.0121297
+    },
+    {
+      "location": "E.Rod Araneta 5 Ronnie Rivera Metrobase Viber 9:05 11:54 DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.618909,
+      "lng": 121.014532
+    },
+    {
+      "location": "Katipunan Ave. before flyover 8\" QC DRRMO Messenger 9:08 No reply DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.63167,
+      "lng": 121.07415
+    },
+    {
+      "location": "Araneta ave. E. Rodriguez SB",
+      "depth_in": 8,
+      "lat": 14.619023,
+      "lng": 121.015004
+    },
+    {
+      "location": "Sgt. Rivera A. Bonifacio",
+      "depth_in": 3,
+      "lat": 14.644015,
+      "lng": 120.993582
+    },
+    {
+      "location": "E.Rodriguez Araneta SB",
+      "depth_in": 8,
+      "lat": 14.61886215,
+      "lng": 121.0148605
+    },
+    {
+      "location": "EDSA Oliveros NB",
+      "depth_in": 8,
+      "lat": 14.657606,
+      "lng": 121.006611
+    },
+    {
+      "location": "EDSA Balintawak NB",
+      "depth_in": 13,
+      "lat": 14.657575,
+      "lng": 121.002674
+    },
+    {
+      "location": "Edsa Aurora Tunnel NB & SB",
+      "depth_in": 8,
+      "lat": 14.621702,
+      "lng": 121.050471
+    },
+    {
+      "location": "C5 - CP Garcia Katipunan NB",
+      "depth_in": 8,
+      "lat": 14.648383,
+      "lng": 121.074453
+    },
+    {
+      "location": "EDSA Aurora Tunnel NB",
+      "depth_in": 4,
+      "lat": 14.621552,
+      "lng": 121.050416
+    },
+    {
+      "location": "Metrobase/CCTV FB Messenger 15:33 10/25/2024 04:20 AM DOE Baduel",
+      "depth_in": 8,
+      "lat": 14.629271,
+      "lng": 121.012499
+    },
+    {
+      "location": "N.S Amoranto Don Jose",
+      "depth_in": 19,
+      "lat": 14.635424,
+      "lng": 121.007717
+    },
+    {
+      "location": "E. Rodriguez - Araneta",
+      "depth_in": 8,
+      "lat": 14.618899,
+      "lng": 121.014988
+    },
+    {
+      "location": "Subsided as of 2:30am",
+      "depth_in": 6,
+      "lat": 14.604525,
+      "lng": 121.069973
+    },
+    {
+      "location": "E. Rod. Araneta SB",
+      "depth_in": 8,
+      "lat": 14.6283,
+      "lng": 121.013081
+    },
+    {
+      "location": "E. Rod. Araneta EB/WB",
+      "depth_in": 8,
+      "lat": 14.61882915,
+      "lng": 121.014386
+    },
+    {
+      "location": "EDSA Quezon Ave. Flyover pagbaba NB",
+      "depth_in": 8,
+      "lat": 14.646668,
+      "lng": 121.035972
+    },
+    {
+      "location": "EDSA - KAMIAS NB",
+      "depth_in": 4,
+      "lat": 14.63072,
+      "lng": 121.04617
+    },
+    {
+      "location": "EDSA after Quezon Ave. Flyover NB",
+      "depth_in": 8,
+      "lat": 14.64416,
+      "lng": 121.037533
+    },
+    {
+      "location": "Banawe NS Amoranto NB/SB",
+      "depth_in": 19,
+      "lat": 14.632722,
+      "lng": 121.001771
+    },
+    {
+      "location": "EDSA Aurora Tunnel NB",
+      "depth_in": 4,
+      "lat": 14.621704,
+      "lng": 121.050448
+    },
+    {
+      "location": "EDSA Main Ave. NB",
+      "depth_in": 8,
+      "lat": 14.614207,
+      "lng": 121.053554
+    },
+    {
+      "location": "EDSA Whiteplains NB",
+      "depth_in": 8,
+      "lat": 14.599824,
+      "lng": 121.05996
+    },
+    {
+      "location": "Araneta E.Rodriguez SB/NB",
+      "depth_in": 8,
+      "lat": 14.618888,
+      "lng": 121.0148
+    },
+    {
+      "location": "Quezon Ave. Biak na Bato WB/EB",
+      "depth_in": 19,
+      "lat": 14.63292617,
+      "lng": 121.003888
+    },
+    {
+      "location": "EDSA - P. TUAZON TUNNEL SB",
+      "depth_in": 8,
+      "lat": 14.616355,
+      "lng": 121.052335
+    },
+    {
+      "location": "EDSA -  AURORA TUNNEL NB",
+      "depth_in": 8,
+      "lat": 14.621665,
+      "lng": 121.050612
+    },
+    {
+      "location": "EDSA after Quezon Ave. Flyover NB 4 QC DRRMO FB Messenger 18:46 19:15 DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.643452,
+      "lng": 121.038223
+    },
+    {
+      "location": "Araneta Ave- E. Rodriguez  NB & SB",
+      "depth_in": 8,
+      "lat": 14.61902728,
+      "lng": 121.0149241
+    },
+    {
+      "location": "Edsa Quezon Ave fly over NB, Quezon City",
+      "depth_in": 8,
+      "lat": 14.64481906,
+      "lng": 121.0380258
+    },
+    {
+      "location": "Araneta Ave- Kaliraya NB & SB",
+      "depth_in": 19,
+      "lat": 14.62454118,
+      "lng": 121.0152749
+    },
+    {
+      "location": "Quezon Ave- Roces EB",
+      "depth_in": 8,
+      "lat": 14.63030479,
+      "lng": 121.0276845
+    },
+    {
+      "location": "E. Rodriguez - Araneta Intersection",
+      "depth_in": 8,
+      "lat": 14.618971,
+      "lng": 121.01496
+    },
+    {
+      "location": "C5 Katipunan Miriam College NB",
+      "depth_in": 8,
+      "lat": 14.643984,
+      "lng": 121.074818
+    },
+    {
+      "location": "EDSA Aurora blvd service road NB",
+      "depth_in": 8,
+      "lat": 14.621505,
+      "lng": 121.050344
+    },
+    {
+      "location": "Edsa quezon avenue nb infront solaire",
+      "depth_in": 8,
+      "lat": 14.647618,
+      "lng": 121.035496
+    },
+    {
+      "location": "E. Rodriguez- Araneta Intersection",
+      "depth_in": 8,
+      "lat": 14.618882,
+      "lng": 121.014542
+    },
+    {
+      "location": "Edsa Central NB before Solaire",
+      "depth_in": 8,
+      "lat": 14.579633,
+      "lng": 121.05266
+    },
+    {
+      "location": "Sto Domingo- Biak na Bato",
+      "depth_in": 19,
+      "lat": 14.625161,
+      "lng": 121.00952
+    },
+    {
+      "location": "EDSA AURORA TUNNEL NB",
+      "depth_in": 8,
+      "lat": 14.621636,
+      "lng": 121.050461
+    },
+    {
+      "location": "EDSA AURORA NB HALF GUTTER",
+      "depth_in": 4,
+      "lat": 14.62133309,
+      "lng": 121.0503326
+    },
+    {
+      "location": "E. Rod Araneta Intersection",
+      "depth_in": 13,
+      "lat": 14.618946,
+      "lng": 121.01477
+    },
+    {
+      "location": "Araneta cor E. Rodriguez  NB",
+      "depth_in": 8,
+      "lat": 14.618895,
+      "lng": 121.014858
+    },
+    {
+      "location": "EDSA - Aurora Tunnel NB",
+      "depth_in": 8,
+      "lat": 14.621599,
+      "lng": 121.050279
+    },
+    {
+      "location": "Quezon Ave. Roces EB",
+      "depth_in": 8,
+      "lat": 14.633289,
+      "lng": 121.020081
+    },
+    {
+      "location": "Edsa Santolan nb",
+      "depth_in": 8,
+      "lat": 14.60990046,
+      "lng": 121.0566517
+    },
+    {
+      "location": "Quezon Avenue Biak na Bato 8 DOE Baduel FB Messenger 11:27:00 AM 12:00:00 PM DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.62538568,
+      "lng": 121.0097792
+    },
+    {
+      "location": "Araneta Ave. / Maria Clara 8 DOE Orona FB Messenger 11:21:00 AM DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.63072553,
+      "lng": 121.011292
+    },
+    {
+      "location": "DOE Baduel FB Messenger 1:30:00 PM DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.61900675,
+      "lng": 121.0149348
+    },
+    {
+      "location": "Edsa P. Tuazon tunnel nb/sb",
+      "depth_in": 8,
+      "lat": 14.616491,
+      "lng": 121.052346
+    },
+    {
+      "location": "Araneta ave( e rod/ victory ave. - kaliraya st 37 Doe Baduel local line 6:00:00 AM DOE Baduel",
+      "depth_in": 6,
+      "lat": 14.6043053,
+      "lng": 121.0185527
+    },
+    {
+      "location": "Edsa Santolan nb",
+      "depth_in": 8,
+      "lat": 14.612953,
+      "lng": 121.054217
+    },
+    {
+      "location": "10:10am july 22, 2025",
+      "depth_in": 6,
+      "lat": 14.62589721,
+      "lng": 121.0006393
+    },
+    {
+      "location": "Edsa Aurora Underpass NB 8 DOE Baduel 12:25 Messenger 12:40 DOE Baduel",
+      "depth_in": 25,
+      "lat": 14.59306,
+      "lng": 121.05841
+    },
+    {
+      "location": "Edsa Santolan svc road NB",
+      "depth_in": 8,
+      "lat": 14.609241,
+      "lng": 121.055604
+    },
+    {
+      "location": "EDSA Main Ave. NB",
+      "depth_in": 8,
+      "lat": 14.61421684,
+      "lng": 121.0535806
+    },
+    {
+      "location": "Edsa Aurora Tunnel 8 DOE Baduel 20:20 FB Messenger Subsided @ 8:58:00 PM DOE Baduel",
+      "depth_in": 20,
+      "lat": 14.62892541,
+      "lng": 121.0132224
+    },
+    {
+      "location": "EDSA Kamuning infront of QCPD Station 10 SB",
+      "depth_in": 8,
+      "lat": 14.62982,
+      "lng": 121.046154
+    },
+    {
+      "location": "EDSA Santolan Liberty Avenue SB and NB",
+      "depth_in": 8,
+      "lat": 14.635223,
+      "lng": 121.043198
+    },
+    {
+      "location": "EDSA Santolan before flyover and service road NB",
+      "depth_in": 8,
+      "lat": 14.61282,
+      "lng": 121.054026
+    },
+    {
+      "location": "Quezon Avenue Biak na bato WB",
+      "depth_in": 8,
+      "lat": 14.625283,
+      "lng": 121.00976
+    },
+    {
+      "location": "EDSA Aurora Tunnel",
+      "depth_in": 8,
+      "lat": 14.621506,
+      "lng": 121.050086
+    },
+    {
+      "location": "Edsa Santolan Service Road",
+      "depth_in": 8,
+      "lat": 14.60810993,
+      "lng": 121.0563923
+    },
+    {
+      "location": "E. Rodriguez Araneta SB",
+      "depth_in": 8,
+      "lat": 14.62146527,
+      "lng": 121.0503468
+    },
+    {
+      "location": "Q.Ave - Araneta eb/wb",
+      "depth_in": 8,
+      "lat": 14.628416,
+      "lng": 121.013395
+    },
+    {
+      "location": "EDSA After Quezon Ave. Flyover NB",
+      "depth_in": 8,
+      "lat": 14.648362,
+      "lng": 121.044478
+    },
+    {
+      "location": "Elliptical East Ave.",
+      "depth_in": 8,
+      "lat": 14.648821,
+      "lng": 121.048522
+    },
+    {
+      "location": "EDSA before Kamuning Flyover SB",
+      "depth_in": 8,
+      "lat": 14.634945,
+      "lng": 121.043376
+    },
+    {
+      "location": "EDSA Quezon Ave. SVC RD NB",
+      "depth_in": 8,
+      "lat": 14.644303,
+      "lng": 121.037659
+    },
+    {
+      "location": "EDSA Aurora Tunnel NB",
+      "depth_in": 8,
+      "lat": 14.621524,
+      "lng": 121.050214
+    },
+    {
+      "location": "G. Araneta Avenue Corner P. Florentino NB/ SB",
+      "depth_in": 37,
+      "lat": 14.629132,
+      "lng": 121.012276
+    },
+    {
+      "location": "G. Araneta Avenue Corner NS Amoranto NB/ SB",
+      "depth_in": 45,
+      "lat": 14.635881,
+      "lng": 121.008626
+    },
+    {
+      "location": "G. Araneta Avenue Corner Maria Clara NB/ SB",
+      "depth_in": 45,
+      "lat": 14.630589,
+      "lng": 121.011187
+    },
+    {
+      "location": "Edsa NB Kamias Service road,",
+      "depth_in": 8,
+      "lat": 14.630816,
+      "lng": 121.04604
+    },
+    {
+      "location": "Edsa NB P.Tuazon Tunnel",
+      "depth_in": 8,
+      "lat": 14.616489,
+      "lng": 121.052641
+    },
+    {
+      "location": "EDSA Mother Ignacia sb",
+      "depth_in": 19,
+      "lat": 14.642178,
+      "lng": 121.038594
+    },
+    {
+      "location": "Q. Ave/ Biak na bato/ victory ave",
+      "depth_in": 8,
+      "lat": 14.625154,
+      "lng": 121.009736
+    },
+    {
+      "location": "E.Rodriguez Araneta int",
+      "depth_in": 8,
+      "lat": 14.618891,
+      "lng": 121.014811
+    },
+    {
+      "location": "Edsa Q.Ave before intersection Nb",
+      "depth_in": 26,
+      "lat": 14.643095,
+      "lng": 121.038395
+    },
+    {
+      "location": "Elliptical Rd. East Ave.",
+      "depth_in": 8,
+      "lat": 14.65316489,
+      "lng": 121.0512957
+    }
+  ]
+}
