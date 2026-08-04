@@ -29,10 +29,73 @@ def _clamp01(x: float) -> float:
     return max(0.0, min(1.0, x))
 
 
+# pagasa tenday forecast api. access needs a token granted through a formal
+# request to pagasa (see docs/pagasa-api-request.md); until it arrives the
+# engine falls back to the offline default so nothing breaks.
+_PAGASA_URL = "https://tenday.pagasa.dost.gov.ph/api/v1/tenday/current"
+_PAGASA_PARAMS = {"province": "Metro Manila"}
+_CACHE_TTL_S = 3600.0  # forecast is issued daily, refetching hourly is plenty
+
+_rain_cache: dict = {"value": None, "at": 0.0, "source": "default"}
+
+
+def _extract_rainfall_mm(payload: dict) -> float | None:
+    # pull the nearest-day rainfall amount out of the tenday response. the api
+    # nests per-day entries under 'forecast'; we look for the first numeric
+    # rainfall-ish field so a minor schema change doesn't kill the whole app.
+    days = payload.get("forecast") or []
+    if isinstance(days, dict):
+        days = list(days.values())
+    for day in days:
+        if not isinstance(day, dict):
+            continue
+        for key in ("rainfall_mm", "rainfall", "rain_mm", "rain", "total_rainfall"):
+            val = day.get(key)
+            if isinstance(val, dict):
+                val = val.get("total") or val.get("amount") or val.get("mm")
+            if val is None:
+                continue
+            try:
+                return float(str(val).replace("mm", "").strip())
+            except ValueError:
+                continue
+    return None
+
+
 def fetch_pagasa_rainfall_mm() -> float:
-    # stand-in for the pagasa ten-day forecast call. returns the default for now
-    # so things run offline; swap in the http call once we have the api key.
+    # live rainfall from the pagasa tenday forecast when a token is configured
+    # (SCPH_PAGASA_TOKEN), cached for an hour; offline default otherwise.
+    import os
+    import time
+
+    now = time.monotonic()
+    if _rain_cache["value"] is not None and now - _rain_cache["at"] < _CACHE_TTL_S:
+        return _rain_cache["value"]
+
+    token = os.getenv("SCPH_PAGASA_TOKEN", "").strip()
+    if token:
+        try:
+            import httpx
+            resp = httpx.get(
+                _PAGASA_URL, params=_PAGASA_PARAMS,
+                headers={"token": token, "User-Agent": "smartcommuteph-thesis/1.0"},
+                timeout=10,
+            )
+            if resp.status_code == 200:
+                mm = _extract_rainfall_mm(resp.json())
+                if mm is not None:
+                    _rain_cache.update(value=mm, at=now, source="pagasa tenday")
+                    return mm
+        except Exception:
+            pass  # network down or schema surprise: fall through to the default
+
+    _rain_cache.update(value=DEFAULT_RAINFALL_MM, at=now, source="default (no token / offline)")
     return DEFAULT_RAINFALL_MM
+
+
+def rainfall_source() -> str:
+    # for the status endpoint, so the dashboard can say where the number came from
+    return _rain_cache["source"]
 
 
 def _load_model():
