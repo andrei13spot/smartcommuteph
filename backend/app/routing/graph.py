@@ -10,6 +10,13 @@ from functools import lru_cache
 from pathlib import Path
 
 _DATA = Path(__file__).resolve().parent.parent / "data"
+_ML_DATA = Path(__file__).resolve().parent.parent / "ml" / "data"
+
+# flood exposure from the mmda incident points: an incident within this radius
+# of an edge contributes risk, scaled by its flood depth and closeness
+_FLOOD_RADIUS_KM = 0.5
+_FLOOD_DEPTH_REF_IN = 24.0   # ~2ft of water = fully risky
+_FLOOD_BASELINE = 0.05       # edges with no incident history = low-risk baseline
 
 # per-mode operating speeds in km/h. used to get base travel time = distance / speed.
 MODE_SPEED_KMH = {
@@ -86,6 +93,62 @@ def _load_json(name: str) -> dict:
         return json.load(fh)
 
 
+def _point_to_segment_km(plat: float, plng: float,
+                         alat: float, alng: float,
+                         blat: float, blng: float) -> float:
+    # distance from an incident point to an edge segment. equirectangular
+    # projection is fine at city scale (errors < 1m over a few km)
+    kx = 111.32 * math.cos(math.radians(plat))  # km per degree lng here
+    ky = 110.57                                  # km per degree lat
+    ax, ay = (alng - plng) * kx, (alat - plat) * ky
+    bx, by = (blng - plng) * kx, (blat - plat) * ky
+    dx, dy = bx - ax, by - ay
+    seg_len2 = dx * dx + dy * dy
+    if seg_len2 == 0:
+        return math.hypot(ax, ay)
+    t = max(0.0, min(1.0, -(ax * dx + ay * dy) / seg_len2))
+    cx, cy = ax + t * dx, ay + t * dy
+    return math.hypot(cx, cy)
+
+
+def _load_flood_incidents() -> list[dict]:
+    path = _ML_DATA / "mmda_flood_incidents.json"
+    if not path.exists():
+        return []
+    with open(path, encoding="utf-8") as fh:
+        return json.load(fh)["incidents"]
+
+
+def _flood_exposure(graph: "Graph") -> None:
+    # replace each edge's flood_risk with real exposure from the mmda incident
+    # points (per the paper: per-segment historical flood record; segments with
+    # no record stay as low-risk baseline cases). depth and closeness both scale
+    # the contribution; overlapping incidents accumulate and cap at 1.
+    incidents = _load_flood_incidents()
+    if not incidents:
+        return  # keep the static json values if the incident file is missing
+    for eid, e in list(graph.edges.items()):
+        a, b = graph.nodes[e.src], graph.nodes[e.dst]
+        exposure = 0.0
+        for i in incidents:
+            d = _point_to_segment_km(i["lat"], i["lng"], a.lat, a.lng, b.lat, b.lng)
+            if d >= _FLOOD_RADIUS_KM:
+                continue
+            depth = min(i["depth_in"] / _FLOOD_DEPTH_REF_IN, 1.0)
+            exposure += depth * (1.0 - d / _FLOOD_RADIUS_KM)
+        risk = max(_FLOOD_BASELINE, min(1.0, exposure))
+        graph.edges[eid] = Edge(
+            id=e.id, src=e.src, dst=e.dst, mode=e.mode, base_time=e.base_time,
+            fare=e.fare, ridership=e.ridership, flood_risk=risk,
+            distance_km=e.distance_km,
+        )
+    # adjacency holds the same edge objects, rebuild it from the updated ones
+    for node_id in graph.adjacency:
+        graph.adjacency[node_id] = []
+    for e in graph.edges.values():
+        graph.adjacency[e.src].append(e)
+
+
 def _use_dense() -> bool:
     # the discretized graph (300m jeepney stops from split_jeepneys.py) is the
     # default when its files exist. set SCPH_DENSE_GRAPH=0 to force the coarse
@@ -133,5 +196,8 @@ def load_graph() -> Graph:
     for e in raw_edges:
         add_edge(e["from"], e["to"], e["mode"], e)
         add_edge(e["to"], e["from"], e["mode"], e)  # reverse direction
+
+    # swap the synthetic flood_risk baselines for real mmda incident exposure
+    _flood_exposure(graph)
 
     return graph

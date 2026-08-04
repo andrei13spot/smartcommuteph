@@ -36,16 +36,26 @@ def _grounded_risk(rainfall_mm, sensitivity, base_exposure):
     return _clamp01(risk)
 
 
-def make_dataset(n: int = 4000):
-    # sample the feature space the way real queries hit it
+def make_dataset(n_rain: int = 40):
+    # real per-edge flood exposure from the mmda incident reports (computed in
+    # graph.py from mmda_flood_incidents.json), crossed with a rainfall grid.
+    # each (edge, rainfall) pair is one sample, so the forest learns the risk
+    # surface over the actual network instead of random made-up exposures.
+    from ..routing.graph import load_graph
+
     rng = np.random.default_rng(_SEED)
-    rainfall = rng.uniform(0.0, 80.0, n)
-    sensitivity = rng.choice(list(MODE_SENSITIVITY.values()), n)
-    base = rng.uniform(0.05, 0.6, n)
-    y = _grounded_risk(rainfall, sensitivity, base)
-    # a little observation noise so the forest learns a smooth mapping, not a rule
-    y = _clamp01(y + rng.normal(0.0, 0.03, n))
-    X = np.column_stack([rainfall, sensitivity, base])
+    g = load_graph()
+    edges = list(g.edges.values())
+    rain_grid = np.linspace(0.0, 80.0, n_rain)
+
+    rows, labels = [], []
+    for e in edges:
+        sens = MODE_SENSITIVITY.get(e.mode, 0.6)
+        for r in rain_grid:
+            rows.append([r, sens, e.flood_risk])
+            labels.append(_grounded_risk(r, sens, e.flood_risk))
+    X = np.array(rows)
+    y = _clamp01(np.array(labels) + rng.normal(0.0, 0.03, len(labels)))
     return X, y
 
 
@@ -68,6 +78,7 @@ def train():
         "n_train": int(len(X_tr)),
         "n_test": int(len(X_te)),
         "features": ["rainfall_mm", "mode_sensitivity", "base_exposure"],
+        "exposure_source": "mmda flood reports (101 incident points, per-edge exposure)",
     }
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump({"model": model, "metrics": metrics}, MODEL_PATH)
