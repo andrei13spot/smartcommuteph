@@ -1523,6 +1523,1403 @@
         "Jeepney"
       ],
       "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_128",
+      "name": "Virtual Stop 128",
+      "area": "Transit Route",
+      "lat": 14.56102,
+      "lng": 121.081642,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_129",
+      "name": "Virtual Stop 129",
+      "area": "Transit Route",
+      "lat": 14.563114,
+      "lng": 121.081538,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_130",
+      "name": "Virtual Stop 130",
+      "area": "Transit Route",
+      "lat": 14.565167,
+      "lng": 121.08027,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_131",
+      "name": "Virtual Stop 131",
+      "area": "Transit Route",
+      "lat": 14.566491,
+      "lng": 121.07856,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_132",
+      "name": "Virtual Stop 132",
+      "area": "Transit Route",
+      "lat": 14.566119,
+      "lng": 121.07585,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_133",
+      "name": "Virtual Stop 133",
+      "area": "Transit Route",
+      "lat": 14.566114,
+      "lng": 121.073063,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_134",
+      "name": "Virtual Stop 134",
+      "area": "Transit Route",
+      "lat": 14.566289,
+      "lng": 121.070509,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_135",
+      "name": "Virtual Stop 135",
+      "area": "Transit Route",
+      "lat": 14.568914,
+      "lng": 121.071151,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_136",
+      "name": "Virtual Stop 136",
+      "area": "Transit Route",
+      "lat": 14.57154,
+      "lng": 121.071793,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_137",
+      "name": "Virtual Stop 137",
+      "area": "Transit Route",
+      "lat": 14.574165,
+      "lng": 121.072435,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_138",
+      "name": "Virtual Stop 138",
+      "area": "Transit Route",
+      "lat": 14.576778,
+      "lng": 121.073109,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_139",
+      "name": "Virtual Stop 139",
+      "area": "Transit Route",
+      "lat": 14.579054,
+      "lng": 121.074606,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_140",
+      "name": "Virtual Stop 140",
+      "area": "Transit Route",
+      "lat": 14.58133,
+      "lng": 121.076102,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_141",
+      "name": "Virtual Stop 141",
+      "area": "Transit Route",
+      "lat": 14.583606,
+      "lng": 121.077599,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_142",
+      "name": "Virtual Stop 142",
+      "area": "Transit Route",
+      "lat": 14.585925,
+      "lng": 121.079003,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_143",
+      "name": "Virtual Stop 143",
+      "area": "Transit Route",
+      "lat": 14.588485,
+      "lng": 121.079884,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_144",
+      "name": "Virtual Stop 144",
+      "area": "Transit Route",
+      "lat": 14.591165,
+      "lng": 121.079856,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_145",
+      "name": "Virtual Stop 145",
+      "area": "Transit Route",
+      "lat": 14.59386,
+      "lng": 121.079721,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_146",
+      "name": "Virtual Stop 146",
+      "area": "Transit Route",
+      "lat": 14.596555,
+      "lng": 121.079587,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_147",
+      "name": "Virtual Stop 147",
+      "area": "Transit Route",
+      "lat": 14.59925,
+      "lng": 121.079452,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_148",
+      "name": "Virtual Stop 148",
+      "area": "Transit Route",
+      "lat": 14.601945,
+      "lng": 121.079318,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_149",
+      "name": "Virtual Stop 149",
+      "area": "Transit Route",
+      "lat": 14.60464,
+      "lng": 121.079184,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_150",
+      "name": "Virtual Stop 150",
+      "area": "Transit Route",
+      "lat": 14.607108,
+      "lng": 121.078348,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_151",
+      "name": "Virtual Stop 151",
+      "area": "Transit Route",
+      "lat": 14.609341,
+      "lng": 121.076783,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_152",
+      "name": "Virtual Stop 152",
+      "area": "Transit Route",
+      "lat": 14.611762,
+      "lng": 121.075676,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_153",
+      "name": "Virtual Stop 153",
+      "area": "Transit Route",
+      "lat": 14.614402,
+      "lng": 121.075102,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_154",
+      "name": "Virtual Stop 154",
+      "area": "Transit Route",
+      "lat": 14.616367,
+      "lng": 121.075688,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_155",
+      "name": "Virtual Stop 155",
+      "area": "Transit Route",
+      "lat": 14.617931,
+      "lng": 121.077794,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_156",
+      "name": "Virtual Stop 156",
+      "area": "Transit Route",
+      "lat": 14.620062,
+      "lng": 121.079505,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_157",
+      "name": "Virtual Stop 157",
+      "area": "Transit Route",
+      "lat": 14.622192,
+      "lng": 121.081216,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_158",
+      "name": "Virtual Stop 158",
+      "area": "Transit Route",
+      "lat": 14.623849,
+      "lng": 121.083414,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_159",
+      "name": "Virtual Stop 159",
+      "area": "Transit Route",
+      "lat": 14.622664,
+      "lng": 121.085482,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_160",
+      "name": "Virtual Stop 160",
+      "area": "Transit Route",
+      "lat": 14.620821,
+      "lng": 121.087519,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_161",
+      "name": "Virtual Stop 161",
+      "area": "Transit Route",
+      "lat": 14.619062,
+      "lng": 121.089605,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_162",
+      "name": "Virtual Stop 162",
+      "area": "Transit Route",
+      "lat": 14.61864,
+      "lng": 121.092285,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_163",
+      "name": "Virtual Stop 163",
+      "area": "Transit Route",
+      "lat": 14.619206,
+      "lng": 121.095011,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_164",
+      "name": "Virtual Stop 164",
+      "area": "Transit Route",
+      "lat": 14.619773,
+      "lng": 121.097738,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_165",
+      "name": "Virtual Stop 165",
+      "area": "Transit Route",
+      "lat": 14.620339,
+      "lng": 121.100464,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_166",
+      "name": "Virtual Stop 166",
+      "area": "Transit Route",
+      "lat": 14.620905,
+      "lng": 121.10319,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_167",
+      "name": "Virtual Stop 167",
+      "area": "Transit Route",
+      "lat": 14.621472,
+      "lng": 121.105916,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_168",
+      "name": "Virtual Stop 168",
+      "area": "Transit Route",
+      "lat": 14.622038,
+      "lng": 121.108642,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_169",
+      "name": "Virtual Stop 169",
+      "area": "Transit Route",
+      "lat": 14.622604,
+      "lng": 121.111368,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_170",
+      "name": "Virtual Stop 170",
+      "area": "Transit Route",
+      "lat": 14.623171,
+      "lng": 121.114094,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_171",
+      "name": "Virtual Stop 171",
+      "area": "Transit Route",
+      "lat": 14.623737,
+      "lng": 121.116821,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_172",
+      "name": "Virtual Stop 172",
+      "area": "Transit Route",
+      "lat": 14.624303,
+      "lng": 121.119547,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_173",
+      "name": "Virtual Stop 173",
+      "area": "Transit Route",
+      "lat": 14.622043,
+      "lng": 121.050989,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_174",
+      "name": "Virtual Stop 174",
+      "area": "Transit Route",
+      "lat": 14.62339,
+      "lng": 121.049424,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_175",
+      "name": "Virtual Stop 175",
+      "area": "Transit Route",
+      "lat": 14.625855,
+      "lng": 121.04829,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_176",
+      "name": "Virtual Stop 176",
+      "area": "Transit Route",
+      "lat": 14.62832,
+      "lng": 121.047156,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_177",
+      "name": "Virtual Stop 177",
+      "area": "Transit Route",
+      "lat": 14.630785,
+      "lng": 121.046023,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_178",
+      "name": "Virtual Stop 178",
+      "area": "Transit Route",
+      "lat": 14.633285,
+      "lng": 121.045232,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_179",
+      "name": "Virtual Stop 179",
+      "area": "Transit Route",
+      "lat": 14.635924,
+      "lng": 121.04581,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_180",
+      "name": "Virtual Stop 180",
+      "area": "Transit Route",
+      "lat": 14.638563,
+      "lng": 121.046387,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_181",
+      "name": "Virtual Stop 181",
+      "area": "Transit Route",
+      "lat": 14.641188,
+      "lng": 121.046929,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_182",
+      "name": "Virtual Stop 182",
+      "area": "Transit Route",
+      "lat": 14.642699,
+      "lng": 121.044618,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_183",
+      "name": "Virtual Stop 183",
+      "area": "Transit Route",
+      "lat": 14.644438,
+      "lng": 121.042516,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_184",
+      "name": "Virtual Stop 184",
+      "area": "Transit Route",
+      "lat": 14.646474,
+      "lng": 121.04069,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_185",
+      "name": "Virtual Stop 185",
+      "area": "Transit Route",
+      "lat": 14.648974,
+      "lng": 121.03964,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_186",
+      "name": "Virtual Stop 186",
+      "area": "Transit Route",
+      "lat": 14.651592,
+      "lng": 121.039043,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_187",
+      "name": "Virtual Stop 187",
+      "area": "Transit Route",
+      "lat": 14.653913,
+      "lng": 121.038254,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_188",
+      "name": "Virtual Stop 188",
+      "area": "Transit Route",
+      "lat": 14.654519,
+      "lng": 121.035536,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_189",
+      "name": "Virtual Stop 189",
+      "area": "Transit Route",
+      "lat": 14.656931,
+      "lng": 121.035732,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_190",
+      "name": "Virtual Stop 190",
+      "area": "Transit Route",
+      "lat": 14.657242,
+      "lng": 121.035755,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_191",
+      "name": "Virtual Stop 191",
+      "area": "Transit Route",
+      "lat": 14.654622,
+      "lng": 121.035093,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_192",
+      "name": "Virtual Stop 192",
+      "area": "Transit Route",
+      "lat": 14.602608,
+      "lng": 120.981825,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_193",
+      "name": "Virtual Stop 193",
+      "area": "Transit Route",
+      "lat": 14.603498,
+      "lng": 120.983135,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_194",
+      "name": "Virtual Stop 194",
+      "area": "Transit Route",
+      "lat": 14.602741,
+      "lng": 120.985781,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_195",
+      "name": "Virtual Stop 195",
+      "area": "Transit Route",
+      "lat": 14.603257,
+      "lng": 120.987485,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_196",
+      "name": "Virtual Stop 196",
+      "area": "Transit Route",
+      "lat": 14.605702,
+      "lng": 120.988468,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_197",
+      "name": "Virtual Stop 197",
+      "area": "Transit Route",
+      "lat": 14.607546,
+      "lng": 120.990504,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_198",
+      "name": "Virtual Stop 198",
+      "area": "Transit Route",
+      "lat": 14.60939,
+      "lng": 120.992539,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_199",
+      "name": "Virtual Stop 199",
+      "area": "Transit Route",
+      "lat": 14.611234,
+      "lng": 120.994575,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_200",
+      "name": "Virtual Stop 200",
+      "area": "Transit Route",
+      "lat": 14.613077,
+      "lng": 120.99661,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_201",
+      "name": "Virtual Stop 201",
+      "area": "Transit Route",
+      "lat": 14.614921,
+      "lng": 120.998646,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_202",
+      "name": "Virtual Stop 202",
+      "area": "Transit Route",
+      "lat": 14.616765,
+      "lng": 121.000681,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_203",
+      "name": "Virtual Stop 203",
+      "area": "Transit Route",
+      "lat": 14.617902,
+      "lng": 121.003157,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_204",
+      "name": "Virtual Stop 204",
+      "area": "Transit Route",
+      "lat": 14.618119,
+      "lng": 121.005936,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_205",
+      "name": "Virtual Stop 205",
+      "area": "Transit Route",
+      "lat": 14.618336,
+      "lng": 121.008715,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_206",
+      "name": "Virtual Stop 206",
+      "area": "Transit Route",
+      "lat": 14.618553,
+      "lng": 121.011495,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_207",
+      "name": "Virtual Stop 207",
+      "area": "Transit Route",
+      "lat": 14.61877,
+      "lng": 121.014274,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_208",
+      "name": "Virtual Stop 208",
+      "area": "Transit Route",
+      "lat": 14.619444,
+      "lng": 121.016958,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_209",
+      "name": "Virtual Stop 209",
+      "area": "Transit Route",
+      "lat": 14.620279,
+      "lng": 121.01961,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_210",
+      "name": "Virtual Stop 210",
+      "area": "Transit Route",
+      "lat": 14.621113,
+      "lng": 121.022261,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_211",
+      "name": "Virtual Stop 211",
+      "area": "Transit Route",
+      "lat": 14.621948,
+      "lng": 121.024913,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_212",
+      "name": "Virtual Stop 212",
+      "area": "Transit Route",
+      "lat": 14.622783,
+      "lng": 121.027564,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_213",
+      "name": "Virtual Stop 213",
+      "area": "Transit Route",
+      "lat": 14.623618,
+      "lng": 121.030215,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_214",
+      "name": "Virtual Stop 214",
+      "area": "Transit Route",
+      "lat": 14.624087,
+      "lng": 121.03294,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_215",
+      "name": "Virtual Stop 215",
+      "area": "Transit Route",
+      "lat": 14.624271,
+      "lng": 121.035722,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_216",
+      "name": "Virtual Stop 216",
+      "area": "Transit Route",
+      "lat": 14.624455,
+      "lng": 121.038504,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_217",
+      "name": "Virtual Stop 217",
+      "area": "Transit Route",
+      "lat": 14.624639,
+      "lng": 121.041286,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_218",
+      "name": "Virtual Stop 218",
+      "area": "Transit Route",
+      "lat": 14.623594,
+      "lng": 121.043805,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_219",
+      "name": "Virtual Stop 219",
+      "area": "Transit Route",
+      "lat": 14.622358,
+      "lng": 121.046283,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_220",
+      "name": "Virtual Stop 220",
+      "area": "Transit Route",
+      "lat": 14.621122,
+      "lng": 121.048762,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_221",
+      "name": "Virtual Stop 221",
+      "area": "Transit Route",
+      "lat": 14.622076,
+      "lng": 121.051299,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_222",
+      "name": "Virtual Stop 222",
+      "area": "Transit Route",
+      "lat": 14.62462,
+      "lng": 121.120532,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_223",
+      "name": "Virtual Stop 223",
+      "area": "Transit Route",
+      "lat": 14.624063,
+      "lng": 121.117804,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_224",
+      "name": "Virtual Stop 224",
+      "area": "Transit Route",
+      "lat": 14.623507,
+      "lng": 121.115076,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_225",
+      "name": "Virtual Stop 225",
+      "area": "Transit Route",
+      "lat": 14.622951,
+      "lng": 121.112347,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_226",
+      "name": "Virtual Stop 226",
+      "area": "Transit Route",
+      "lat": 14.622394,
+      "lng": 121.109619,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_227",
+      "name": "Virtual Stop 227",
+      "area": "Transit Route",
+      "lat": 14.621838,
+      "lng": 121.10689,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_228",
+      "name": "Virtual Stop 228",
+      "area": "Transit Route",
+      "lat": 14.621282,
+      "lng": 121.104162,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_229",
+      "name": "Virtual Stop 229",
+      "area": "Transit Route",
+      "lat": 14.620726,
+      "lng": 121.101434,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_230",
+      "name": "Virtual Stop 230",
+      "area": "Transit Route",
+      "lat": 14.620169,
+      "lng": 121.098705,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_231",
+      "name": "Virtual Stop 231",
+      "area": "Transit Route",
+      "lat": 14.619613,
+      "lng": 121.095977,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_232",
+      "name": "Virtual Stop 232",
+      "area": "Transit Route",
+      "lat": 14.619057,
+      "lng": 121.093249,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_233",
+      "name": "Virtual Stop 233",
+      "area": "Transit Route",
+      "lat": 14.618976,
+      "lng": 121.090553,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_234",
+      "name": "Virtual Stop 234",
+      "area": "Transit Route",
+      "lat": 14.620493,
+      "lng": 121.088351,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_235",
+      "name": "Virtual Stop 235",
+      "area": "Transit Route",
+      "lat": 14.6225,
+      "lng": 121.086488,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_236",
+      "name": "Virtual Stop 236",
+      "area": "Transit Route",
+      "lat": 14.624508,
+      "lng": 121.084624,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_237",
+      "name": "Virtual Stop 237",
+      "area": "Transit Route",
+      "lat": 14.624362,
+      "lng": 121.082947,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_238",
+      "name": "Virtual Stop 238",
+      "area": "Transit Route",
+      "lat": 14.622416,
+      "lng": 121.081371,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_239",
+      "name": "Virtual Stop 239",
+      "area": "Transit Route",
+      "lat": 14.620282,
+      "lng": 121.079683,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_240",
+      "name": "Virtual Stop 240",
+      "area": "Transit Route",
+      "lat": 14.61813,
+      "lng": 121.078006,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_241",
+      "name": "Virtual Stop 241",
+      "area": "Transit Route",
+      "lat": 14.616493,
+      "lng": 121.075919,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_242",
+      "name": "Virtual Stop 242",
+      "area": "Transit Route",
+      "lat": 14.615579,
+      "lng": 121.073448,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_243",
+      "name": "Virtual Stop 243",
+      "area": "Transit Route",
+      "lat": 14.614658,
+      "lng": 121.071018,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_244",
+      "name": "Virtual Stop 244",
+      "area": "Transit Route",
+      "lat": 14.614123,
+      "lng": 121.068294,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_245",
+      "name": "Virtual Stop 245",
+      "area": "Transit Route",
+      "lat": 14.613466,
+      "lng": 121.065589,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_246",
+      "name": "Virtual Stop 246",
+      "area": "Transit Route",
+      "lat": 14.61281,
+      "lng": 121.062885,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_247",
+      "name": "Virtual Stop 247",
+      "area": "Transit Route",
+      "lat": 14.612154,
+      "lng": 121.06018,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_248",
+      "name": "Virtual Stop 248",
+      "area": "Transit Route",
+      "lat": 14.611498,
+      "lng": 121.057476,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_249",
+      "name": "Virtual Stop 249",
+      "area": "Transit Route",
+      "lat": 14.611356,
+      "lng": 121.055029,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_250",
+      "name": "Virtual Stop 250",
+      "area": "Transit Route",
+      "lat": 14.613815,
+      "lng": 121.053882,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_251",
+      "name": "Virtual Stop 251",
+      "area": "Transit Route",
+      "lat": 14.616275,
+      "lng": 121.052735,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_252",
+      "name": "Virtual Stop 252",
+      "area": "Transit Route",
+      "lat": 14.618734,
+      "lng": 121.051588,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_253",
+      "name": "Virtual Stop 253",
+      "area": "Transit Route",
+      "lat": 14.621193,
+      "lng": 121.050442,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
+    },
+    {
+      "id": "v_jeep_stop_254",
+      "name": "Virtual Stop 254",
+      "area": "Transit Route",
+      "lat": 14.622542,
+      "lng": 121.052384,
+      "lines": [
+        "Jeepney"
+      ],
+      "source": "osrm street-snapped: 300m virtual stop"
     }
   ]
 }
