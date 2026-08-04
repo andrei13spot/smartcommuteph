@@ -34,13 +34,15 @@ async function callPython(pathname, { method = "GET", body } = {}) {
   return { ok: res.ok, status: res.status, data };
 }
 
-// anchor id -> {lat, lng, name}, loaded lazily from the engine
+// node id -> {lat, lng, name}, loaded lazily from the engine. uses /api/network
+// (all nodes incl. the 300m virtual jeepney stops) so route geometry through a
+// jeepney chain resolves; /api/anchors only has the 10 od anchors.
 let anchorIndex = null;
 async function getAnchorIndex() {
   if (anchorIndex) return anchorIndex;
-  const { ok, data } = await callPython("/api/anchors");
-  if (!ok) throw new Error("could not load anchors from engine");
-  anchorIndex = new Map(data.map((a) => [a.id, a]));
+  const { ok, data } = await callPython("/api/network");
+  if (!ok) throw new Error("could not load network nodes from engine");
+  anchorIndex = new Map(data.nodes.map((a) => [a.id, a]));
   return anchorIndex;
 }
 

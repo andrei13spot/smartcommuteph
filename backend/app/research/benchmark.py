@@ -67,7 +67,9 @@ def run_benchmark(hour: int = 8, rainfall_mm: float = 30.0) -> dict:
 
     graph = load_graph()
     ctx = CostContext(graph, hour=hour, rainfall_mm=rainfall_mm)
-    od_pairs = list(combinations(graph.nodes, 2))
+    # od pairs come from the 10 real anchors only, virtual jeepney stops are
+    # path-through nodes, not origins/destinations. keeps it c(10,2) = 45
+    od_pairs = list(combinations(graph.real_nodes, 2))
 
     crit_fw = {pid: [] for pid in PROFILES}
     crit_bl = {pid: [] for pid in PROFILES}
@@ -184,7 +186,7 @@ def run_benchmark_log(hour: int = 8, rainfall_mm: float = 30.0) -> list[dict]:
     graph = load_graph()
     ctx = CostContext(graph, hour=hour, rainfall_mm=rainfall_mm)
     rows: list[dict] = []
-    for o, d in combinations(graph.nodes, 2):
+    for o, d in combinations(graph.real_nodes, 2):
         for pid, prof in PROFILES.items():
             for algo, p in (("framework", prof), ("baseline", BASELINE)):
                 t0 = time.perf_counter()

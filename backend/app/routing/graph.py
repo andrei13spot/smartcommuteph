@@ -42,6 +42,7 @@ class Node:
     lat: float
     lng: float
     lines: tuple[str, ...]
+    virtual: bool = False  # true for the 300m jeepney stops, they are not od anchors
 
 
 @dataclass(frozen=True)
@@ -73,23 +74,44 @@ class Graph:
         na, nb = self.nodes[a], self.nodes[b]
         return haversine_km(na.lat, na.lng, nb.lat, nb.lng)
 
+    @property
+    def real_nodes(self) -> dict[str, Node]:
+        # the 10 od anchors only, virtual jeepney stops excluded. the benchmark
+        # and the dropdowns use these so od pairs stay c(10,2) = 45
+        return {i: n for i, n in self.nodes.items() if not n.virtual}
+
 
 def _load_json(name: str) -> dict:
     with open(_DATA / name, encoding="utf-8") as fh:
         return json.load(fh)
 
 
+def _use_dense() -> bool:
+    # the discretized graph (300m jeepney stops from split_jeepneys.py) is the
+    # default when its files exist. set SCPH_DENSE_GRAPH=0 to force the coarse
+    # 10-node graph, e.g. for quick debugging.
+    import os
+    if os.getenv("SCPH_DENSE_GRAPH", "1") == "0":
+        return False
+    return (_DATA / "anchors_discretized.json").exists() and (_DATA / "graph_discretized.json").exists()
+
+
 @lru_cache(maxsize=1)
 def load_graph() -> Graph:
     # build the graph once and keep it cached
-    anchors = _load_json("anchors.json")["anchors"]
-    raw_edges = _load_json("graph.json")["edges"]
+    if _use_dense():
+        anchors = _load_json("anchors_discretized.json")["anchors"]
+        raw_edges = _load_json("graph_discretized.json")["edges"]
+    else:
+        anchors = _load_json("anchors.json")["anchors"]
+        raw_edges = _load_json("graph.json")["edges"]
 
     graph = Graph()
     for a in anchors:
         graph.nodes[a["id"]] = Node(
             id=a["id"], name=a["name"], area=a["area"],
             lat=a["lat"], lng=a["lng"], lines=tuple(a["lines"]),
+            virtual=a["id"].startswith("v_"),
         )
         graph.adjacency[a["id"]] = []
 
