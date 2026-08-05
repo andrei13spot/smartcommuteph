@@ -31,7 +31,7 @@ def _prioritized_value(ctx: CostContext, edges, priority: str) -> float:
     prev = None
     vals = []
     for e in edges:
-        vals.append(ctx.friction_norm(prev, e.mode))
+        vals.append(ctx.friction_norm(prev, e.mode, e.src))
         prev = e.mode
     return sum(vals) / len(vals)
 
@@ -160,7 +160,8 @@ def _kpis(ctx: CostContext, res, exec_ms: float) -> dict:
     transfer_min = 0.0
     prev = None
     for e in edges:
-        transfer_min += transfer_friction(prev, e.mode)
+        transfer_min += transfer_friction(prev, e.mode,
+                                          continuing=ctx.graph.nodes[e.src].virtual)
         prev = e.mode
     return {
         "travel_time_min": round(sum(e.base_time for e in edges) + transfer_min, 2),

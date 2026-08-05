@@ -26,10 +26,15 @@ _FRICTION_MATRIX = {
 _MAX_FRICTION = max(v for row in _FRICTION_MATRIX.values() for v in row.values())
 
 
-def transfer_friction(mode_a: str | None, mode_b: str) -> float:
+def transfer_friction(mode_a: str | None, mode_b: str, continuing: bool = False) -> float:
     # raw friction of going from mode_a to mode_b.
     # mode_a is none on the first leg (no transfer yet).
+    # continuing=True means the hop happens at a virtual stop mid-corridor:
+    # staying on the same vehicle is not a transfer, so the same-mode diagonal
+    # (jeepney->jeepney 0.5 = changing jeepney LINES) must not be charged there.
     if mode_a is None:
+        return 0.0
+    if continuing and mode_a == mode_b:
         return 0.0
     row = _FRICTION_MATRIX.get(mode_a)
     if not row:
@@ -61,13 +66,18 @@ class CostContext:
         self.hour = hour
         self.rainfall_mm = rainfall_mm
 
+        eids = list(graph.edges)
+        edge_list = [graph.edges[eid] for eid in eids]
+        # flood is predicted for all edges in one batched sklearn call: the
+        # per-edge single-row predict was ~550 model calls per query (25s+)
+        flood_vals = flood.predictor.predict_batch(edge_list, rainfall_mm)
         raw_T: dict[str, float] = {}
         raw_F: dict[str, float] = {}
         raw_R: dict[str, float] = {}
-        for eid, edge in graph.edges.items():
+        for eid, edge, fv in zip(eids, edge_list, flood_vals):
             raw_T[eid] = ridership.predictor.predict(edge, hour)
             raw_F[eid] = edge.fare
-            raw_R[eid] = flood.predictor.predict(edge, rainfall_mm)
+            raw_R[eid] = fv
 
         t_lo, t_hi = _min_max(list(raw_T.values()))
         f_lo, f_hi = _min_max(list(raw_F.values()))
@@ -83,9 +93,12 @@ class CostContext:
         }
         self.raw_flood = raw_R  # kept for the "why this route" text
 
-    def friction_norm(self, arriving_mode: str | None, edge_mode: str) -> float:
-        # P' = normalized transfer friction
-        return transfer_friction(arriving_mode, edge_mode) / _MAX_FRICTION
+    def friction_norm(self, arriving_mode: str | None, edge_mode: str,
+                      src_id: str | None = None) -> float:
+        # P' = normalized transfer friction. src_id is where the transition
+        # happens: at a virtual stop the ride just continues (no transfer).
+        continuing = bool(src_id) and self.graph.nodes[src_id].virtual
+        return transfer_friction(arriving_mode, edge_mode, continuing) / _MAX_FRICTION
 
     def edge_cost(self, edge: Edge, arriving_mode: str | None, profile: Profile) -> float:
         # profile-weighted cost of taking this edge.
@@ -94,6 +107,6 @@ class CostContext:
         if profile.id == "baseline":
             return edge.distance_km
         c = self.criteria[edge.id]
-        p = self.friction_norm(arriving_mode, edge.mode)
+        p = self.friction_norm(arriving_mode, edge.mode, edge.src)
         multiplier = 1.0 + profile.w_T * c.T + profile.w_F * c.F + profile.w_R * c.R + profile.w_P * p
         return edge.base_time * multiplier

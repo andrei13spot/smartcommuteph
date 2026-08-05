@@ -70,7 +70,7 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     prev_mode: str | None = None
     p_vals: list[float] = []
     for e in edges:
-        p_vals.append(ctx.friction_norm(prev_mode, e.mode))
+        p_vals.append(ctx.friction_norm(prev_mode, e.mode, e.src))
         prev_mode = e.mode
     p = sum(p_vals) / len(p_vals)
 
@@ -155,7 +155,8 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
     transfer_minutes = 0.0
     prev_mode: str | None = None
     for e in edges:
-        transfer_minutes += transfer_friction(prev_mode, e.mode)
+        transfer_minutes += transfer_friction(prev_mode, e.mode,
+                                              continuing=ctx.graph.nodes[e.src].virtual)
         prev_mode = e.mode
     fare = round(sum(e.fare for e in edges), 1)
     # 20% discount for student or senior

@@ -1,7 +1,21 @@
 # request and response models for the routing api
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+_PASSENGER_TYPES = {"regular", "student", "senior"}
+
+
+def _clean_passenger_type(v: str | None) -> str | None:
+    # 'Student', ' SENIOR ' etc. must not silently lose the discount
+    if v is None:
+        return None
+    cleaned = v.strip().lower()
+    if not cleaned:
+        return None
+    if cleaned not in _PASSENGER_TYPES:
+        raise ValueError(f"passenger_type must be one of {sorted(_PASSENGER_TYPES)}")
+    return cleaned
 
 
 # ----- requests -----
@@ -22,6 +36,8 @@ class RouteRequest(BaseModel):
         description="regular | student | senior; student/senior gets 20% fare discount",
     )
 
+    _pt = field_validator("passenger_type")(_clean_passenger_type)
+
 
 class CompareRequest(BaseModel):
     origin: str
@@ -29,6 +45,8 @@ class CompareRequest(BaseModel):
     hour: int | None = Field(None, ge=0, le=23)
     rainfall_mm: float | None = Field(None, ge=0)
     passenger_type: str | None = Field(None, description="regular | student | senior")
+
+    _pt = field_validator("passenger_type")(_clean_passenger_type)
 
 
 # ----- response pieces -----
