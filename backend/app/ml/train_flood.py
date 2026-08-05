@@ -61,18 +61,22 @@ def make_dataset(n_rain: int = 40):
 
 def train():
     from sklearn.ensemble import RandomForestRegressor
-    from sklearn.metrics import mean_absolute_error, r2_score
+    from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
     from sklearn.model_selection import train_test_split
     import joblib
 
     X, y = make_dataset()
-    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=_SEED)
+    # stratify on the mode-sensitivity feature so every transit mode is
+    # represented in both partitions (the paper's stratified sampling rule)
+    X_tr, X_te, y_tr, y_te = train_test_split(
+        X, y, test_size=0.2, random_state=_SEED, stratify=X[:, 1])
     model = RandomForestRegressor(
         n_estimators=200, max_depth=12, min_samples_leaf=3, random_state=_SEED, n_jobs=-1,
     )
     model.fit(X_tr, y_tr)
     pred = model.predict(X_te)
     metrics = {
+        "rmse": round(float(np.sqrt(mean_squared_error(y_te, pred))), 4),  # equation 8
         "r2": round(float(r2_score(y_te, pred)), 4),
         "mae": round(float(mean_absolute_error(y_te, pred)), 4),
         "n_train": int(len(X_tr)),

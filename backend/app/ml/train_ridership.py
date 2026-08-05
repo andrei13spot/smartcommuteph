@@ -86,8 +86,14 @@ def train():
     tf.keras.utils.set_random_seed(_SEED)
     series = build_series()
     X, y, peak = make_windows(series)
-    split = int(len(X) * 0.85)
-    X_tr, X_te, y_tr, y_te = X[:split], X[split:], y[:split], y[split:]
+    # chronological 70-15-15 split per the paper: earliest 70% trains, next 15%
+    # validates (drives early stopping), most recent 15% is the untouched
+    # holdout — the training loop never sees it, so the test error is honest
+    s1 = int(len(X) * 0.70)
+    s2 = int(len(X) * 0.85)
+    X_tr, y_tr = X[:s1], y[:s1]
+    X_val, y_val = X[s1:s2], y[s1:s2]
+    X_te, y_te = X[s2:], y[s2:]
 
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=(_WINDOW, 1)),
@@ -96,15 +102,22 @@ def train():
         tf.keras.layers.Dense(1, activation="sigmoid"),
     ])
     model.compile(optimizer="adam", loss="mse", metrics=["mae"])
-    model.fit(X_tr, y_tr, epochs=15, batch_size=32, verbose=2,
-              validation_data=(X_te, y_te))
+    # freeze at the validation-loss minimum (the paper's model-selection rule)
+    early = tf.keras.callbacks.EarlyStopping(
+        monitor="val_loss", patience=8, restore_best_weights=True)
+    hist = model.fit(X_tr, y_tr, epochs=60, batch_size=32, verbose=2,
+                     validation_data=(X_val, y_val), callbacks=[early])
     loss, mae = model.evaluate(X_te, y_te, verbose=0)
+    rmse = float(np.sqrt(loss))  # equation 8, the paper's accuracy metric
 
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
     model.save(MODEL_PATH)
     metrics = {
+        "test_rmse": round(rmse, 5),
         "test_mse": round(float(loss), 5),
         "test_mae": round(float(mae), 5),
+        "epochs_ran": int(len(hist.history["loss"])),
+        "split": "chronological 70-15-15 (train/val/holdout)",
         "n_hours": int(len(series)),
         "window": _WINDOW,
         "peak_entries": int(peak),

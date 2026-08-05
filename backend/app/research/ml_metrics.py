@@ -16,7 +16,7 @@ def ml_metrics() -> dict:
     if fp.metrics:
         rfr = {
             "key": "rfr", "name": "RFR · Flood Risk", "criterion": "R - flood",
-            "r2": fp.metrics["r2"], "mae": fp.metrics["mae"],
+            "rmse": fp.metrics.get("rmse"), "r2": fp.metrics["r2"], "mae": fp.metrics["mae"],
             "detail": f"{fp.metrics['n_train']} train / {fp.metrics['n_test']} test, "
                       "features: rainfall, mode sensitivity, base exposure",
             "status": "trained",
@@ -35,7 +35,7 @@ def ml_metrics() -> dict:
     }
     try:
         m = json.loads(_LSTM_METRICS.read_text())
-        lstm.update({"mse": m["test_mse"], "mae": m["test_mae"],
+        lstm.update({"rmse": m.get("test_rmse"), "mse": m["test_mse"], "mae": m["test_mae"],
                      "detail": f"{m['n_hours']} hourly obs, 24h window, {m['source']}"})
         lstm["status"] = "trained"
     except Exception:
