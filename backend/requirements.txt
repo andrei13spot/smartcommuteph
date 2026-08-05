@@ -7,5 +7,7 @@ scipy>=1.13
 pytest==8.3.4
 scikit-learn>=1.5
 joblib>=1.4
-# tensorflow is optional: the lstm falls back to the data-derived curve without
-# it. install manually if you want to retrain: pip install tensorflow-cpu
+pypdf>=5.0
+# tensorflow is needed both to RUN the shipped lstm and to retrain it; without
+# it the engine still works but ridership falls back to the data-derived mean
+# hourly curve (dashboard will say so). install: pip install tensorflow-cpu

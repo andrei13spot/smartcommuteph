@@ -57,10 +57,16 @@ Non-dominant criteria get 0.15 each.
 | Method | Path | Purpose |
 |---|---|---|
 | GET  | `/api/health`   | Liveness check |
+| GET  | `/api/status`   | Graph size, ML model state, rainfall source |
 | GET  | `/api/profiles` | The four AHP profiles + weights |
-| GET  | `/api/anchors`  | The ten transit anchor points |
+| GET  | `/api/anchors`  | The ten transit anchor points (dropdowns) |
+| GET  | `/api/network`  | All nodes + edges incl. virtual jeepney stops |
 | POST | `/api/route`    | One route for a profile + OD pair |
-| POST | `/api/compare`  | Same OD under all four profiles |
+| POST | `/api/compare`  | Same OD under 4 profiles + baseline (5 results) |
+| GET  | `/api/benchmark` | SOP1–SOP3 statistics (t-tests, Jaccard, RM-ANOVA) |
+| GET  | `/api/benchmark/log` | The 360-row × 8-KPI log (`?format=csv`) |
+| GET  | `/api/ml-metrics` | RMSE/MAE for the LSTM and RFR |
+| POST | `/api/inspect`  | Per-edge cost decomposition for one query |
 
 `POST /api/route` body:
 
@@ -102,13 +108,25 @@ tests/
 
 ## ML components — current status
 
-`ml/ridership.py` and `ml/flood.py` are **placeholders** with the final
-interfaces wired in. They modulate the seed baselines (time-of-day demand for
-ridership; rainfall sensitivity by mode for flood) so the full pipeline —
-normalization, cost function, A\*, aggregation — runs end to end today. Drop in
-the trained LSTM / RFR models and the live PAGASA TenDay Forecast call without
-changing any caller: the contracts are `predict(edge, hour) → [0,1]` and
-`predict(edge, rainfall_mm) → [0,1]`.
+Both models are **trained** on real data:
+
+- **LSTM ridership** (`ml/ridership.py`, trained by `ml/train_ridership.py`) —
+  DOTC-MRT3 hourly ridership reports 2024–2025 (~1,175 hourly observations),
+  24-hour window, chronological 70-15-15 split with early stopping at the
+  validation-loss minimum. Ships trained; without TensorFlow the engine falls
+  back to the data-derived mean hourly curve.
+- **RFR flood risk** (`ml/flood.py`, trained by `ml/train_flood.py`) — features
+  are rainfall, mode sensitivity, and per-edge exposure computed from **101
+  real MMDA flood incidents** (`ml/data/mmda_flood_incidents.json`). The
+  `.joblib` is gitignored: regenerate once with `python -m app.ml.train_flood`.
+
+Rainfall comes from the **PAGASA TenDay Forecast API** when `SCPH_PAGASA_TOKEN`
+is set (see `docs/pagasa-api-request.md`); otherwise an offline 8 mm default is
+used and `/api/status` reports the source.
+
+Env vars: `SCPH_DENSE_GRAPH=0` forces the coarse 10-node graph (default is the
+264-node discretized graph when its files exist); `SCPH_PAGASA_TOKEN` enables
+the live rainfall feed; `SCPH_CORS_ORIGINS` overrides allowed origins.
 
 > Research prototype — not a deployed transit application.
 > Group 11 · BSCS · CCIS · Polytechnic University of the Philippines · 2026
