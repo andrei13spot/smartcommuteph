@@ -106,8 +106,12 @@ columns: `od_pair, profile, algorithm` + the 8 kpis above, same names.
 
 ## other endpoints (internal / dashboards)
 
-- `GET /api/map/anchors` — the 10 anchors with coords
-- `GET /api/map/network` — whole graph as geojson (maps)
+- `GET /api/map/anchors` — the 10 anchors with coords (dropdowns; virtual stops excluded)
+- `GET /api/map/profiles` — the 4 profiles for the frontend selectors
+- `GET /api/map/network` — whole graph as geojson (maps, incl. virtual jeepney stops)
 - `POST /api/map/route`, `POST /api/map/compare` — geojson versions for leaflet
-- `GET /api/benchmark`, `GET /api/ml-metrics`, `POST /api/inspect` — researcher console
+- `GET /api/status` — graph size, ml model state, rainfall source (dev dashboard)
+- `GET /api/benchmark` — sop1-sop3 statistics (paired t-tests, jaccard, rm-anova)
+- `GET /api/benchmark/log?format=csv` — the 360-row x 8-kpi benchmark log
+- `GET /api/ml-metrics`, `POST /api/inspect` — researcher console
 - `GET /healthz` — gateway + engine health
