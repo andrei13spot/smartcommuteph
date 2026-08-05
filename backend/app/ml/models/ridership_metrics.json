@@ -1,6 +1,9 @@
 {
-  "test_mse": 0.00795,
-  "test_mae": 0.06742,
+  "test_rmse": 0.05051,
+  "test_mse": 0.00255,
+  "test_mae": 0.0353,
+  "epochs_ran": 60,
+  "split": "chronological 70-15-15 (train/val/holdout)",
   "n_hours": 1175,
   "window": 24,
   "peak_entries": 41418,
