@@ -57,10 +57,11 @@ function setConn(on, text) {
 }
 
 function renderSOP(b) {
+    const rm = b.sop2.rm_anova || {};
     const items = [
         { tag:"SOP 1", stat:b.sop1.mean_reduction_pct + "%", ok:b.sop1.supported },
-        { tag:"SOP 2", stat:b.sop2.mean_distinct_routes,     ok:b.sop2.supported },
-        { tag:"SOP 3", stat:b.sop3.mean_reduction_pct + "%", ok:b.sop3.supported },
+        { tag:"SOP 2", stat:'J ' + (b.sop2.mean_jaccard ?? '—'), ok:b.sop2.supported },
+        { tag:"SOP 3", stat:(b.sop3.nodes?.mean_reduction_pct ?? b.sop3.mean_reduction_pct) + "%", ok:b.sop3.supported },
     ];
     // guard each target: the dashboard rework dropped some of these containers,
     // and one missing id must not knock the whole init into the offline catch
@@ -73,9 +74,18 @@ function renderSOP(b) {
     const sopDetail = $('sop-detail');
     if (sopDetail) sopDetail.innerHTML = `
         <div><div class="sd-l">Mean cost reduction</div><div class="sd-v">${b.sop1.mean_reduction_pct}%</div></div>
-        <div><div class="sd-l">ANOVA F-stat</div><div class="sd-v">${b.sop1.anova_f}</div></div>
-        <div><div class="sd-l">Route variance</div><div class="sd-v">${b.sop2.mean_distinct_routes} / 4</div></div>
+        <div><div class="sd-l">RM-ANOVA F (GG p)</div><div class="sd-v">${rm.F ?? '—'} (${rm.p_gg_corrected ?? '—'})</div></div>
+        <div><div class="sd-l">Mean Jaccard</div><div class="sd-v">${b.sop2.mean_jaccard ?? '—'}</div></div>
         <div><div class="sd-l">Nodes fw vs base</div><div class="sd-v">${b.sop3.fw_nodes_mean} / ${b.sop3.bl_nodes_mean}</div></div>`;
+    // the four hypothesis tiles (mean cost reduction, mean jaccard, anova f, nodes delta)
+    const tiles = document.querySelectorAll('.hyp-card .hc-value');
+    if (tiles.length >= 4) {
+        tiles[0].innerText = b.sop1.mean_reduction_pct + '%';
+        tiles[1].innerText = b.sop2.mean_jaccard ?? '—';
+        tiles[2].innerText = (rm.F ?? '—') + (rm.p_gg_corrected != null ? ` (p ${rm.p_gg_corrected})` : '');
+        tiles[3].innerText = (b.sop3.fw_nodes_mean - b.sop3.bl_nodes_mean > 0 ? '+' : '')
+            + Math.round((b.sop3.fw_nodes_mean - b.sop3.bl_nodes_mean) * 10) / 10;
+    }
     if ($('m-obs')) $('m-obs').innerText = b.observations;
     if ($('m-od')) $('m-od').innerText = b.od_pairs;
 }
