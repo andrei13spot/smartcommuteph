@@ -131,5 +131,14 @@ class FloodRiskPredictor:
         features = [[rainfall_mm, self._sensitivity(edge.mode), edge.flood_risk]]
         return _clamp01(float(self._model.predict(features)[0]))
 
+    def predict_batch(self, edges: list[Edge], rainfall_mm: float) -> list[float]:
+        # one vectorized model call for the whole edge list. a per-edge
+        # single-row predict costs ~50ms each in sklearn overhead, which made
+        # every routing query take ~25s on the dense graph.
+        if self._model is None:
+            return [self._heuristic(e, rainfall_mm) for e in edges]
+        features = [[rainfall_mm, self._sensitivity(e.mode), e.flood_risk] for e in edges]
+        return [_clamp01(float(v)) for v in self._model.predict(features)]
+
 
 predictor = FloodRiskPredictor()

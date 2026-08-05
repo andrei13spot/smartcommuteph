@@ -26,7 +26,7 @@ def inspect(origin: str, destination: str, profile_name: str,
     prev_mode = None
     for e in res.edges:
         c = ctx.criteria[e.id]
-        p = ctx.friction_norm(prev_mode, e.mode)
+        p = ctx.friction_norm(prev_mode, e.mode, e.src)
         mult = 1.0 + profile.w_T * c.T + profile.w_F * c.F + profile.w_R * c.R + profile.w_P * p
         rows.append({
             "from_id": e.src, "to_id": e.dst,
