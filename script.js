@@ -116,24 +116,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------------------------------
     const calculateBtn = document.querySelector('.location-panel .btn-blue-pill');
     if (calculateBtn) {
+        // inline warning under the button, created once
+        function routeWarning(msg) {
+            let warn = document.getElementById('route-warning');
+            if (!warn) {
+                warn = document.createElement('div');
+                warn.id = 'route-warning';
+                warn.style.cssText = 'color:#ef4444;font-size:0.85rem;font-weight:600;margin-top:10px;';
+                calculateBtn.parentElement.appendChild(warn);
+            }
+            warn.innerText = msg;
+        }
+
         calculateBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const selects = document.querySelectorAll('.location-panel select');
-            if (selects.length >= 2) {
-                const originText = selects[0].options[selects[0].selectedIndex].text;
-                const destText = selects[1].options[selects[1].selectedIndex].text;
-                const finalOrigin = selects[0].selectedIndex > 0 ? originText : "Cubao Gateway";
-                const finalDest = selects[1].selectedIndex > 0 ? destText : "Pasay EDSA-Taft";
-                // save the station ids (the option values) too so the result map
-                // can ask the engine by id, not by display name
-                const finalOriginId = selects[0].selectedIndex > 0 ? selects[0].value : "cubao";
-                const finalDestId = selects[1].selectedIndex > 0 ? selects[1].value : "pasay";
-
-                localStorage.setItem('smartCommute_routeOrigin', finalOrigin);
-                localStorage.setItem('smartCommute_routeDest', finalDest);
-                localStorage.setItem('smartCommute_routeOriginId', finalOriginId);
-                localStorage.setItem('smartCommute_routeDestId', finalDestId);
+            if (selects.length < 2) return;
+            // no silent defaults: both fields are required and must differ
+            if (selects[0].selectedIndex <= 0 || selects[1].selectedIndex <= 0) {
+                routeWarning('Please select both an origin and a destination first.');
+                return;
             }
+            if (selects[0].value === selects[1].value) {
+                routeWarning('Origin and destination cannot be the same station.');
+                return;
+            }
+            // save the station ids (the option values) too so the result map
+            // can ask the engine by id, not by display name
+            localStorage.setItem('smartCommute_routeOrigin', selects[0].options[selects[0].selectedIndex].text);
+            localStorage.setItem('smartCommute_routeDest', selects[1].options[selects[1].selectedIndex].text);
+            localStorage.setItem('smartCommute_routeOriginId', selects[0].value);
+            localStorage.setItem('smartCommute_routeDestId', selects[1].value);
             window.location.href = 'result.html';
         });
     }
@@ -343,17 +356,32 @@ document.addEventListener('DOMContentLoaded', () => {
             // Wait at least 800ms before fading out
             setTimeout(() => {
                 loader.classList.add('loader-hidden');
-            }, 400); 
+            }, 400);
         }
+    });
+
+    // coming back via the browser back button restores the page from the
+    // bfcache without firing 'load', which left the loader stuck on screen
+    // (the blank white page qa found). hide it again on restore.
+    window.addEventListener('pageshow', (e) => {
+        if (!e.persisted) return;
+        const loader = document.getElementById('loader-overlay');
+        if (loader) loader.classList.add('loader-hidden');
     });
 
     // Trigger loader when clicking internal links
     document.addEventListener('click', (e) => {
         const target = e.target.closest('a');
-        
+        if (!target) return;
+        // skip placeholder links like href="#": their hash is empty so the old
+        // check let them through, which showed the loader forever with no
+        // navigation (the stuck landing page qa found)
+        const rawHref = target.getAttribute('href') || '';
+        if (rawHref === '#' || rawHref === '' || rawHref.startsWith('#')) return;
+
         // 1. Check if it's a valid link
         // 2. Ensure it's not a hash link (e.g., #map-section)
-        if (target && target.href && target.href.startsWith(window.location.origin) && !target.hash) {
+        if (target.href && target.href.startsWith(window.location.origin) && !target.hash) {
             const loader = document.getElementById('loader-overlay');
             if (loader) loader.classList.remove('loader-hidden');
         }
