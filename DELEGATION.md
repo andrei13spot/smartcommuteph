@@ -3,11 +3,12 @@
 **Group 11 · BSCS · PUP CCIS**
 Companion to `Group11_Delegation_Timeline.xlsx` (the full sheet).
 
-- **Goal:** a working prototype for the panel, finished the soonest — target **~1 month (Jul 13 – Aug 15)**.
+- **Goal:** a working prototype for the panel — revised target **end of August (Jul 13 – Aug 31)**.
 - **Start:** Monday, **July 13, 2026** (kickoff meeting).
-- **Weekly check-in:** every **Saturday** — Jul 18, Jul 25, Aug 1, Aug 8, Aug 15.
-- **UI/UX dashboard due:** Saturday, **July 18, 2026** (hard sub-deadline).
-- **Hard deadline:** Saturday, **August 15, 2026** (final Saturday check-in — defense-ready).
+- **Weekly check-in:** every **Saturday** — remaining gates: **Aug 22, Aug 29**.
+- **Hard deadline:** Monday, **August 31, 2026** (defense-ready, end of month).
+- **Revision note (Aug 15):** original Aug 15 deadline moved — engine/data/statistics are done,
+  but the frontend live-wiring, AHP survey weights, and full QA still need the extra two weeks.
 - **Discipline:** strict. A task is not *done* until QA (Dave) signs off.
 
 ---
@@ -80,16 +81,19 @@ Final sign-off before anything merges.
 
 ---
 
-## Timeline (4 sprints + buffer)
+## Timeline (revised Aug 15 — extended to end of August)
+
+**Done as of Aug 15 (weeks 1–4):** full engine (multi-criteria A*, distance baseline,
+node counter, transfer friction), `/route` + `/compare`, 264-node street-snapped graph,
+official LRTA anchor coords, real MMDA flood labels, trained LSTM + RFR, 360-row
+benchmark with the full Chapter-4 statistics (paired t-tests, Jaccard, RM-ANOVA),
+UI screens + researcher/dev dashboards, QA round 1 report delivered.
 
 | Sprint | Dates (2026) | Focus | Saturday gate |
 |---|---|---|---|
-| Kickoff | Mon Jul 13 | Align on API contract; assign; Figma finalized | — |
-| Week 1 | Jul 13 – 18 | **Front-end build** + API contract locked + Express skeleton + graph static attrs + AHP started | **Jul 18 — ★ UI/UX dashboard COMPLETE; contract locked** |
-| Week 2 | Jul 20 – 25 | Multi-criteria A*, node counter, baseline, transfer friction, `/route` + `/compare`; 4 weight vectors; UI wired to API | **Jul 25 — engine live; /route & /compare return; weights delivered** |
-| Week 3 | Jul 27 – Aug 1 | LSTM + RFR integrated; benchmark harness → 360 rows; comparison view polished | **Aug 1 — 360-row benchmark w/ 8 KPIs; routes differ** |
-| Week 4 | Aug 3 – 8 | Full QA, pruning check, data-pipeline check → sign-off; fixes; integration freeze | **Aug 8 — Dave sign-off; pruning verified; freeze** |
-| Buffer | Aug 10 – 15 | Defense prep, rehearsal, last fixes, dry runs — no new features | **Sat Aug 15 — ★ Prototype complete & defense-ready (hard deadline)** |
+| Week 5 | Aug 17 – 22 | **Luis:** QA-round-1 fixes (require origin+destination, no silent defaults, stuck loader on back-nav, dead "Learn more" links) + wire result view to live `/route`. **Princess:** AHP survey weights (150 respondents, reject CR ≥ 0.10) → hand 4 vectors to Andrei. **Andrei:** send PAGASA API letter; drop real weights into `profiles.py`; regenerate benchmark. **Dave:** re-test round-1 fixes as they land | **Aug 22 — validation fixed; result view live; real weights in the engine** |
+| Week 6 | Aug 24 – 29 | **Luis:** wire compare view to live `/compare`; finish About page; copy fixes ("PAGASA TenDay Forecast"); error states. **Princess:** documentation (methodology, model cards, data sources). **Dave:** full QA — all screens, comparison check, 360-row/8-KPI pipeline check, pruning check → **sign-off**. **All:** freeze **Wed Aug 26**, then `dev → main`; defense deck + first dry run | **Aug 29 — ★ QA sign-off; frozen; defense-ready** |
+| Buffer | Aug 31 | Final rehearsal + dry run, last fixes only — no new features | **Mon Aug 31 — ★ Hard deadline (end of month)** |
 
 ---
 
