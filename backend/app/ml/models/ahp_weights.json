@@ -1,0 +1,58 @@
+{
+  "description": "ahp profile weight vectors via normalized column average, cr >= 0.10 rejected (saaty n=4, ri 0.90).",
+  "source": "SIMULATED respondents (mock) - NOT the real survey. replace simulate_respondents with the real 150-respondent export and rerun derive_ahp_weights.py before the defense claims survey data.",
+  "profiles": {
+    "uncrowded": {
+      "priority": "T",
+      "weights": {
+        "T": 0.5605,
+        "F": 0.1581,
+        "R": 0.1472,
+        "P": 0.1343
+      },
+      "n_respondents": 150,
+      "n_accepted": 135,
+      "n_rejected_cr": 15,
+      "mean_cr_accepted": 0.0335
+    },
+    "cheapest": {
+      "priority": "F",
+      "weights": {
+        "T": 0.1503,
+        "F": 0.5684,
+        "R": 0.149,
+        "P": 0.1323
+      },
+      "n_respondents": 150,
+      "n_accepted": 133,
+      "n_rejected_cr": 17,
+      "mean_cr_accepted": 0.0372
+    },
+    "safest": {
+      "priority": "R",
+      "weights": {
+        "T": 0.1513,
+        "F": 0.1373,
+        "R": 0.5831,
+        "P": 0.1283
+      },
+      "n_respondents": 150,
+      "n_accepted": 144,
+      "n_rejected_cr": 6,
+      "mean_cr_accepted": 0.0325
+    },
+    "convenient": {
+      "priority": "P",
+      "weights": {
+        "T": 0.1601,
+        "F": 0.1448,
+        "R": 0.135,
+        "P": 0.5601
+      },
+      "n_respondents": 150,
+      "n_accepted": 133,
+      "n_rejected_cr": 17,
+      "mean_cr_accepted": 0.0352
+    }
+  }
+}

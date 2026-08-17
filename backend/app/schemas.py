@@ -66,6 +66,8 @@ class ProfileOut(BaseModel):
     priority: str
     tagline: str
     weights: dict[str, float]
+    cr: float | None = None            # mean consistency ratio of accepted respondents
+    weights_source: str | None = None  # ahp pipeline vs placeholder, mock vs real
 
 
 class CriterionOut(BaseModel):

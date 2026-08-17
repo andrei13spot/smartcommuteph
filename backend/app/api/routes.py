@@ -81,6 +81,7 @@ def list_profiles() -> list[ProfileOut]:
         ProfileOut(
             id=p.id, name=p.name, theme=p.theme, priority=p.priority,
             tagline=p.tagline, weights=p.weights,
+            cr=p.cr, weights_source=p.weights_source,
         )
         for p in PROFILES.values()
     ]

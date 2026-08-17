@@ -1,10 +1,16 @@
 # ahp commuter profiles.
 # each profile is a weight set (wT, wF, wR, wP) over the four secondary criteria:
 #   T = ridership, F = fare, R = flood risk, P = transfer friction.
-# normally these come from the saaty 1-9 survey (kept under CR < 0.10). here we
-# pin the four published profiles: the main criterion gets 0.55, the other three
-# split the rest (0.15 each), so each set sums to 1.
+# the weights come from the saaty 1-9 survey pipeline (normalized column
+# average, respondents with cr >= 0.10 rejected) via ml/derive_ahp_weights.py,
+# loaded from ml/models/ahp_weights.json. the json says whether it was built
+# from SIMULATED respondents (mock) or the real survey export. if the file is
+# missing entirely we fall back to the pinned 0.55/0.15 placeholder split.
+import json
 from dataclasses import dataclass
+from pathlib import Path
+
+_AHP_PATH = Path(__file__).parent / "ml" / "models" / "ahp_weights.json"
 
 
 @dataclass(frozen=True)
@@ -18,38 +24,61 @@ class Profile:
     w_F: float          # fare weight
     w_R: float          # flood-risk weight
     w_P: float          # transfer-friction weight
+    cr: float | None = None          # mean consistency ratio of accepted respondents
+    weights_source: str = "placeholder (0.55/0.15 split)"
 
     @property
     def weights(self) -> dict[str, float]:
         return {"T": self.w_T, "F": self.w_F, "R": self.w_R, "P": self.w_P}
 
 
-# main criterion 0.55, the other three 0.15 each (sums to 1)
+_META = {
+    "uncrowded":  ("Uncrowded", "blue", "T", "Prioritizes ridership"),
+    "cheapest":   ("Cheapest", "yellow", "F", "Prioritizes fare"),
+    "safest":     ("Safest", "red", "R", "Prioritizes flood risk"),
+    "convenient": ("Convenient", "green", "P", "Prioritizes transfer friction"),
+}
+
+# placeholder fallback: main criterion 0.55, the other three 0.15 each
 _DOM = 0.55
 _OTH = 0.15
 
-PROFILES: dict[str, Profile] = {
-    "uncrowded": Profile(
-        id="uncrowded", name="Uncrowded", theme="blue", priority="T",
-        tagline="Prioritizes ridership",
-        w_T=_DOM, w_F=_OTH, w_R=_OTH, w_P=_OTH,
-    ),
-    "cheapest": Profile(
-        id="cheapest", name="Cheapest", theme="yellow", priority="F",
-        tagline="Prioritizes fare",
-        w_T=_OTH, w_F=_DOM, w_R=_OTH, w_P=_OTH,
-    ),
-    "safest": Profile(
-        id="safest", name="Safest", theme="red", priority="R",
-        tagline="Prioritizes flood risk",
-        w_T=_OTH, w_F=_OTH, w_R=_DOM, w_P=_OTH,
-    ),
-    "convenient": Profile(
-        id="convenient", name="Convenient", theme="green", priority="P",
-        tagline="Prioritizes transfer friction",
-        w_T=_OTH, w_F=_OTH, w_R=_OTH, w_P=_DOM,
-    ),
-}
+
+def _load_ahp() -> dict | None:
+    try:
+        return json.loads(_AHP_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _build_profiles() -> dict[str, Profile]:
+    ahp = _load_ahp()
+    out: dict[str, Profile] = {}
+    for pid, (name, theme, priority, tagline) in _META.items():
+        if ahp and pid in ahp.get("profiles", {}):
+            p = ahp["profiles"][pid]
+            # renormalize so the four rounded json values sum to exactly 1,
+            # keeping the paper's 2.0 penalty bound airtight
+            total = sum(p["weights"].values())
+            w = {c: v / total for c, v in p["weights"].items()}
+            src = "ahp survey pipeline"
+            if "SIMULATED" in ahp.get("source", "").upper():
+                src = "ahp pipeline on SIMULATED respondents (mock)"
+            out[pid] = Profile(
+                id=pid, name=name, theme=theme, priority=priority, tagline=tagline,
+                w_T=w["T"], w_F=w["F"], w_R=w["R"], w_P=w["P"],
+                cr=p.get("mean_cr_accepted"), weights_source=src,
+            )
+        else:
+            w = {c: (_DOM if c == priority else _OTH) for c in ("T", "F", "R", "P")}
+            out[pid] = Profile(
+                id=pid, name=name, theme=theme, priority=priority, tagline=tagline,
+                w_T=w["T"], w_F=w["F"], w_R=w["R"], w_P=w["P"],
+            )
+    return out
+
+
+PROFILES: dict[str, Profile] = _build_profiles()
 
 # baseline = plain distance based a*, zero weights. this is what the
 # framework gets compared against in the benchmark and /compare
