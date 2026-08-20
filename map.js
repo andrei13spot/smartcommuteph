@@ -167,6 +167,7 @@
   function fillCompareCard(card, route) {
     const set = (sel, val) => { const e = card.querySelector(sel); if (e) e.innerText = val; };
     const s = route.summary;
+    card.dataset.routeData = JSON.stringify(route);
     set(".compare-card-title", route.prioritized.title);
     set(".compare-card-body p.text-secondary", route.prioritized.subtitle);
     const metrics = [
@@ -182,7 +183,7 @@
       if (lbl) lbl.innerText = metrics[i][0];
       if (val) val.innerText = metrics[i][1];
     });
-    set(".compare-card-route", `${route.origin.name} → ${s.modes.join(" → ")} → ${route.destination.name}`);
+    set(".compare-card-route", "View Route Details");
   }
 
   // compare.html: a small static route map inside each profile card

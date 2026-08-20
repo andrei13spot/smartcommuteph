@@ -6,6 +6,7 @@
     <title>SmartCommutePH - Profile Comparison</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="page-compare">
@@ -90,7 +91,7 @@
                                     <div class="compare-metric-value">Safe</div>
                                 </div>
                             </div>
-                            <p class="compare-card-route text-secondary" style="font-size: 0.85rem;">Cubao → LRT-2 → Recto → LRT-1 → EDSA → Pasay</p>
+                            <p class="compare-card-route text-secondary route-clickable" style="font-size: 0.85rem; cursor: pointer;">View Route Details</p>
                         </div>
                     </div>
                 </div>
@@ -124,7 +125,7 @@
                                     <div class="compare-metric-value">Safe</div>
                                 </div>
                             </div>
-                            <p class="compare-card-route text-secondary" style="font-size: 0.85rem;">Cubao → Jeepney → MRT-3 → Pasay</p>
+                            <p class="compare-card-route text-secondary route-clickable" style="font-size: 0.85rem; cursor: pointer;">View Route Details</p>
                         </div>
                     </div>
                 </div>
@@ -158,7 +159,7 @@
                                     <div class="compare-metric-value">1</div>
                                 </div>
                             </div>
-                            <p class="compare-card-route text-secondary" style="font-size: 0.85rem;">Cubao → LRT-2 → MRT-3 → Pasay</p>
+                            <p class="compare-card-route text-secondary route-clickable" style="font-size: 0.85rem; cursor: pointer;">View Route Details</p>
                         </div>
                     </div>
                 </div>
@@ -192,7 +193,7 @@
                                     <div class="compare-metric-value">Safe</div>
                                 </div>
                             </div>
-                            <p class="compare-card-route text-secondary" style="font-size: 0.85rem;">Cubao → MRT-3 (direct) → Pasay</p>
+                            <p class="compare-card-route text-secondary route-clickable" style="font-size: 0.85rem; cursor: pointer;">View Route Details</p>
                         </div>
                     </div>
                 </div>
@@ -203,6 +204,22 @@
             </div>
         </div>
     </section>
+
+    <!-- Route Details Modal -->
+    <div id="route-details-modal" class="route-modal">
+        <div class="route-modal-overlay"></div>
+        <div class="route-modal-dialog">
+            <div class="route-modal-content">
+                <div class="route-modal-header">
+                    <h2 id="route-modal-title">Route Details</h2>
+                    <button class="route-modal-close" onclick="closeRouteModal()">&times;</button>
+                </div>
+                <div class="route-modal-body">
+                    <div id="route-breakdown" class="route-breakdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer py-4 border-top border-secondary mt-0">
         <div class="container text-center">

@@ -533,6 +533,419 @@ body.page-compare .compare-card.active .compare-metric {
 .text-red { color: #f87171 !important; }
 .text-green { color: #34d399 !important; }
 
+.profile-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 2000;
+}
+
+.profile-modal.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.profile-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.profile-modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(560px, calc(100% - 32px));
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    padding: 28px 26px 20px;
+    color: #f8fafc;
+}
+
+.profile-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(148, 163, 184, 0.12);
+    color: #e2e8f0;
+    font-size: 2rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.profile-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-right: 38px;
+}
+
+.profile-modal-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+    box-shadow: 0 10px 24px rgba(14, 165, 233, 0.28);
+}
+
+.profile-modal-overline {
+    margin: 0 0 4px;
+    color: rgba(148, 163, 184, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+#profile-modal-title {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.profile-modal-summary {
+    margin: 0 0 18px;
+    color: #dfe7f2;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.profile-modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    display: grid;
+    gap: 10px;
+}
+
+.profile-modal-list li {
+    position: relative;
+    padding-left: 24px;
+    color: #dce7f1;
+    line-height: 1.6;
+}
+
+.profile-modal-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--profile-accent, #38bdf8);
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.profile-modal-footer {
+    display: none;
+}
+
+.profile-modal-action {
+    display: none;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+/* --- ROUTE DETAILS MODAL --- */
+.route-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 2000;
+}
+
+.route-modal.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.route-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.route-modal-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(600px, calc(100% - 32px));
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    padding: 28px 26px 20px;
+    color: #f8fafc;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.route-modal-content {
+    position: relative;
+}
+
+.route-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-right: 0;
+}
+
+.route-modal-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.route-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(148, 163, 184, 0.12);
+    color: #e2e8f0;
+    font-size: 2rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.route-modal-close:hover {
+    background: rgba(148, 163, 184, 0.2);
+    color: #f8fafc;
+}
+
+.route-modal-body {
+    margin-top: 20px;
+}
+
+.route-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.route-segment {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.route-segment:hover {
+    background: rgba(148, 163, 184, 0.14);
+    border-color: rgba(148, 163, 184, 0.2);
+}
+
+/* Transit Mode Colors */
+.route-segment.mode-lrt1 {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.route-segment.mode-lrt1:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.route-segment.mode-lrt2 {
+    background: rgba(168, 85, 247, 0.1);
+    border-color: rgba(168, 85, 247, 0.2);
+}
+
+.route-segment.mode-lrt2:hover {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.route-segment.mode-mrt3 {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.route-segment.mode-mrt3:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.route-segment.mode-bus {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.2);
+}
+
+.route-segment.mode-bus:hover {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.route-segment.mode-jeepney {
+    background: rgba(202, 138, 4, 0.1);
+    border-color: rgba(202, 138, 4, 0.2);
+}
+
+.route-segment.mode-jeepney:hover {
+    background: rgba(202, 138, 4, 0.15);
+    border-color: rgba(202, 138, 4, 0.3);
+}
+
+.route-segment-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    color: white;
+    flex-shrink: 0;
+}
+
+.route-segment-icon i,
+.route-segment-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Mode-specific icon colors */
+.route-segment.mode-lrt1 .route-segment-icon {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25);
+}
+
+.route-segment.mode-lrt2 .route-segment-icon {
+    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    box-shadow: 0 3px 10px rgba(168, 85, 247, 0.25);
+}
+
+.route-segment.mode-mrt3 .route-segment-icon {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.25);
+}
+
+.route-segment.mode-bus .route-segment-icon {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    box-shadow: 0 3px 10px rgba(34, 197, 94, 0.25);
+}
+
+.route-segment.mode-jeepney .route-segment-icon {
+    background: linear-gradient(135deg, #ca8a04 0%, #b45309 100%);
+    box-shadow: 0 3px 10px rgba(202, 138, 4, 0.25);
+}
+
+.route-segment-stop .route-segment-icon {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: #cbd5e1;
+}
+
+.route-segment-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.route-segment-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(226, 232, 240, 0.6);
+    font-weight: 600;
+}
+
+.route-segment-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.route-segment-details {
+    font-size: 0.85rem;
+    color: rgba(226, 232, 240, 0.8);
+}
+
+/* Result Page Route Breakdown Card */
+.route-breakdown-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98)) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    color: #f8fafc;
+}
+
+.route-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100% - 60px);
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.route-breakdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.route-breakdown::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.08);
+    border-radius: 4px;
+}
+
+.route-breakdown::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.route-breakdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
 /* Profile Comparison Cards */
 .compare-card {
     background: #ffffff;
@@ -1189,6 +1602,7 @@ body.page-compare .compare-card.active .compare-metric {
     z-index: 9999;
     opacity: 1;
     transition: opacity 0.5s ease;
+    animation: fade-loader 1.2s ease 0.8s forwards;
 }
 
 .loader-spinner {
@@ -1203,6 +1617,11 @@ body.page-compare .compare-card.active .compare-metric {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes fade-loader {
+    0% { opacity: 1; }
+    100% { opacity: 0; pointer-events: none; }
 }
 
 .loader-hidden {
@@ -1328,6 +1747,36 @@ body.page-compare .compare-card.active .compare-metric {
 
 /* keep tiles transparent and fonts matching the app */
 .leaflet-container { background: transparent; font-family: inherit; }
+
+/* Keep Leaflet zoom controls clear of the floating form and result panel */
+.leaflet-top.leaflet-left {
+    left: auto;
+    right: 18px;
+    top: 18px;
+}
+
+.leaflet-control-zoom {
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    background: rgba(15, 23, 42, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+    margin: 0 !important;
+}
+
+.leaflet-control-zoom a {
+    background: transparent !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    font-weight: 500 !important;
+    line-height: 26px !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+}
 
 /* mode legend under the result map */
 .route-legend {
