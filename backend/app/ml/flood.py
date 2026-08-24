@@ -89,7 +89,10 @@ def fetch_pagasa_rainfall_mm() -> float:
         except Exception:
             pass  # network down or schema surprise: fall through to the default
 
-    _rain_cache.update(value=DEFAULT_RAINFALL_MM, at=now, source="default (no token / offline)")
+    # cache the fallback for only ~2 minutes so a recovered feed is picked up
+    # quickly instead of the default squatting for the full hour ttl
+    _rain_cache.update(value=DEFAULT_RAINFALL_MM, at=now - (_CACHE_TTL_S - 120.0),
+                       source="default (no token / offline)")
     return DEFAULT_RAINFALL_MM
 
 

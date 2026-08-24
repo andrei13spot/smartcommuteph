@@ -13,7 +13,7 @@
       "n_respondents": 150,
       "n_accepted": 135,
       "n_rejected_cr": 15,
-      "mean_cr_accepted": 0.0335
+      "mean_cr_accepted": 0.0338
     },
     "cheapest": {
       "priority": "F",
@@ -26,7 +26,7 @@
       "n_respondents": 150,
       "n_accepted": 133,
       "n_rejected_cr": 17,
-      "mean_cr_accepted": 0.0372
+      "mean_cr_accepted": 0.0376
     },
     "safest": {
       "priority": "R",
@@ -39,7 +39,7 @@
       "n_respondents": 150,
       "n_accepted": 144,
       "n_rejected_cr": 6,
-      "mean_cr_accepted": 0.0325
+      "mean_cr_accepted": 0.0329
     },
     "convenient": {
       "priority": "P",
@@ -52,7 +52,7 @@
       "n_respondents": 150,
       "n_accepted": 133,
       "n_rejected_cr": 17,
-      "mean_cr_accepted": 0.0352
+      "mean_cr_accepted": 0.0356
     }
   }
 }

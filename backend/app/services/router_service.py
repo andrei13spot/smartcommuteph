@@ -66,13 +66,16 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     t = sum(ctx.criteria[e.id].T for e in edges) / len(edges)
     f = sum(ctx.criteria[e.id].F for e in edges) / len(edges)
     r = max(ctx.criteria[e.id].R for e in edges)  # worst segment for flood
-    # transfer friction along the path, per leg
+    # transfer friction along the path, averaged over the transitions where a
+    # transfer can actually happen (real stops), not every 300m virtual hop -
+    # dividing by the edge count made a worse transfer look lower on long routes
     prev_mode: str | None = None
     p_vals: list[float] = []
     for e in edges:
-        p_vals.append(ctx.friction_norm(prev_mode, e.mode, e.src))
+        if not ctx.graph.nodes[e.src].virtual or prev_mode != e.mode:
+            p_vals.append(ctx.friction_norm(prev_mode, e.mode, e.src))
         prev_mode = e.mode
-    p = sum(p_vals) / len(p_vals)
+    p = sum(p_vals) / len(p_vals) if p_vals else 0.0
 
     return {
         "T": CriterionOut(value=round(t, 2), level=_level(t)),
@@ -136,6 +139,16 @@ def _why(profile: Profile, summary: RouteSummary, criteria: dict[str, CriterionO
     }
 
 
+from functools import lru_cache
+
+
+@lru_cache(maxsize=16)
+def _shared_ctx(hour: int, rainfall_mm: float) -> CostContext:
+    # one context per (hour, rainfall): /compare calls build_route five times
+    # for the same query and was paying the full ml inference each time
+    return CostContext(load_graph(), hour=hour, rainfall_mm=rainfall_mm)
+
+
 def build_route(req_origin: str, req_destination: str, req_profile: str,
                 hour: int | None, rainfall_mm: float | None,
                 passenger_type: str | None = None) -> RouteResponse:
@@ -144,7 +157,7 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
     h = hour if hour is not None else datetime.now().hour
     rain = rainfall_mm if rainfall_mm is not None else fetch_pagasa_rainfall_mm()
 
-    ctx = CostContext(graph, hour=h, rainfall_mm=rain)
+    ctx = _shared_ctx(h, round(rain, 1))
     # time the actual a* run, this is kpi #8
     t0 = time.perf_counter()
     result = shortest_route(graph, req_origin, req_destination, profile, ctx)

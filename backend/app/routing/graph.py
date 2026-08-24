@@ -115,8 +115,14 @@ def _load_flood_incidents() -> list[dict]:
     path = _ML_DATA / "mmda_flood_incidents.json"
     if not path.exists():
         return []
-    with open(path, encoding="utf-8") as fh:
-        return json.load(fh)["incidents"]
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+        incidents = data["incidents"]
+        return [i for i in incidents
+                if isinstance(i, dict) and "lat" in i and "lng" in i and "depth_in" in i]
+    except Exception:
+        return []  # unusable file = behave like no incident data
 
 
 def _flood_exposure(graph: "Graph") -> None:

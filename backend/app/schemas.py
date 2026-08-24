@@ -28,8 +28,8 @@ class RouteRequest(BaseModel):
         description="departure hour 0-23 for ridership; defaults to server time",
     )
     rainfall_mm: float | None = Field(
-        None, ge=0,
-        description="rainfall override in mm; defaults to the pagasa value",
+        None, ge=0, le=500, allow_inf_nan=False,
+        description="rainfall override in mm (0-500); defaults to the live value",
     )
     passenger_type: str | None = Field(
         None,
@@ -43,7 +43,7 @@ class CompareRequest(BaseModel):
     origin: str
     destination: str
     hour: int | None = Field(None, ge=0, le=23)
-    rainfall_mm: float | None = Field(None, ge=0)
+    rainfall_mm: float | None = Field(None, ge=0, le=500, allow_inf_nan=False)
     passenger_type: str | None = Field(None, description="regular | student | senior")
 
     _pt = field_validator("passenger_type")(_clean_passenger_type)

@@ -24,7 +24,9 @@ def _prioritized_value(ctx: CostContext, edges, priority: str) -> float:
     if not edges:
         return 0.0
     if priority == "R":
-        return max(ctx.criteria[e.id].R for e in edges)
+        # mean flood risk along the route (table 7 in the paper defines the
+        # flood criterion as the mean, not the worst segment)
+        return sum(ctx.criteria[e.id].R for e in edges) / len(edges)
     if priority == "F":
         return float(sum(e.fare for e in edges))
     if priority == "T":
@@ -74,6 +76,22 @@ def _jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b)
 
 
+def _reference_cost(ctx: CostContext, edges) -> float:
+    # profile-INVARIANT score of a route: equation 4 with equal weights (0.25
+    # each). the rm-anova for route distinctness must score every profile's
+    # returned route with ONE fixed measure - scoring each route under its own
+    # profile weights makes the anova react to the weight vectors themselves
+    # (a router pinned to a single path still comes out "significant").
+    total = 0.0
+    prev = None
+    for e in edges:
+        c = ctx.criteria[e.id]
+        p = ctx.friction_norm(prev, e.mode, e.src)
+        total += e.base_time * (1.0 + 0.25 * (c.T + c.F + c.R + p))
+        prev = e.mode
+    return total
+
+
 def _rm_anova(matrix: np.ndarray) -> dict:
     # repeated-measures anova (equations 13-18): rows = od pairs (subjects),
     # columns = the k=4 profiles (within-subjects factor). also reports
@@ -108,17 +126,30 @@ def _rm_anova(matrix: np.ndarray) -> dict:
     eig = np.clip(eig, 1e-12, None)
     mean_eig = eig.mean()
     mauchly_w = float(np.prod(eig / mean_eig))
+    # mauchly's chi-square significance test, so the paper's decision rule
+    # (apply greenhouse-geisser when sphericity is violated) actually has a p
+    kk = k - 1  # contrast dimension
+    correction = 1.0 - (2 * kk * kk + kk + 2) / (6.0 * kk * (n - 1))
+    chi2_stat = -(n - 1) * correction * float(np.log(max(mauchly_w, 1e-300)))
+    mauchly_df = kk * (kk + 1) / 2 - 1
+    mauchly_p = float(stats.chi2.sf(chi2_stat, mauchly_df))
     gg_eps = float(eig.sum() ** 2 / ((k - 1) * (eig ** 2).sum()))
     # greenhouse-geisser corrected p (applied when sphericity is in doubt)
     p_gg = float(stats.f.sf(F, df_between * gg_eps, df_residual * gg_eps)) if F > 0 else 1.0
+    sphericity_violated = mauchly_p < 0.05
+    # the paper's rule: report F with the gg correction when mauchly rejects
+    p_decision = p_gg if sphericity_violated else p
 
     return {
         "F": round(F, 3),
         "df": [df_between, df_residual],
         "p": round(p, 4),
         "mauchly_w": round(mauchly_w, 4),
+        "mauchly_p": round(mauchly_p, 4),
+        "sphericity_violated": sphericity_violated,
         "gg_epsilon": round(gg_eps, 4),
         "p_gg_corrected": round(p_gg, 4),
+        "p_decision": round(p_decision, 4),
         "ss": {"between_profiles": round(ss_between, 3),
                "subjects": round(ss_subjects, 3),
                "residual": round(ss_residual, 3),
@@ -142,11 +173,12 @@ def run_benchmark(hour: int = 8, rainfall_mm: float = 30.0) -> dict:
 
     crit_fw = {pid: [] for pid in PROFILES}
     crit_bl = {pid: [] for pid in PROFILES}
-    nodes_fw, nodes_bl = [], []
-    ms_fw, ms_bl = [], []
+    od_nodes_fw, od_nodes_bl = [], []   # one entry per od (no pseudo-replication)
+    od_ms_fw, od_ms_bl = [], []
     distinct_counts = []
     jaccard_means = []          # mean pairwise jaccard per od (equation 12)
-    cost_matrix = []            # x_ij: route cost per (od, profile) for rm-anova
+    ref_cost_matrix = []        # x_ij: profile-invariant route score (rm-anova dv)
+    own_cost_matrix = []        # each profile's own weighted cost (sensitivity only)
 
     for o, d in od_pairs:
         t0 = time.perf_counter()
@@ -155,58 +187,90 @@ def run_benchmark(hour: int = 8, rainfall_mm: float = 30.0) -> dict:
         base_crit = {p: _prioritized_value(ctx, base.edges, prof.priority) for p, prof in PROFILES.items()}
         routes = set()
         node_sets = []
-        cost_row = []
+        ref_row, own_row = [], []
+        fw_nodes_row, fw_ms_row = [], []
         for pid, prof in PROFILES.items():
             t0 = time.perf_counter()
             fw = shortest_route(graph, o, d, prof, ctx)
             fw_ms = (time.perf_counter() - t0) * 1000.0
             routes.add(tuple(e.id for e in fw.edges))
             node_sets.append({e.src for e in fw.edges} | {e.dst for e in fw.edges})
-            cost_row.append(fw.total_cost)
+            ref_row.append(_reference_cost(ctx, fw.edges))
+            own_row.append(fw.total_cost)
             crit_fw[pid].append(_prioritized_value(ctx, fw.edges, prof.priority))
             crit_bl[pid].append(base_crit[pid])
-            nodes_fw.append(fw.expanded_nodes)
-            nodes_bl.append(base.expanded_nodes)
-            ms_fw.append(fw_ms)
-            ms_bl.append(base_ms)
+            fw_nodes_row.append(fw.expanded_nodes)
+            fw_ms_row.append(fw_ms)
         distinct_counts.append(len(routes))
         pairs = [(a, b) for i, a in enumerate(node_sets) for b in node_sets[i + 1:]]
         jaccard_means.append(sum(_jaccard(a, b) for a, b in pairs) / len(pairs))
-        cost_matrix.append(cost_row)
+        ref_cost_matrix.append(ref_row)
+        own_cost_matrix.append(own_row)
+        # od-level efficiency pairing: the baseline runs once per od, so it is
+        # paired once per od against the framework's mean over the 4 profiles
+        # (duplicating the one baseline run 4x would fake n=180 and inflate t)
+        od_nodes_fw.append(float(np.mean(fw_nodes_row)))
+        od_nodes_bl.append(float(base.expanded_nodes))
+        od_ms_fw.append(float(np.mean(fw_ms_row)))
+        od_ms_bl.append(base_ms)
 
-    # sop1: cost reduction on the prioritized criterion, per profile and pooled
+    # sop1: prioritized criterion per profile, framework vs baseline.
+    # no pooled t-test across profiles - fare is in php while the other three
+    # are unitless 0..1, pooling them into one test mixes units. the paper's
+    # h1 is two-sided ("differs significantly"), so supported = p < 0.05 with
+    # the direction reported alongside.
     per_profile = []
-    pooled_fw, pooled_bl = [], []
     for pid, prof in PROFILES.items():
         res = _paired(crit_bl[pid], crit_fw[pid])
+        res["supported"] = bool(res["p"] < 0.05)  # two-sided per h1
+        res["direction"] = ("framework_lower" if res["mean_diff"] > 0
+                            else "framework_higher" if res["mean_diff"] < 0 else "no_difference")
         per_profile.append({"id": pid, "name": prof.name, "priority": prof.priority, **res})
-        pooled_fw += crit_fw[pid]
-        pooled_bl += crit_bl[pid]
-    sop1 = _paired(pooled_bl, pooled_fw)
+    # unit-safe headline: mean of the per-profile percentage reductions
+    mean_reduction = float(np.mean([p["mean_reduction_pct"] for p in per_profile]))
+    sop1 = {
+        "mean_reduction_pct": round(mean_reduction, 2),
+        "note": "mean of the four per-profile reduction percentages (unitless); "
+                "see per_profile for the individual paired t-tests",
+        "supported": bool(any(p["supported"] and p["mean_reduction_pct"] > 0 for p in per_profile)),
+    }
 
-    # sop2: route distinctness — topological (jaccard, eq 12) and statistical
-    # (repeated-measures anova over the 45x4 cost matrix, eqs 13-19)
+    # sop2: route distinctness - topological (jaccard, eq 12) and statistical
+    # (rm-anova, eqs 13-19) on a PROFILE-INVARIANT score of each returned route.
+    # the own-weight anova is kept separately as a weight-sensitivity statistic;
+    # it cannot evidence route distinctness (identical routes still differ in
+    # own-weight cost), so it never gates the verdict.
     dc = np.array(distinct_counts, dtype=float)
-    rm = _rm_anova(np.array(cost_matrix, dtype=float))
+    rm = _rm_anova(np.array(ref_cost_matrix, dtype=float))
+    rm_own = _rm_anova(np.array(own_cost_matrix, dtype=float))
     sop2 = {
         "mean_distinct_routes": round(float(dc.mean()), 2),
         "pct_with_variance": round(float((dc >= 2).mean() * 100.0), 1),
         "mean_jaccard": round(float(np.mean(jaccard_means)), 4),
         "rm_anova": rm,
-        "supported": bool(rm["p"] < 0.05),
+        "rm_anova_weight_sensitivity": {
+            **rm_own,
+            "note": "own-weight cost per profile: reacts to the weight vectors, "
+                    "NOT route distinctness - do not cite as sop2 evidence",
+        },
+        # distinct routes must exist AND the invariant-score anova must agree
+        "supported": bool((dc >= 2).any() and rm["p_decision"] < 0.05),
     }
 
-    # sop3: search-space efficiency on both metrics the paper names:
-    # nodes expanded and query execution time, each with its own paired t-test
-    sop3_nodes = _paired(nodes_bl, nodes_fw)
-    sop3_time = _paired(ms_bl, ms_fw)
+    # sop3: search-space efficiency, od-level pairing (n = 45), both metrics,
+    # two-sided per h1, with the direction stated explicitly
+    sop3_nodes = _paired(od_nodes_bl, od_nodes_fw)
+    sop3_time = _paired(od_ms_bl, od_ms_fw)
     sop3 = {
         "nodes": sop3_nodes,
         "exec_time_ms": sop3_time,
-        "fw_nodes_mean": round(float(np.mean(nodes_fw)), 1),
-        "bl_nodes_mean": round(float(np.mean(nodes_bl)), 1),
-        "fw_ms_mean": round(float(np.mean(ms_fw)), 3),
-        "bl_ms_mean": round(float(np.mean(ms_bl)), 3),
+        "n_pairs": len(od_pairs),
+        "fw_nodes_mean": round(float(np.mean(od_nodes_fw)), 1),
+        "bl_nodes_mean": round(float(np.mean(od_nodes_bl)), 1),
+        "fw_ms_mean": round(float(np.mean(od_ms_fw)), 3),
+        "bl_ms_mean": round(float(np.mean(od_ms_bl)), 3),
+        "direction": ("framework_expands_more" if np.mean(od_nodes_fw) > np.mean(od_nodes_bl)
+                      else "framework_expands_fewer"),
         # h1 is two-sided on efficiency: a significant difference on either
         # metric counts, whichever direction it lands
         "supported": bool(sop3_nodes["p"] < 0.05 or sop3_time["p"] < 0.05),
