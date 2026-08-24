@@ -55,21 +55,32 @@ def _build_profiles() -> dict[str, Profile]:
     ahp = _load_ahp()
     out: dict[str, Profile] = {}
     for pid, (name, theme, priority, tagline) in _META.items():
+        loaded = False
         if ahp and pid in ahp.get("profiles", {}):
-            p = ahp["profiles"][pid]
-            # renormalize so the four rounded json values sum to exactly 1,
-            # keeping the paper's 2.0 penalty bound airtight
-            total = sum(p["weights"].values())
-            w = {c: v / total for c, v in p["weights"].items()}
-            src = "ahp survey pipeline"
-            if "SIMULATED" in ahp.get("source", "").upper():
-                src = "ahp pipeline on SIMULATED respondents (mock)"
-            out[pid] = Profile(
-                id=pid, name=name, theme=theme, priority=priority, tagline=tagline,
-                w_T=w["T"], w_F=w["F"], w_R=w["R"], w_P=w["P"],
-                cr=p.get("mean_cr_accepted"), weights_source=src,
-            )
-        else:
+            # a partial or malformed weights file must never keep the whole api
+            # from starting: validate hard, fall back to the placeholder split
+            try:
+                p = ahp["profiles"][pid]
+                raw = p["weights"]
+                vals = [float(raw[c]) for c in ("T", "F", "R", "P")]
+                total = sum(vals)
+                if not all(v >= 0.0 and v == v and v != float("inf") for v in vals) or total <= 0:
+                    raise ValueError(f"bad weight values for {pid}: {raw}")
+                # renormalize so the four rounded json values sum to exactly 1,
+                # keeping the paper's 2.0 penalty bound airtight
+                w = {c: v / total for c, v in zip(("T", "F", "R", "P"), vals)}
+                src = "ahp survey pipeline"
+                if "SIMULATED" in ahp.get("source", "").upper():
+                    src = "ahp pipeline on SIMULATED respondents (mock)"
+                out[pid] = Profile(
+                    id=pid, name=name, theme=theme, priority=priority, tagline=tagline,
+                    w_T=w["T"], w_F=w["F"], w_R=w["R"], w_P=w["P"],
+                    cr=p.get("mean_cr_accepted"), weights_source=src,
+                )
+                loaded = True
+            except Exception:
+                loaded = False  # fall through to the placeholder below
+        if not loaded:
             w = {c: (_DOM if c == priority else _OTH) for c in ("T", "F", "R", "P")}
             out[pid] = Profile(
                 id=pid, name=name, theme=theme, priority=priority, tagline=tagline,
@@ -98,7 +109,9 @@ _ALIASES = {
 
 
 def resolve_profile(value: str) -> Profile:
-    # find a profile from an id, display name, or one of the loose aliases
+    # find a profile from an id, display name, or one of the loose aliases.
+    # aliases match whole words only - a substring match let junk like
+    # 'unsafe-x' resolve to safest instead of getting a clean 422
     if not value:
         raise KeyError("empty profile")
     key = value.strip().lower()
@@ -106,7 +119,8 @@ def resolve_profile(value: str) -> Profile:
         return BASELINE
     if key in PROFILES:
         return PROFILES[key]
+    words = set(key.replace("-", " ").split())
     for fragment, profile_id in _ALIASES.items():
-        if fragment in key:
+        if fragment in words:
             return PROFILES[profile_id]
     raise KeyError(f"unknown profile: {value!r}")

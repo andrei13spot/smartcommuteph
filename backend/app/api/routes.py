@@ -1,7 +1,7 @@
 # routing api endpoints
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import PlainTextResponse
 
 from ..config import API_TITLE, API_VERSION
@@ -63,8 +63,8 @@ def status() -> dict:
                 "status": "trained" if flood.predictor.trained else "heuristic fallback",
                 "framework": "scikit-learn",
                 "predictor": flood.predictor.name,
-                "note": "random forest on real mmda incident exposure (101 points); "
-                        "tenday feed live once SCPH_PAGASA_TOKEN is set (request pending)",
+                "note": "rfr calibrated to the mmda incident exposure rule (101 points); "
+                        "its r2 is calibration fit, not field predictive accuracy",
             },
         ],
         "endpoints": [
@@ -126,13 +126,13 @@ def route(req: RouteRequest) -> RouteResponse:
 
 
 @router.get("/benchmark")
-def benchmark(hour: int = 8, rainfall_mm: float = 30.0) -> dict:
+def benchmark(hour: int = Query(8, ge=0, le=23), rainfall_mm: float = Query(30.0, ge=0, le=500)) -> dict:
     # framework vs distance-baseline over all od pairs x profiles (the three sops)
     return run_benchmark(hour=hour, rainfall_mm=rainfall_mm)
 
 
 @router.get("/benchmark/log")
-def benchmark_log(hour: int = 8, rainfall_mm: float = 30.0, format: str = "json"):
+def benchmark_log(hour: int = Query(8, ge=0, le=23), rainfall_mm: float = Query(30.0, ge=0, le=500), format: str = "json"):
     # the 360 row log (45 od x 4 profiles x 2 algos), 8 kpis per row.
     # ?format=csv downloads it as csv for the paper / excel
     if format == "csv":

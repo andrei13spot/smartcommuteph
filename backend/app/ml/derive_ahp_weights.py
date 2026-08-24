@@ -22,7 +22,7 @@ _SEED = 11  # group 11, reproducible
 # criteria order everywhere: T (ridership), F (fare), R (flood), P (transfer)
 CRITERIA = ["T", "F", "R", "P"]
 N = 4
-RI_N4 = 0.90  # saaty's random index for n=4
+RI_N4 = 0.89  # random index for n=4, matching the value the paper uses
 
 # which criterion each profile prioritizes
 PROFILE_PRIORITY = {
@@ -57,6 +57,10 @@ def derive(matrices: list[np.ndarray]) -> dict:
         crs.append(cr)
         if cr < 0.10:
             accepted.append(w)
+    if not accepted:
+        raise SystemExit(
+            "every respondent failed the cr < 0.10 filter - check the input "
+            "matrices before deriving weights")
     mean_w = np.mean(accepted, axis=0)
     mean_w = mean_w / mean_w.sum()
     accepted_crs = [c for c in crs if c < 0.10]
