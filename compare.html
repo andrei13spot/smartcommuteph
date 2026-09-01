@@ -208,14 +208,23 @@
     <!-- Route Details Modal -->
     <div id="route-details-modal" class="route-modal">
         <div class="route-modal-overlay"></div>
-        <div class="route-modal-dialog">
-            <div class="route-modal-content">
-                <div class="route-modal-header">
-                    <h2 id="route-modal-title">Route Details</h2>
-                    <button class="route-modal-close" onclick="closeRouteModal()">&times;</button>
-                </div>
-                <div class="route-modal-body">
-                    <div id="route-breakdown" class="route-breakdown"></div>
+        <div class="route-modal-dialog" style="width: min(1100px, calc(100% - 32px)); padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+            <div class="route-modal-header" style="padding: 24px 30px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 0;">
+                <h2 id="route-modal-title" style="font-size: 1.5rem;">Route Details</h2>
+                <button class="route-modal-close" onclick="closeRouteModal()" style="top: 20px; right: 24px;">&times;</button>
+            </div>
+            <div class="route-modal-body" style="padding: 0; margin-top: 0; display: flex; flex: 1; min-height: 0;">
+                <div class="row g-0 w-100">
+                    <!-- Left: Map -->
+                    <div class="col-lg-7 d-none d-lg-block position-relative" style="border-right: 1px solid rgba(255,255,255,0.08);">
+                        <div id="modal-map" class="w-100 h-100" style="min-height: 500px; background: rgba(0,0,0,0.2);"></div>
+                    </div>
+                    <!-- Right: Breakdown -->
+                    <div class="col-lg-5 d-flex flex-column" style="max-height: 65vh; padding: 24px 16px 24px 30px;">
+                        <div class="flex-grow-1 custom-scrollbar pe-3" style="overflow-y: auto; height: 0; min-height: 0;">
+                            <div id="route-breakdown" class="route-breakdown"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

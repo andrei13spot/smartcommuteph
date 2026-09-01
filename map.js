@@ -84,11 +84,10 @@
     const el = document.getElementById(containerId);
     if (!el || !modes || !modes.length) return;
     el.innerHTML =
-      `<span class="route-legend-title">Modes used</span>` +
       modes
         .map((m) => {
           const c = (colors && colors[m]) || "#334155";
-          return `<span class="route-legend-item"><span class="route-legend-dot" style="background:${c}"></span>${m}</span>`;
+          return `<div class="legend-item text-white"><span class="dot" style="background-color:${c}; color:${c};"></span> ${m}</div>`;
         })
         .join("");
   }
@@ -158,6 +157,11 @@
       });
       drawCollection(map, geojson);
       buildModeLegend("result-legend", route.summary.modes, colors);
+
+      // Update the route breakdown container if the function exists
+      if (window.renderResultRouteBreakdown) {
+          window.renderResultRouteBreakdown(route);
+      }
     } catch (err) {
       console.warn("route map unavailable:", err);
     }
@@ -203,6 +207,11 @@
     }
     for (const item of data.routes) {
       const id = item.route.profile.id;
+      
+      // Expose to window so modal can access it
+      window.compareRouteDataMap = window.compareRouteDataMap || {};
+      window.compareRouteDataMap[id] = item;
+      
       const card = document.querySelector(`.compare-card[data-profile="${id}"]`);
       const el = card && card.querySelector(".compare-card-map");
       if (!el) continue;
@@ -220,6 +229,36 @@
       if (b) mini.fitBounds(b, { padding: [16, 16], maxZoom: 13 });
     }
   }
+
+  // compare.html: render map inside the modal
+  window.renderModalMap = function(profileId) {
+    const el = document.getElementById("modal-map");
+    if (!el || !window.compareRouteDataMap || !window.compareRouteDataMap[profileId]) return;
+    
+    // Clear previous map instance if any
+    if (el._leaflet_id) {
+        el.outerHTML = el.outerHTML; // Removes the element and recreates it to destroy map
+        // but wait, redefining innerHTML or just removing the map instance is better
+    }
+    const newEl = document.getElementById("modal-map");
+    // Proper way to destroy leaflet map:
+    if (window.currentModalMap) {
+        window.currentModalMap.remove();
+        window.currentModalMap = null;
+    }
+
+    const item = window.compareRouteDataMap[profileId];
+    const map = L.map(newEl, { zoomControl: true, scrollWheelZoom: false }).setView(METRO_CENTER, 12);
+    window.currentModalMap = map;
+    L.tileLayer(TILES.dark, { attribution: ATTRIB, maxZoom: 19 }).addTo(map);
+    const layer = L.geoJSON(item.geojson, { style: styleLine, pointToLayer }).addTo(map);
+    const b = item.geojson.bounds || layer.getBounds();
+    keepSized(map, newEl, () => { if (b) map.fitBounds(b, { padding: [30, 30], maxZoom: 14 }); });
+    if (b) map.fitBounds(b, { padding: [30, 30], maxZoom: 14 });
+    
+    // Invalidate size after a slight delay to ensure modal is fully visible
+    setTimeout(() => { map.invalidateSize(); if(b) map.fitBounds(b, { padding: [30, 30], maxZoom: 14 }); }, 100);
+  };
 
   document.addEventListener("DOMContentLoaded", () => {
     if (typeof L === "undefined") return; // leaflet not on this page

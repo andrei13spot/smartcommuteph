@@ -305,17 +305,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // --- NEW: Theme-Aware Gradient Logic ---
-        const resultCard = document.querySelector('.result-card');
-        if (resultCard) {
+        const resultCards = document.querySelectorAll('.result-card');
+        resultCards.forEach(card => {
             // Remove any existing gradients first
-            resultCard.classList.remove('gradient-blue', 'gradient-yellow', 'gradient-red', 'gradient-green');
+            card.classList.remove('gradient-blue', 'gradient-yellow', 'gradient-red', 'gradient-green');
             
             // Add the correct one based on profile
-            if (lowerProfile.includes('uncrowded')) resultCard.classList.add('gradient-blue');
-            else if (lowerProfile.includes('cheap')) resultCard.classList.add('gradient-yellow');
-            else if (lowerProfile.includes('safe')) resultCard.classList.add('gradient-red');
-            else if (lowerProfile.includes('convenient') || lowerProfile.includes('fewer')) resultCard.classList.add('gradient-green');
-        }
+            if (lowerProfile.includes('uncrowded')) card.classList.add('gradient-blue');
+            else if (lowerProfile.includes('cheap')) card.classList.add('gradient-yellow');
+            else if (lowerProfile.includes('safe')) card.classList.add('gradient-red');
+            else if (lowerProfile.includes('convenient') || lowerProfile.includes('fewer')) card.classList.add('gradient-green');
+        });
 
         // 2. Populate the prioritized result details under the heading
         const detail1Label = document.getElementById('detail-1-label');
@@ -356,7 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         heading: 'Avoids heavy rush-hour traffic',
                         description: 'This route steers you through less busy options during peak travel hours, keeping your journey comfortable and clear of heavy transit crowds.',
                         color: '#3b82f6'
-                    }
+                    },
+                    route: 'Cubao → LRT-2 → Recto → LRT-1 → EDSA → Pasay'
                 };
             } else if (lowerProfile.includes('cheap')) {
                 details = {
@@ -373,7 +374,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         heading: 'Bypasses expensive transit rides',
                         description: 'This path uses affordable local transit options to help you save more on your daily journey compared to direct train alternatives.',
                         color: '#f59e0b'
-                    }
+                    },
+                    route: 'Cubao → Jeepney → MRT-3 → Pasay'
                 };
             } else if (lowerProfile.includes('safe')) {
                 details = {
@@ -390,7 +392,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         heading: 'Avoids flooded streets around Aurora Boulevard', // Changed from 'segments'
                         description: 'This path keeps your trip completely safe and dry by steering clear of roads that fill with water during heavy rain downpours.', // Rephrased from thresholds/decimals and removed em dash
                         color: '#dc2626'
-                    }
+                    },
+                    route: 'Cubao → LRT-2 → MRT-3 → Pasay'
                 };
             } else if (lowerProfile.includes('convenient') || lowerProfile.includes('fewer')) {
                 details = {
@@ -407,7 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         heading: 'Direct ride without changing vehicles', // Changed from 'via BGC-Makati corridor'
                         description: 'This is a single continuous ride from start to finish. You do not need to switch vehicles, saving you up to 12 minutes of waiting in line.', // Removed em dash and 'friction' talk
                         color: '#10b981'
-                    }
+                    },
+                    route: 'Cubao → MRT-3 (direct) → Pasay'
                 };
             }
 
@@ -442,7 +446,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 // lighten the label so it reads on the tinted card
                 whyLabel.style.color = `color-mix(in srgb, ${details.why.color}, white 45%)`;
             }
+
+            // 5. Populate Route Breakdown (Fallback with static route)
+            const breakdownContainer = document.getElementById('result-route-breakdown');
+            if (breakdownContainer && details.route) {
+                const segments = parseRouteSegments(details.route);
+                breakdownContainer.innerHTML = segments.map((segment) => `
+                    <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" style="color: #f8fafc;">
+                        <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
+                        <div class="route-segment-info">
+                            <div class="route-segment-label" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;">${segment.label}</div>
+                            <div class="route-segment-name" style="font-weight: 700; font-size: 1.05rem;">${segment.name}</div>
+                            ${segment.type === 'transit' ? `<div class="route-segment-details" style="font-size: 0.85rem; color: #cbd5e1;">${segment.place || segment.destination || ''}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            }
         }
+
+        // Expose a function to update the breakdown with real API data
+        window.renderResultRouteBreakdown = function(routeData) {
+            const breakdownContainer = document.getElementById('result-route-breakdown');
+            if (!breakdownContainer || !routeData) return;
+            
+            // Re-use buildRouteSegmentsFromRouteData from this script
+            const segments = buildRouteSegmentsFromRouteData(routeData);
+            if (!segments || segments.length === 0) return;
+
+            breakdownContainer.innerHTML = segments.map((segment) => `
+                <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" style="color: #f8fafc;">
+                    <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
+                    <div class="route-segment-info">
+                        <div class="route-segment-label" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;">${segment.label}</div>
+                        <div class="route-segment-name" style="font-weight: 700; font-size: 1.05rem;">${segment.name}</div>
+                        ${segment.type === 'transit' ? `<div class="route-segment-details" style="font-size: 0.85rem; color: #cbd5e1;">${segment.place || segment.destination || ''}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        };
 
         // 3. Render Station Corridor Subtitle
         const origin = localStorage.getItem('smartCommute_routeOrigin') || "Cubao Gateway";
@@ -732,6 +781,29 @@ function openRouteModal(routeText, profileName, routeData = null) {
     routeModal.classList.add('open');
     routeModal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+    
+    // Add dynamic gradient based on profile
+    const dialog = routeModal.querySelector('.route-modal-dialog');
+    if (dialog) {
+        dialog.classList.remove('gradient-blue', 'gradient-yellow', 'gradient-red', 'gradient-green');
+        const lp = (profileName || '').toLowerCase();
+        if (lp.includes('uncrowded')) dialog.classList.add('gradient-blue');
+        else if (lp.includes('cheap')) dialog.classList.add('gradient-yellow');
+        else if (lp.includes('safe')) dialog.classList.add('gradient-red');
+        else if (lp.includes('convenient') || lp.includes('fewer')) dialog.classList.add('gradient-green');
+        else dialog.classList.add('gradient-blue'); // Default fallback
+    }
+    
+    // Render the map if the function is available
+    if (window.renderModalMap) {
+        window.renderModalMap(profileName);
+    }
+    
+    // Reset scroll position to top
+    const scrollContainer = breakdownContainer.closest('.custom-scrollbar') || breakdownContainer;
+    if (scrollContainer) {
+        scrollContainer.scrollTop = 0;
+    }
 }
 
 function closeRouteModal() {

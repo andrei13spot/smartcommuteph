@@ -11,13 +11,12 @@ const FRONTEND_DIR = path.resolve(__dirname, ".."); // repo root holds the .html
 const PORT = process.env.PORT || 8080;
 const PYTHON_API_URL = process.env.PYTHON_API_URL || "http://127.0.0.1:8000";
 
-// line colors for the map polylines, keyed by mode
 const MODE_COLORS = {
-  "LRT-1": "#2e7d32",
-  "LRT-2": "#6a1b9a",
-  "MRT-3": "#1565c0",
-  "EDSA-Bus": "#ef6c00",
-  "Jeepney": "#c62828",
+  "LRT-1": "#ef4444",
+  "LRT-2": "#a855f7",
+  "MRT-3": "#3b82f6",
+  "EDSA-Bus": "#10b981",
+  "Jeepney": "#f59e0b",
 };
 
 const app = express();
