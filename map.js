@@ -6,11 +6,21 @@
 // data comes from the node gateway's map api (/api/map/*).
 // nodes are colored by transit mode and use a glowing divicon dot.
 (function () {
+  // carto's free anonymous basemaps now stamp an "api key required" watermark
+  // on keyless requests, so we use keyless providers instead: esri's dark
+  // canvas (no key needed) and standard osm for light.
+  // note esri's tile path is {z}/{y}/{x} - y before x.
   const TILES = {
-    dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    light: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    dark: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    light: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
   };
-  const ATTRIB = '&copy; OpenStreetMap &copy; CARTO';
+  const ATTRIB = 'Esri, HERE, Garmin, &copy; OpenStreetMap contributors';
+  // esri dark canvas only serves native tiles to zoom 16; leaflet upscales past that
+  function tileOpts(theme, withAttrib) {
+    const opts = { maxZoom: 19, maxNativeZoom: theme === "light" ? 19 : 16 };
+    if (withAttrib) opts.attribution = ATTRIB;
+    return opts;
+  }
   const METRO_CENTER = [14.59, 121.0];
   // origin/destination keep fixed colors, everything else is colored by mode
   const ROLE_COLOR = { origin: "#10b981", destination: "#ef4444" };
@@ -62,7 +72,7 @@
     const el = typeof elId === "string" ? document.getElementById(elId) : elId;
     const map = L.map(el, Object.assign({ zoomControl: true, scrollWheelZoom: false }, opts || {}))
       .setView(METRO_CENTER, 12);
-    L.tileLayer(TILES[theme], { attribution: ATTRIB, maxZoom: 19 }).addTo(map);
+    L.tileLayer(TILES[theme], tileOpts(theme, true)).addTo(map);
     return { map, el };
   }
 
@@ -222,7 +232,7 @@
         scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false,
         keyboard: false, tap: false,
       }).setView(METRO_CENTER, 11);
-      L.tileLayer(TILES.dark, { maxZoom: 19 }).addTo(mini);
+      L.tileLayer(TILES.dark, tileOpts("dark", false)).addTo(mini);
       const layer = L.geoJSON(item.geojson, { style: styleLine, pointToLayer }).addTo(mini);
       const b = item.geojson.bounds || layer.getBounds();
       keepSized(mini, el, () => { if (b) mini.fitBounds(b, { padding: [16, 16], maxZoom: 13 }); });
@@ -250,7 +260,7 @@
     const item = window.compareRouteDataMap[profileId];
     const map = L.map(newEl, { zoomControl: true, scrollWheelZoom: false }).setView(METRO_CENTER, 12);
     window.currentModalMap = map;
-    L.tileLayer(TILES.dark, { attribution: ATTRIB, maxZoom: 19 }).addTo(map);
+    L.tileLayer(TILES.dark, tileOpts("dark", true)).addTo(map);
     const layer = L.geoJSON(item.geojson, { style: styleLine, pointToLayer }).addTo(map);
     const b = item.geojson.bounds || layer.getBounds();
     keepSized(map, newEl, () => { if (b) map.fitBounds(b, { padding: [30, 30], maxZoom: 14 }); });
