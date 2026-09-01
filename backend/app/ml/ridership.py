@@ -15,6 +15,33 @@ from ..routing.graph import Edge
 _MODEL_DIR = Path(__file__).with_name("models")
 _LSTM_PATH = _MODEL_DIR / "ridership_lstm.keras"
 _CURVE_PATH = _MODEL_DIR / "ridership_curve.json"
+_CALIBRATION_PATH = Path(__file__).resolve().parent.parent / "data" / "service_calibration.json"
+
+
+def _hour_band(hour: int) -> int:
+    # bands match service_calibration.json: early / am peak / midday / pm peak / evening
+    h = hour % 24
+    if h <= 6:
+        return 0
+    if h <= 9:
+        return 1
+    if h <= 16:
+        return 2
+    if h <= 19:
+        return 3
+    return 4
+
+
+def _load_calibration() -> tuple[dict[str, list[float]], float] | None:
+    # per-line headways in minutes by time band, from the dotc gtfs release
+    # (edsa carousel provisional). longer headway = fewer vehicles for the same
+    # demand = more crowding per vehicle.
+    try:
+        data = json.loads(_CALIBRATION_PATH.read_text(encoding="utf-8"))
+        lines = {k: [float(x) for x in v["headways_min"]] for k, v in data["lines"].items()}
+        return lines, float(data["reference_headway_min"])
+    except Exception:
+        return None
 
 
 def _clamp01(x: float) -> float:
@@ -53,6 +80,7 @@ class RidershipPredictor:
     def __init__(self) -> None:
         self._lstm = _load_lstm()
         self._curve = _load_real_curve()
+        self._calibration = _load_calibration()
         if self._lstm is not None:
             self.name = "lstm-ridership"
         elif self._curve is not None:
@@ -85,9 +113,24 @@ class RidershipPredictor:
         # overnight), so demand there is floor-level, not average
         return curve.get(h, min(curve.values()))
 
+    def line_factor(self, mode: str, hour: int) -> float:
+        # per-line capacity adjustment: crowding scales with demand / capacity,
+        # and capacity is inversely proportional to the dispatch headway. the
+        # mrt-3 series gives the temporal DEMAND shape; this factor makes each
+        # line's SUPPLY line-specific, so the same demand crowds an 8-minute-
+        # headway line more than a 3-minute one - and hour of day genuinely
+        # changes the criterion instead of cancelling in normalization.
+        if not self._calibration:
+            return 1.0
+        lines, ref = self._calibration
+        headways = lines.get(mode)
+        if not headways:
+            return 1.0
+        return headways[_hour_band(hour)] / ref
+
     def predict(self, edge: Edge, hour: int) -> float:
         # crowding for this edge at this hour, 0..1
-        return _clamp01(edge.ridership * self.demand_factor(hour))
+        return _clamp01(edge.ridership * self.demand_factor(hour) * self.line_factor(edge.mode, hour))
 
 
 predictor = RidershipPredictor()

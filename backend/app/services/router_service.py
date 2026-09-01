@@ -10,6 +10,7 @@ from ..ml.flood import fetch_pagasa_rainfall_mm
 from ..profiles import Profile, resolve_profile
 from ..routing.astar import shortest_route
 from ..routing.cost import CostContext, transfer_friction
+from ..routing.fares import path_fare
 from ..routing.graph import Edge, Graph, load_graph
 from ..schemas import (
     AnchorOut,
@@ -171,7 +172,7 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
         transfer_minutes += transfer_friction(prev_mode, e.mode,
                                               continuing=ctx.graph.nodes[e.src].virtual)
         prev_mode = e.mode
-    fare = round(sum(e.fare for e in edges), 1)
+    fare = round(path_fare(graph, edges), 1)
     # 20% discount for student or senior
     discounted = round(fare * 0.8, 1) if passenger_type in ("student", "senior") else None
     summary = RouteSummary(

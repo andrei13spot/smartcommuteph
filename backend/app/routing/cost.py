@@ -66,6 +66,8 @@ class CostContext:
         self.hour = hour
         self.rainfall_mm = rainfall_mm
 
+        from . import fares
+
         eids = list(graph.edges)
         edge_list = [graph.edges[eid] for eid in eids]
         # flood is predicted for all edges in one batched sklearn call: the
@@ -76,7 +78,11 @@ class CostContext:
         raw_R: dict[str, float] = {}
         for eid, edge, fv in zip(eids, edge_list, flood_vals):
             raw_T[eid] = ridership.predictor.predict(edge, hour)
-            raw_F[eid] = edge.fare
+            # F' = fare intensity of the edge (the per-km marginal cost of its
+            # mode). boarding base fares are path-dependent and show up in the
+            # reported total via path_fare; the per-boarding pain is already
+            # penalized by the transfer term P'.
+            raw_F[eid] = fares.marginal_fare(edge.mode, edge.distance_km)
             raw_R[eid] = fv
 
         t_lo, t_hi = _min_max(list(raw_T.values()))
