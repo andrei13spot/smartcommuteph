@@ -14,6 +14,7 @@ from scipy import stats
 from ..profiles import BASELINE, PROFILES
 from ..routing.astar import shortest_route
 from ..routing.cost import CostContext, transfer_friction
+from ..routing.fares import path_fare
 from ..routing.graph import load_graph
 
 
@@ -28,7 +29,8 @@ def _prioritized_value(ctx: CostContext, edges, priority: str) -> float:
         # flood criterion as the mean, not the worst segment)
         return sum(ctx.criteria[e.id].R for e in edges) / len(edges)
     if priority == "F":
-        return float(sum(e.fare for e in edges))
+        # real boarding-based trip fare in php (see routing/fares.py)
+        return path_fare(ctx.graph, edges)
     if priority == "T":
         return sum(ctx.criteria[e.id].T for e in edges) / len(edges)
     # P = total raw transfer friction actually paid along the path
@@ -323,7 +325,7 @@ def _kpis(ctx: CostContext, res, exec_ms: float) -> dict:
     return {
         "travel_time_min": round(sum(e.base_time for e in edges) + transfer_min, 2),
         "distance_km": round(sum(e.distance_km for e in edges), 2),
-        "fare_php": round(sum(e.fare for e in edges), 1),
+        "fare_php": round(path_fare(ctx.graph, edges), 1),
         "transfers": _count_transfers(edges),
         "flood_risk_score": round(max((ctx.criteria[e.id].R for e in edges), default=0.0), 3),
         "ridership_density_score": round(

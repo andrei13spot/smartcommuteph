@@ -116,3 +116,33 @@ def test_api_network_closure():
     ids = {n["id"] for n in r["nodes"]}
     for e in r["edges"]:
         assert e["from_id"] in ids and e["to_id"] in ids
+
+
+def test_fare_model_matches_published_matrices():
+    # boarding-based fares: one ticket per leg, not one per edge. the old
+    # per-edge sums charged 53 php for the full mrt-3 line vs the published ~28
+    from app.profiles import resolve_profile
+    from app.routing.fares import path_fare
+
+    g = load_graph()
+    ctx = CostContext(g, hour=8, rainfall_mm=30.0)
+    mrt = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
+    assert all(e.mode == "MRT-3" for e in mrt.edges)
+    assert 24 <= path_fare(g, mrt.edges) <= 32
+    jeep = shortest_route(g, "sm_novaliches", "monumento", resolve_profile("cheapest"), ctx)
+    km = sum(e.distance_km for e in jeep.edges)
+    expected = 13 + 1.8 * max(0, km - 4)
+    assert abs(path_fare(g, jeep.edges) - expected) <= 2.0
+
+
+def test_hour_and_line_change_crowding():
+    # the headway calibration must keep hour-of-day from cancelling out in
+    # min-max normalization: normalized T should differ across hours per line
+    g = load_graph()
+    c8 = CostContext(g, hour=8, rainfall_mm=30.0)
+    c3 = CostContext(g, hour=3, rainfall_mm=30.0)
+    mrt = next(e for e in g.edges.values() if e.mode == "MRT-3")
+    assert abs(c8.criteria[mrt.id].T - c3.criteria[mrt.id].T) > 0.01
+    # and lines differ from each other at the same hour (supply differs)
+    from app.ml.ridership import predictor
+    assert predictor.line_factor("LRT-2", 8) != predictor.line_factor("MRT-3", 8)

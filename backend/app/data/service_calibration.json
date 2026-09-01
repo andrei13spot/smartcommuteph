@@ -1,0 +1,12 @@
+{
+  "description": "per-line service headways in minutes by time band. crowding scales with headway: a longer headway means fewer vehicles carrying the same demand. rail values come from the dotc gtfs release (2015, via github.com/sakayph/gtfs frequencies.txt); the edsa carousel band is provisional pending the dotr service-data research sweep; jeepneys dispatch continuously.",
+  "reference_headway_min": 4.0,
+  "bands": ["early (0-6)", "am_peak (7-9)", "midday (10-16)", "pm_peak (17-19)", "evening (20-23)"],
+  "lines": {
+    "LRT-1":    { "headways_min": [4, 3, 5, 3, 5], "source": "dotc gtfs 2015 frequencies.txt (lrta baclaran-roosevelt)" },
+    "LRT-2":    { "headways_min": [8, 5, 6, 5, 8], "source": "dotc gtfs 2015 frequencies.txt (lrta recto-santolan)" },
+    "MRT-3":    { "headways_min": [5, 3, 4, 3, 5], "source": "dotc gtfs 2015 frequencies.txt (mrtc taft-north)" },
+    "EDSA-Bus": { "headways_min": [10, 5, 8, 5, 10], "source": "provisional carousel dispatch estimate - replace with the dotr figure from the research sweep" },
+    "Jeepney":  { "headways_min": [3, 2, 2, 2, 3], "source": "dotc gtfs 2015: jeepney routes dispatch near-continuously (1-2 min)" }
+  }
+}

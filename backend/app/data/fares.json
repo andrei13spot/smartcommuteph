@@ -1,0 +1,15 @@
+{
+  "description": "per-mode fare structure: a leg (one boarding) costs base_php which covers included_km, plus rate_php_per_km for every km beyond. replaces the old per-edge fare sums that double-charged multi-segment rail rides (north ave to taft summed to 53 php against the published ~28 php). sources pending final citation from the fare research sweep - verify before the defense.",
+  "modes": {
+    "LRT-1":    { "base_php": 16.25, "included_km": 0.0, "rate_php_per_km": 1.47,
+                  "source": "lrta/dotr fare adjustment (boarding fare + per-km component)" },
+    "LRT-2":    { "base_php": 16.25, "included_km": 0.0, "rate_php_per_km": 1.47,
+                  "source": "lrta/dotr fare adjustment (boarding fare + per-km component)" },
+    "MRT-3":    { "base_php": 13.0,  "included_km": 2.0, "rate_php_per_km": 1.0,
+                  "source": "dotr-mrt3 fare matrix, calibrated so north ave to taft lands near the published end-to-end fare" },
+    "EDSA-Bus": { "base_php": 15.0,  "included_km": 5.0, "rate_php_per_km": 2.65,
+                  "source": "ltfrb city bus (aircon) fare structure applied to the edsa carousel - confirm with the carousel research sweep" },
+    "Jeepney":  { "base_php": 13.0,  "included_km": 4.0, "rate_php_per_km": 1.8,
+                  "source": "ltfrb traditional jeepney fare matrix (base for first 4 km + per-succeeding-km)" }
+  }
+}
