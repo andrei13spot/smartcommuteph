@@ -63,8 +63,8 @@ def status() -> dict:
                 "status": "trained" if flood.predictor.trained else "heuristic fallback",
                 "framework": "scikit-learn",
                 "predictor": flood.predictor.name,
-                "note": "rfr calibrated to the mmda incident exposure rule (101 points); "
-                        "its r2 is calibration fit, not field predictive accuracy",
+                "note": "rfr calibrated to the mmda incident exposure rule; live rainfall "
+                        "from met norway locationforecast (pagasa api was declined)",
             },
         ],
         "endpoints": [

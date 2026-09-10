@@ -29,11 +29,21 @@ def _clamp01(x: float) -> float:
     return max(0.0, min(1.0, x))
 
 
-# pagasa tenday forecast api. access needs a token granted through a formal
-# request to pagasa (see docs/pagasa-api-request.md); until it arrives the
-# engine falls back to the offline default so nothing breaks.
+# live rainfall providers, tried in order:
+#   1. pagasa tenday api - kept dormant: pagasa declined the token request
+#      (government use only, see docs/pagasa-api-request.md), but if a token
+#      ever lands in SCPH_PAGASA_TOKEN this path comes back to life unchanged
+#   2. met norway locationforecast 2.0 (api.met.no) - the panel-requested
+#      replacement: the norwegian meteorological institute's public api, no
+#      key, 10-day horizon, per-block precipitation in mm for any coordinates
+#   3. the offline default, so the engine always runs without internet
+# SCPH_RAINFALL_PROVIDER=off disables all network fetches (tests use this).
 _PAGASA_URL = "https://tenday.pagasa.dost.gov.ph/api/v1/tenday/current"
 _PAGASA_PARAMS = {"province": "Metro Manila"}
+_METNO_URL = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
+_METNO_PARAMS = {"lat": 14.62, "lon": 121.05}  # cubao quadrant, metro manila
+# met.no requires an identifying user-agent (their terms of service)
+_METNO_UA = "smartcommuteph-thesis/1.0 github.com/andrei13spot/smartcommuteph"
 _CACHE_TTL_S = 3600.0  # forecast is issued daily, refetching hourly is plenty
 
 _rain_cache: dict = {"value": None, "at": 0.0, "source": "default"}
@@ -62,9 +72,36 @@ def _extract_rainfall_mm(payload: dict) -> float | None:
     return None
 
 
+def _metno_rainfall_24h(payload: dict) -> float | None:
+    # total precipitation for the next ~24 hours, in mm. the compact format
+    # gives hourly entries with next_1_hours details near-term, then coarser
+    # entries with only next_6_hours. prefer the hourly blocks; if there are
+    # not enough, fill the remainder with non-overlapping 6-hour blocks.
+    try:
+        series = payload["properties"]["timeseries"]
+    except (KeyError, TypeError):
+        return None
+    total = 0.0
+    hours = 0
+    for entry in series:
+        if hours >= 24:
+            break
+        data = entry.get("data", {})
+        one = data.get("next_1_hours", {}).get("details", {}).get("precipitation_amount")
+        if one is not None:
+            total += float(one)
+            hours += 1
+            continue
+        six = data.get("next_6_hours", {}).get("details", {}).get("precipitation_amount")
+        if six is not None:
+            total += float(six)
+            hours += 6
+    return round(total, 1) if hours > 0 else None
+
+
 def fetch_pagasa_rainfall_mm() -> float:
-    # live rainfall from the pagasa tenday forecast when a token is configured
-    # (SCPH_PAGASA_TOKEN), cached for an hour; offline default otherwise.
+    # live 24h rainfall for metro manila, cached for an hour. provider chain:
+    # pagasa (dormant, token only) -> met norway (default) -> offline default.
     import os
     import time
 
@@ -72,8 +109,9 @@ def fetch_pagasa_rainfall_mm() -> float:
     if _rain_cache["value"] is not None and now - _rain_cache["at"] < _CACHE_TTL_S:
         return _rain_cache["value"]
 
+    provider = os.getenv("SCPH_RAINFALL_PROVIDER", "metno").strip().lower()
     token = os.getenv("SCPH_PAGASA_TOKEN", "").strip()
-    if token:
+    if provider != "off" and token:
         try:
             import httpx
             resp = httpx.get(
@@ -87,12 +125,27 @@ def fetch_pagasa_rainfall_mm() -> float:
                     _rain_cache.update(value=mm, at=now, source="pagasa tenday")
                     return mm
         except Exception:
+            pass  # declined/unreachable: fall through to met norway
+
+    if provider == "metno":
+        try:
+            import httpx
+            resp = httpx.get(
+                _METNO_URL, params=_METNO_PARAMS,
+                headers={"User-Agent": _METNO_UA}, timeout=10,
+            )
+            if resp.status_code == 200:
+                mm = _metno_rainfall_24h(resp.json())
+                if mm is not None:
+                    _rain_cache.update(value=mm, at=now, source="met norway locationforecast")
+                    return mm
+        except Exception:
             pass  # network down or schema surprise: fall through to the default
 
     # cache the fallback for only ~2 minutes so a recovered feed is picked up
     # quickly instead of the default squatting for the full hour ttl
     _rain_cache.update(value=DEFAULT_RAINFALL_MM, at=now - (_CACHE_TTL_S - 120.0),
-                       source="default (no token / offline)")
+                       source="default (provider off / offline)")
     return DEFAULT_RAINFALL_MM
 
 

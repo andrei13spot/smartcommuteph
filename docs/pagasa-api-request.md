@@ -1,5 +1,12 @@
 # pagasa tenday api access
 
+**STATUS (sep 2026): pagasa DECLINED the token request - the tenday api is
+restricted to government use. the engine now uses the met norway
+locationforecast 2.0 api (api.met.no, norwegian meteorological institute:
+public, no key, 10-day horizon) as the live rainfall source, pending the
+panel's approval of the formal amendment letter. the pagasa client below
+stays dormant and reactivates automatically if a token is ever granted.**
+
 the engine reads live rainfall from the pagasa tenday forecast api once a token
 is configured. access is granted by pagasa through a formal request (their api
 doc: tenday.pagasa.dost.gov.ph). until then the engine uses an offline default
