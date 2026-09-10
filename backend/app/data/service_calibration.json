@@ -1,12 +1,63 @@
 {
   "description": "per-line service headways in minutes by time band. crowding scales with headway: a longer headway means fewer vehicles carrying the same demand. rail values come from the dotc gtfs release (2015, via github.com/sakayph/gtfs frequencies.txt); the edsa carousel band is provisional pending the dotr service-data research sweep; jeepneys dispatch continuously.",
   "reference_headway_min": 4.0,
-  "bands": ["early (0-6)", "am_peak (7-9)", "midday (10-16)", "pm_peak (17-19)", "evening (20-23)"],
+  "bands": [
+    "early (0-6)",
+    "am_peak (7-9)",
+    "midday (10-16)",
+    "pm_peak (17-19)",
+    "evening (20-23)"
+  ],
   "lines": {
-    "LRT-1":    { "headways_min": [4, 3, 5, 3, 5], "source": "dotc gtfs 2015 frequencies.txt (lrta baclaran-roosevelt)" },
-    "LRT-2":    { "headways_min": [8, 5, 6, 5, 8], "source": "dotc gtfs 2015 frequencies.txt (lrta recto-santolan)" },
-    "MRT-3":    { "headways_min": [5, 3, 4, 3, 5], "source": "dotc gtfs 2015 frequencies.txt (mrtc taft-north)" },
-    "EDSA-Bus": { "headways_min": [10, 5, 8, 5, 10], "source": "provisional carousel dispatch estimate - replace with the dotr figure from the research sweep" },
-    "Jeepney":  { "headways_min": [3, 2, 2, 2, 3], "source": "dotc gtfs 2015: jeepney routes dispatch near-continuously (1-2 min)" }
+    "LRT-1": {
+      "headways_min": [
+        4,
+        3,
+        5,
+        3,
+        5
+      ],
+      "source": "dotc gtfs 2015 frequencies.txt (lrta baclaran-roosevelt)"
+    },
+    "LRT-2": {
+      "headways_min": [
+        10.5,
+        9.0,
+        10.5,
+        9.0,
+        10.5
+      ],
+      "source": "lrta line 2 train intervals doc: weekday peak 8-10 min, off-peak 9-12 min (midpoints)"
+    },
+    "MRT-3": {
+      "headways_min": [
+        5.25,
+        3.5,
+        5.25,
+        3.5,
+        5.25
+      ],
+      "source": "dotr-mrt3 official letter 13 apr 2026: weekday peak 3.5 min (7-9am, 5-7pm), off-peak 5-5.5 min"
+    },
+    "EDSA-Bus": {
+      "headways_min": [
+        10,
+        5,
+        8,
+        5,
+        10
+      ],
+      "source": "provisional pending dispatch-monitoring analysis (dotr busway workbook has the dispatch sheet); demand side now uses the real kamuning may 2025 hourly curve"
+    },
+    "Jeepney": {
+      "headways_min": [
+        3,
+        2,
+        2,
+        2,
+        3
+      ],
+      "source": "dotc gtfs 2015: jeepney routes dispatch near-continuously (1-2 min)"
+    }
   }
 }

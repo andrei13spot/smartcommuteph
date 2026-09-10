@@ -59,6 +59,15 @@ def make_dataset(n_rain: int = 40):
     return X, y
 
 
+def _incident_count() -> int:
+    import json as _json
+    try:
+        path = Path(__file__).with_name("data") / "mmda_flood_incidents.json"
+        return len(_json.loads(path.read_text(encoding="utf-8"))["incidents"])
+    except Exception:
+        return 0
+
+
 def train():
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -82,7 +91,8 @@ def train():
         "n_train": int(len(X_tr)),
         "n_test": int(len(X_te)),
         "features": ["rainfall_mm", "mode_sensitivity", "base_exposure"],
-        "exposure_source": "mmda flood reports (101 incident points, per-edge exposure)",
+        "exposure_source": f"mmda flood reports 2024-2025 incl. full-year summaries "
+                           f"({_incident_count()} incident points, per-edge exposure)",
     }
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump({"model": model, "metrics": metrics}, MODEL_PATH)
