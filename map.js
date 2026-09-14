@@ -169,7 +169,39 @@
     render();
   }
 
-  // result.html: the computed route
+  // result.html: the a* expansion animation while the route loads, then the
+  // computed route. the yellow wave is every node the search actually popped -
+  // the visible half of the pruning story.
+  async function playExpansion(map, origin, destination, profile) {
+    try {
+      const [inspect, network] = await Promise.all([
+        getJSON("/api/inspect", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ origin, destination, profile }) }),
+        getJSON("/api/map/network"),
+      ]);
+      const pos = {};
+      (network.features || []).forEach((f) => {
+        if (f.geometry && f.geometry.type === "Point" && f.properties && f.properties.id)
+          pos[f.properties.id] = f.geometry.coordinates;
+      });
+      const order = inspect.expanded_order || [];
+      const layers = [];
+      const chunk = Math.max(1, Math.ceil(order.length / 60));
+      for (let i = 0; i < order.length; i += chunk) {
+        for (const id of order.slice(i, i + chunk)) {
+          const c = pos[id];
+          if (!c) continue;
+          const m = L.circleMarker([c[1], c[0]], { radius: 5, color: "#ffcc02", fillColor: "#ff9500", fillOpacity: 0.5, weight: 1 }).addTo(map);
+          layers.push(m);
+          setTimeout(() => { try { m.setStyle({ radius: 2, fillOpacity: 0.15, weight: 0.5 }); } catch (e) {} }, 260);
+        }
+        await new Promise((r) => setTimeout(r, 30));
+      }
+      // fade the search cloud out once the route draws
+      setTimeout(() => layers.forEach((m) => { try { map.removeLayer(m); } catch (e) {} }), 2600);
+    } catch (err) { /* animation is decorative: never block the route */ }
+  }
+
   async function initResultMap() {
     const { map, el } = baseMap("result-map", "dark");
     keepSized(map, el);
@@ -177,11 +209,13 @@
     const destination = localStorage.getItem("smartCommute_routeDestId") || "pasay";
     const profile = localStorage.getItem("smartCommute_selectedProfile") || "safest";
     try {
+      const animation = playExpansion(map, origin, destination, profile);
       const { geojson, route, colors } = await getJSON("/api/map/route", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ origin, destination, profile }),
       });
+      await animation;
       drawCollection(map, geojson);
       buildModeLegend("result-legend", route.summary.modes, colors);
       fillResultTiles(route);
