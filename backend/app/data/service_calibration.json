@@ -41,13 +41,13 @@
     },
     "EDSA-Bus": {
       "headways_min": [
-        10,
-        5,
-        8,
-        5,
-        10
+        21.2,
+        1.9,
+        1.9,
+        2.1,
+        2.1
       ],
-      "source": "provisional pending dispatch-monitoring analysis (dotr busway workbook has the dispatch sheet); demand side now uses the real kamuning may 2025 hourly curve"
+      "source": "derived from the dotr edsa busway dispatch monitoring sheet: headway = 360 min / mean dispatches per 6h slot (6am/12pm/6pm slots ~175-194 dispatches, 12am slot ~17), march 2026 blocks"
     },
     "Jeepney": {
       "headways_min": [
