@@ -132,19 +132,36 @@
     const selects = document.querySelectorAll(".location-panel select");
 
     function render() {
-      const o = byId.get(selects[0]?.value || "cubao");
-      const d = byId.get(selects[1]?.value || "pasay");
-      if (!o || !d) return;
-      const gj = {
-        type: "FeatureCollection",
-        features: [
-          { type: "Feature", geometry: { type: "Point", coordinates: [o.lng, o.lat] }, properties: { role: "origin", name: o.name } },
-          { type: "Feature", geometry: { type: "Point", coordinates: [d.lng, d.lat] }, properties: { role: "destination", name: d.name } },
-          { type: "Feature", geometry: { type: "LineString", coordinates: [[o.lng, o.lat], [d.lng, d.lat]] }, properties: { color: "#3b82f6" } },
-        ],
-      };
       if (layer) map.removeLayer(layer);
-      layer = L.geoJSON(gj, { style: styleLine, pointToLayer }).addTo(map);
+      
+      const features = [];
+      const oVal = selects[0]?.value;
+      const dVal = selects[1]?.value;
+      
+      if (oVal) {
+        const o = byId.get(oVal);
+        if (o) features.push({ type: "Feature", geometry: { type: "Point", coordinates: [o.lng, o.lat] }, properties: { role: "origin", name: o.name } });
+      }
+      
+      if (dVal) {
+        const d = byId.get(dVal);
+        if (d) features.push({ type: "Feature", geometry: { type: "Point", coordinates: [d.lng, d.lat] }, properties: { role: "destination", name: d.name } });
+      }
+
+      if (features.length === 0) return;
+
+      const gj = { type: "FeatureCollection", features };
+      layer = L.geoJSON(gj, { 
+        style: styleLine, 
+        pointToLayer: (feature, latlng) => {
+          const marker = pointToLayer(feature, latlng);
+          if (feature.properties.name) {
+            marker.unbindTooltip();
+            marker.bindTooltip(feature.properties.name, { permanent: true, direction: "top", className: "fw-bold bg-dark text-white border-secondary" });
+          }
+          return marker;
+        }
+      }).addTo(map);
       map.fitBounds(layer.getBounds(), { padding: [50, 50], maxZoom: 13 });
     }
 
