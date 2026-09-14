@@ -285,7 +285,7 @@ body {
 
 .location-timeline-wrapper {
     width: 16px;
-    bottom: 45px;
+    bottom: 64px;
     padding-top: 2px;
 }
 
@@ -293,7 +293,7 @@ body {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: 3px solid #3b82f6;
+    border: 3px solid #10b981;
     background-color: white;
     z-index: 2;
     flex-shrink: 0;
@@ -303,7 +303,7 @@ body {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: #1a1a1a;
+    background-color: #ef4444;
     z-index: 2;
     flex-shrink: 0;
 }
@@ -1672,7 +1672,7 @@ body.modal-open {
 
 /* Giving the arrow a clean brand accent color */
 .badge-arrow {
-    color: #0d6efd;
+    color: #1a1a1a;
     margin: 0 12px;
     font-weight: 700;
 }
@@ -1711,7 +1711,7 @@ body.modal-open {
 .map-preview-shell > div:not(#result-map) { z-index: 1; }
 
 /* keep tiles transparent and fonts matching the app */
-.leaflet-container { background: transparent; font-family: inherit; }
+.leaflet-container { background: #1e1e1e; font-family: inherit; }
 
 /* Keep Leaflet zoom controls clear of the floating form and result panel */
 .leaflet-top.leaflet-left {
@@ -1769,7 +1769,45 @@ body.modal-open {
 
 /* compare cards: real leaflet preview replaces the placeholder graphic */
 .compare-card-map.has-map::before { display: none; }
-.compare-card-map .leaflet-container { background: transparent; }
+.compare-card-map .leaflet-container { background: #1e1e1e; }
+
+/* --- CUSTOM TOAST NOTIFICATION --- */
+.custom-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    font-weight: 500;
+    font-size: 0.9rem;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.custom-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+.custom-toast-icon {
+    width: 20px;
+    height: 20px;
+    background: #ff453a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+}
 
 /* glowing station/route dots, colored by transit mode */
 .map-node { background: none; border: none; }

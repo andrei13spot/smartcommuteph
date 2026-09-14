@@ -232,26 +232,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------------------------------
     // 4. STEP 2 → STEP 3: CAPTURE CORRIDOR DATA (location.html → result.html)
     // ---------------------------------------------------------------------
+    // Custom Toast Helper
+    function showToast(message) {
+        // Remove existing toast if any
+        const existing = document.querySelector('.custom-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'custom-toast';
+        toast.innerHTML = `<div class="custom-toast-icon">!</div><div>${message}</div>`;
+        document.body.appendChild(toast);
+
+        // Trigger reflow and show
+        toast.offsetHeight;
+        toast.classList.add('show');
+
+        // Remove after 3s
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
     const calculateBtn = document.querySelector('.location-panel .btn-blue-pill');
     if (calculateBtn) {
         calculateBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const selects = document.querySelectorAll('.location-panel select');
             if (selects.length >= 2) {
+                // If either select is empty (index 0 is the placeholder), block submission
+                if (selects[0].selectedIndex === 0 || selects[1].selectedIndex === 0) {
+                    showToast('Please select both a starting point and a destination.');
+                    return;
+                }
+                
+                // Also prevent selecting the same location
+                if (selects[0].value === selects[1].value) {
+                    showToast('Starting point and destination cannot be the same.');
+                    return;
+                }
+
                 const originText = selects[0].options[selects[0].selectedIndex].text;
                 const destText = selects[1].options[selects[1].selectedIndex].text;
-                const finalOrigin = selects[0].selectedIndex > 0 ? originText : "Cubao Gateway";
-                const finalDest = selects[1].selectedIndex > 0 ? destText : "Pasay EDSA-Taft";
-                // save the station ids (the option values) too so the result map
-                // can ask the engine by id, not by display name
-                const finalOriginId = selects[0].selectedIndex > 0 ? selects[0].value : "cubao";
-                const finalDestId = selects[1].selectedIndex > 0 ? selects[1].value : "pasay";
-
-                localStorage.setItem('smartCommute_routeOrigin', finalOrigin);
-                localStorage.setItem('smartCommute_routeDest', finalDest);
-                localStorage.setItem('smartCommute_routeOriginId', finalOriginId);
-                localStorage.setItem('smartCommute_routeDestId', finalDestId);
+                
+                localStorage.setItem('smartCommute_routeOrigin', originText);
+                localStorage.setItem('smartCommute_routeDest', destText);
+                localStorage.setItem('smartCommute_routeOriginId', selects[0].value);
+                localStorage.setItem('smartCommute_routeDestId', selects[1].value);
             }
+            
+            const loader = document.getElementById('loader-overlay');
+            if (loader) loader.classList.add('active');
+            
             window.location.href = 'result.html';
         });
     }
@@ -536,6 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trigger loader only for actual page navigations, not in-page modal or anchor behavior.
     document.addEventListener('click', (e) => {
+        if (e.defaultPrevented) return;
         const target = e.target.closest('a');
         if (!target || !target.href) return;
 

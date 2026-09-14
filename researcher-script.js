@@ -212,29 +212,35 @@ function buildQueryList(anchors, profiles) {
         }
     }
     const items = [];
-    pairs.forEach(([origin, destination], pairIndex) => {
-        profiles.forEach((profile, pIndex) => {
-            const nodes = 240 + ((pairIndex * 7) % 120);
-            const ms = (11 + ((pairIndex * 3 + pIndex * 2) % 14)).toFixed(1);
+    pairs.forEach(([origin, destination]) => {
+        profiles.forEach((profile) => {
             items.push({
                 od: `${origin.name} → ${destination.name}`,
+                oid: origin.id, did: destination.id,
                 profile: profile.id,
                 profileName: profile.name,
-                nodes,
-                ms,
-                performance: `H₀`
             });
         });
     });
     container.innerHTML = items.map(item => `
-        <div class="query-log-item" data-profile="${item.profile}" data-od="${item.od.toLowerCase()}">
+        <div class="query-log-item" data-profile="${item.profile}" data-od="${item.od.toLowerCase()}"
+             data-oid="${item.oid}" data-did="${item.did}">
             <div class="qli-top">
                 <div class="qli-od">${item.od}</div>
                 <div class="qli-profile ${item.profile}"><span class="qlip-dot"></span>${item.profileName}</div>
             </div>
-            <div class="qli-bottom">${item.nodes} nodes · ${item.ms} ms · ${item.performance}</div>
+            <div class="qli-bottom">click to run · a* playback</div>
         </div>
     `).join('');
+    // clicking a query runs the real a* and animates the expansion (pruning view)
+    container.querySelectorAll('.query-log-item').forEach(el => {
+        el.addEventListener('click', () => {
+            container.querySelectorAll('.query-log-item').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+            LAST_QUERY = { origin: el.dataset.oid, destination: el.dataset.did, profile: el.dataset.profile, el };
+            playInspect(LAST_QUERY);
+        });
+    });
 }
 
 function filterQueryLog() {
@@ -244,6 +250,63 @@ function filterQueryLog() {
         const text = `${item.dataset.od} ${item.dataset.profile}`;
         item.style.display = query && !text.includes(query) ? 'none' : '';
     });
+}
+
+let LAST_QUERY = null;
+let PLAY_TOKEN = 0;
+
+async function playInspect(q) {
+    if (!q || !map) return;
+    const token = ++PLAY_TOKEN;
+    animLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} });
+    animLayers = [];
+    let d;
+    try {
+        const res = await fetch('/api/inspect', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ origin: q.origin, destination: q.destination, profile: q.profile }) });
+        d = await res.json();
+    } catch (e) { return; }
+    if (token !== PLAY_TOKEN || !d || !d.found) return;
+    if ($('ov-origin')) $('ov-origin').innerText = d.origin || q.origin;
+    if ($('ov-dest')) $('ov-dest').innerText = d.destination || q.destination;
+    // expansion wave: every state a* popped, in order - the search spreading out.
+    // chunked so even ~700 expansions on the dense graph play in about 3s
+    const order = d.expanded_order || [];
+    const chunk = Math.max(1, Math.ceil(order.length / 90));
+    for (let i = 0; i < order.length; i += chunk) {
+        if (token !== PLAY_TOKEN) return;
+        for (const id of order.slice(i, i + chunk)) {
+            const a = BY_ID[id]; if (!a) continue;
+            const m = L.circleMarker([a.lat, a.lng], { radius: 6, color: '#ffcc02', fillColor: '#ff9500', fillOpacity: 0.55, weight: 1 }).addTo(map);
+            animLayers.push(m);
+            setTimeout(() => { try { m.setStyle({ radius: 2.5, fillOpacity: 0.22, weight: 0.5 }); } catch (e) {} }, 240);
+        }
+        await sleep(33);
+    }
+    // the winning route on top of the pruned search cloud
+    const legs = d.decomposition || [];
+    const lchunk = Math.max(1, Math.ceil(legs.length / 60));
+    for (let i = 0; i < legs.length; i += lchunk) {
+        if (token !== PLAY_TOKEN) return;
+        for (const leg of legs.slice(i, i + lchunk)) {
+            const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
+            if (!a || !b) continue;
+            animLayers.push(L.polyline([[a.lat, a.lng], [b.lat, b.lng]], { color: MODE_COLORS[leg.mode] || '#0071e3', weight: 6, opacity: 0.95 }).addTo(map));
+        }
+        await sleep(30);
+    }
+    const o = BY_ID[d.origin_id], de = BY_ID[d.destination_id];
+    if (o) animLayers.push(L.circleMarker([o.lat, o.lng], { radius: 8, color: '#fff', fillColor: '#30d158', fillOpacity: 1, weight: 2 }).addTo(map).bindTooltip('Origin'));
+    if (de) animLayers.push(L.circleMarker([de.lat, de.lng], { radius: 8, color: '#fff', fillColor: '#ff3b30', fillOpacity: 1, weight: 2 }).addTo(map).bindTooltip('Destination'));
+    const pts = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
+    if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 14 });
+    // real counters: nodes expanded vs the baseline run, execution ms, g at goal
+    if ($('ov-nodes')) $('ov-nodes').innerText = d.expanded_nodes;
+    if ($('ov-nodes-delta')) $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
+    if ($('ov-ms')) $('ov-ms').innerHTML = `${d.query_ms}<span class="ovc-unit">ms</span>`;
+    if ($('ov-cost')) $('ov-cost').innerText = Math.round(d.total_cost * 10) / 10;
+    if (q.el) q.el.querySelector('.qli-bottom').innerText = `${d.expanded_nodes} nodes · ${d.query_ms} ms · vs ${d.baseline_nodes} baseline`;
+    if (window.renderDecomp) try { renderDecomp(d); } catch (e) {}
 }
 
 function buildTimeline() {
@@ -408,6 +471,15 @@ async function init() {
         ]);
         ANCHORS = anchors; PROFILES = profiles;
         BY_ID = Object.fromEntries(anchors.map(a => [a.id, a]));
+        // the playback needs every node position, virtual jeepney stops included
+        fetch('/api/map/network').then(r => r.json()).then(gj => {
+            (gj.features || []).forEach(f => {
+                if (f.geometry && f.geometry.type === 'Point') {
+                    const p = f.properties || {};
+                    if (p.id && !BY_ID[p.id]) BY_ID[p.id] = { id: p.id, name: p.name, lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0] };
+                }
+            });
+        }).catch(() => {});
         setConn(true, 'API Active');
         renderSOP(bench);
         renderModels(ml);
