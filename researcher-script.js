@@ -127,19 +127,25 @@ function renderAhp(profileId, isEmpty = false) {
 }
 
 function renderModels(data) {
-    $('model-list').innerHTML = [
-        { key:'lstm', name:'LSTM', task:'Ridership', rmse:'0.072', detail:'84 epochs' },
-        { key:'rfr', name:'RFR', task:'Flood Risk', rmse:'0.094', detail:'200 trees' }
-    ].map(m => {
+    const el = $('model-list');
+    if (!el) return;
+    // live metrics from /api/ml-metrics; fall back to placeholders only if
+    // the payload is missing so the panel never sees invented numbers
+    const models = (data && data.models && data.models.length) ? data.models : [
+        { key:'lstm', name:'LSTM · Ridership', rmse:null, detail:'metrics unavailable' },
+        { key:'rfr', name:'RFR · Flood Risk', rmse:null, detail:'metrics unavailable' }
+    ];
+    el.innerHTML = models.map(m => {
         const ic = m.key === 'lstm' ? 'L' : 'R';
         const cls = m.key === 'lstm' ? 'lstm' : 'rfr';
+        const rmse = m.rmse != null ? `RMSE ${m.rmse}` : 'RMSE —';
         return `<div class="model-card ${cls}">
             <div class="mc-icon">${ic}</div>
             <div class="mc-body">
-                <div class="mc-name">${m.name} · ${m.task}</div>
-                <div class="mc-meta">RMSE ${m.rmse} · ${m.detail}</div>
+                <div class="mc-name">${m.name}</div>
+                <div class="mc-meta">${rmse} · ${m.detail || ''}</div>
             </div>
-            <div class="mc-status live">LIVE</div>
+            <div class="mc-status live">${m.status === 'trained' ? 'TRAINED' : 'LIVE'}</div>
         </div>`;
     }).join('');
 }

@@ -167,6 +167,7 @@
       });
       drawCollection(map, geojson);
       buildModeLegend("result-legend", route.summary.modes, colors);
+      fillResultTiles(route);
 
       // Update the route breakdown container if the function exists
       if (window.renderResultRouteBreakdown) {
@@ -174,6 +175,34 @@
       }
     } catch (err) {
       console.warn("route map unavailable:", err);
+    }
+  }
+
+  // result.html: overwrite the canned headline tiles with the engine's real
+  // numbers once the route arrives (script.js paints profile placeholders at
+  // load; this runs after the fetch so the live values always win)
+  function fillResultTiles(route) {
+    const s = route.summary;
+    const set = (id, val) => { const e = document.getElementById(id); if (e) e.innerText = val; };
+    const fare = s.fare_discounted_php != null ? s.fare_discounted_php : s.fare_php;
+    set("detail-1-label", "Time");   set("detail-1-value", Math.round(s.time_min) + "m");
+    set("detail-2-label", "Fare");   set("detail-2-value", "₱" + Math.round(fare));
+    set("detail-3-label", "Transfers"); set("detail-3-value", String(s.transfers));
+    set("detail-4-label", "Flood");  set("detail-4-value", route.criteria.R.level);
+    // headline = the profile's prioritized number, live
+    const pr = route.profile.priority;
+    const headline = pr === "F" ? "₱" + Math.round(fare)
+      : pr === "T" ? route.criteria.T.level
+      : pr === "R" ? route.criteria.R.level
+      : String(s.transfers);
+    const sub = pr === "F" ? "Lowest Total Fare" : pr === "T" ? "Crowd level"
+      : pr === "R" ? "Flood risk" : "Vehicle changes";
+    set("dynamic-result-summary", headline);
+    set("dynamic-result-sub", sub);
+    // the why-this-route card, straight from the engine
+    if (route.why) {
+      set("why-heading", route.why.heading || route.why.title || "");
+      set("why-description", route.why.description || route.why.text || "");
     }
   }
 
