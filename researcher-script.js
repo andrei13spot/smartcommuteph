@@ -153,7 +153,8 @@ function renderModels(data) {
 function initMap() {
     map = L.map('research-map', { zoomControl:false, scrollWheelZoom:false }).setView([14.6,121.02], 11);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19, attribution:'&copy; OpenStreetMap &copy; CARTO' }).addTo(map);
+    // esri dark canvas: keyless (carto now watermarks keyless requests); native tiles to z16
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Esri, HERE, Garmin, &copy; OpenStreetMap contributors' }).addTo(map);
     fetch('/api/map/network').then(r => r.json()).then(gj => {
         L.geoJSON(gj, {
             style: () => ({ color:'#2b3550', weight:2, opacity:0.55 }),
