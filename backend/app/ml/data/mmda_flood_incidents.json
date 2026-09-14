@@ -1,5 +1,5 @@
 {
-  "description": "flood incident points from the mmda flood reports in the group data drive (location, flood depth in inches, lat/lng). used to derive the per-edge flood risk baseline.",
+  "description": "flood incident points from the mmda flood reports and full-year summary reports 2024-2025 (formal data request; location, flood depth in inches, lat/lng). used to derive the per-edge flood risk baseline.",
   "incidents": [
     {
       "location": "E-Rod Araneta Intersection",
@@ -606,6 +606,3984 @@
       "depth_in": 8,
       "lat": 14.65316489,
       "lng": 121.0512957
+    },
+    {
+      "location": "Edsa NB & SB Dario Footbridge 8 16:29 16:48",
+      "depth_in": 6,
+      "lat": 14.657607,
+      "lng": 121.015606
+    },
+    {
+      "location": "POEA  EDSA Southbound 8 12:06 12:29",
+      "depth_in": 6,
+      "lat": 14.593027,
+      "lng": 121.058583
+    },
+    {
+      "location": "Ortigas LA Salle EB and WB 8 12:06 14:15",
+      "depth_in": 6,
+      "lat": 14.595235,
+      "lng": 121.055809
+    },
+    {
+      "location": "RMB M. Dela Fuente EB 8 16:47 17:25",
+      "depth_in": 6,
+      "lat": 14.601399,
+      "lng": 121.001577
+    },
+    {
+      "location": "RMB Going to Cubao 8 16:47 17:32",
+      "depth_in": 6,
+      "lat": 14.555521,
+      "lng": 121.016508
+    },
+    {
+      "location": "Espana Quintos EB/WB 8 16:53 17:25",
+      "depth_in": 6,
+      "lat": 14.613465,
+      "lng": 120.996928
+    },
+    {
+      "location": "Valenzuela 3 Mc Arthur Highway Calle Uno SB/NB 10 17:24 17:55",
+      "depth_in": 6,
+      "lat": 14.693091,
+      "lng": 120.964043
+    },
+    {
+      "location": "Mandaluyong 1 EDSA POEA sb 8 17:40 18:00",
+      "depth_in": 6,
+      "lat": 14.593299,
+      "lng": 121.058296
+    },
+    {
+      "location": "EDSA Dario SB 8 20:26 20:50",
+      "depth_in": 6,
+      "lat": 14.657492,
+      "lng": 121.015661
+    },
+    {
+      "location": "Pasay 1 Andrew Tramo Intersection EB 8 15:50 Direct Line",
+      "depth_in": 50,
+      "lat": 14.537562,
+      "lng": 121.003378
+    },
+    {
+      "location": "EDSA Oliveros NB 8 14:05 14:53",
+      "depth_in": 6,
+      "lat": 14.6576,
+      "lng": 121.006614
+    },
+    {
+      "location": "EDSA Kaingin NB 8 14:07 14:25",
+      "depth_in": 6,
+      "lat": 14.657403,
+      "lng": 121.011032
+    },
+    {
+      "location": "Pasay 1 Edsa cor. Roxas Blvrd.(NB/ SB) 5-6 9:48 10:08",
+      "depth_in": 6,
+      "lat": 14.53718,
+      "lng": 120.992609
+    },
+    {
+      "location": "Paso De Blas in front of 3s 5-8 14:45 16:30",
+      "depth_in": 6,
+      "lat": 14.710543,
+      "lng": 120.995322
+    },
+    {
+      "location": "North Ville 2 Bignay 10-15 14:45 16:30",
+      "depth_in": 6,
+      "lat": 14.755255,
+      "lng": 120.997833
+    },
+    {
+      "location": "Bartolome St. Malanday 2-3 14:45 16:30",
+      "depth_in": 6,
+      "lat": 14.712879,
+      "lng": 120.958627
+    },
+    {
+      "location": "Mandaluyong 1 POEA Ortigas EDSA SB 8 18:53 19:25",
+      "depth_in": 6,
+      "lat": 14.593222,
+      "lng": 121.058294
+    },
+    {
+      "location": "Muntinlupa 1 City hall, putatan SB - NB 8 18:53 19:41",
+      "depth_in": 6,
+      "lat": 14.394707,
+      "lng": 121.044868
+    },
+    {
+      "location": "Manila 1 ROXAS BLVD. P. OCAMPO SVC RD. 8 14:50 16:30",
+      "depth_in": 6,
+      "lat": 14.529084,
+      "lng": 120.993453
+    },
+    {
+      "location": "ANDREW TRAMO 8 14:30 15:00",
+      "depth_in": 6,
+      "lat": 14.537636,
+      "lng": 121.003014
+    },
+    {
+      "location": "EDSA TRAMO NB / SB 8 14:30 16:04",
+      "depth_in": 6,
+      "lat": 14.537945,
+      "lng": 121.003209
+    },
+    {
+      "location": "Caloocan 1 Mc Arthur Calle Uno NB outermost Lane 8 15:26 15:45",
+      "depth_in": 6,
+      "lat": 14.658652,
+      "lng": 120.983978
+    },
+    {
+      "location": "Manila 1 Roxas Blvd Service Road cor. Cuarteles st. 8 20:00 21:25",
+      "depth_in": 6,
+      "lat": 14.573494,
+      "lng": 120.980921
+    },
+    {
+      "location": "EDSA Taft nb 8 18:23",
+      "depth_in": 6,
+      "lat": 14.537431,
+      "lng": 121.000703
+    },
+    {
+      "location": "EDSA Tramo sb before flyover 8 19:36",
+      "depth_in": 6,
+      "lat": 14.537956,
+      "lng": 121.003224
+    },
+    {
+      "location": "Quirino Ave. - Pedro Gil 8 15:58 18:25",
+      "depth_in": 6,
+      "lat": 14.578685,
+      "lng": 120.998446
+    },
+    {
+      "location": "Roxas Blvd. - US Embassy sb 6 15:54 18:20",
+      "depth_in": 6,
+      "lat": 14.577557,
+      "lng": 120.97851
+    },
+    {
+      "location": "Andrew Ave. - Tramo 8 15:47 17:56",
+      "depth_in": 6,
+      "lat": 14.528065,
+      "lng": 121.004628
+    },
+    {
+      "location": "Roxas Blvd. - Mia Rd. sb 8 15:59 18:20",
+      "depth_in": 6,
+      "lat": 14.517817,
+      "lng": 120.99307
+    },
+    {
+      "location": "Shaw Tunnel NB 8 8:14 8:25",
+      "depth_in": 6,
+      "lat": 14.581,
+      "lng": 121.053864
+    },
+    {
+      "location": "Shaw Edsa SB 8 11:08 12:59",
+      "depth_in": 6,
+      "lat": 14.581656,
+      "lng": 121.053643
+    },
+    {
+      "location": "Bonifacio drive 25th street NB 8 12:37",
+      "depth_in": 6,
+      "lat": 14.584513,
+      "lng": 120.974505
+    },
+    {
+      "location": "Taft ave. - UN Ave. 8 17:40 22:20",
+      "depth_in": 6,
+      "lat": 14.582451,
+      "lng": 120.984604
+    },
+    {
+      "location": "Taft ave. - Quirino Ave. 8 17:40 22:20",
+      "depth_in": 6,
+      "lat": 14.570523,
+      "lng": 120.991746
+    },
+    {
+      "location": "Dimasalang cor. Becerra St. Sta. Cruz 8 17:54",
+      "depth_in": 6,
+      "lat": 14.618284,
+      "lng": 120.988874
+    },
+    {
+      "location": "Sucat Rd. Evacom NB 8 16:15 17:49",
+      "depth_in": 6,
+      "lat": 14.47489,
+      "lng": 121.001573
+    },
+    {
+      "location": "Canaynay Ave. Topland drive 19 18:21 22:31",
+      "depth_in": 6,
+      "lat": 14.47153,
+      "lng": 120.9988
+    },
+    {
+      "location": "Sucat Rd. Old Virra Mall SB 8 19:57 20:31",
+      "depth_in": 6,
+      "lat": 14.482976,
+      "lng": 120.995402
+    },
+    {
+      "location": "EDSA Taft NB outer Lane 8 8:06 8:25",
+      "depth_in": 6,
+      "lat": 14.537817,
+      "lng": 121.000891
+    },
+    {
+      "location": "Andrews tramo intersection 8 12:16 20:00",
+      "depth_in": 6,
+      "lat": 14.524383,
+      "lng": 121.012556
+    },
+    {
+      "location": "Balintawak NB SB 8 11:08 12:59",
+      "depth_in": 6,
+      "lat": 14.65735,
+      "lng": 121.003268
+    },
+    {
+      "location": "Dario Bridge NB 8 11:08 12:59",
+      "depth_in": 6,
+      "lat": 14.65769,
+      "lng": 121.014476
+    },
+    {
+      "location": "Taguig 1 C5 SM Aura SB 8 8:30 8:50",
+      "depth_in": 6,
+      "lat": 14.545894,
+      "lng": 121.054397
+    },
+    {
+      "location": "14:14",
+      "depth_in": 6,
+      "lat": 14.611196,
+      "lng": 120.994452
+    },
+    {
+      "location": "Orense Guadalupe NB 8 3:55 7:05",
+      "depth_in": 6,
+      "lat": 14.56145,
+      "lng": 121.042695
+    },
+    {
+      "location": "Espa\u00f1a - Lacson Intersection 8 4:48",
+      "depth_in": 6,
+      "lat": 14.609623,
+      "lng": 120.992711
+    },
+    {
+      "location": "Roxas - Kalaw Ave. 8 4:48",
+      "depth_in": 6,
+      "lat": 14.579857,
+      "lng": 120.977387
+    },
+    {
+      "location": "Vito cruz to Taft ave 19 5:15",
+      "depth_in": 6,
+      "lat": 14.564073,
+      "lng": 120.9944
+    },
+    {
+      "location": "Espa\u00f1a- R. Magsaysay 7 5:49",
+      "depth_in": 6,
+      "lat": 14.610678,
+      "lng": 120.99391
+    },
+    {
+      "location": "Espa\u00f1a-P.Margal/Blumentritt 9-10 5:49",
+      "depth_in": 6,
+      "lat": 14.615527,
+      "lng": 120.999134
+    },
+    {
+      "location": "Espa\u00f1a-M. Dela Fuente 13-14 5:49",
+      "depth_in": 6,
+      "lat": 14.611253,
+      "lng": 120.99436
+    },
+    {
+      "location": "Marikina 1 Marcos Highway WB (SM Marikina) 8 6:47",
+      "depth_in": 6,
+      "lat": 14.627446,
+      "lng": 121.087296
+    },
+    {
+      "location": "Roxas cor. Edsa Service road NB 8 3:46",
+      "depth_in": 6,
+      "lat": 14.537408,
+      "lng": 120.992575
+    },
+    {
+      "location": "Airport road - Domestic road 8 4:45",
+      "depth_in": 6,
+      "lat": 14.527152,
+      "lng": 120.999687
+    },
+    {
+      "location": "Roxas blvrd. Heritage 8 7:11",
+      "depth_in": 6,
+      "lat": 14.536953,
+      "lng": 120.992697
+    },
+    {
+      "location": "Taguig 1 C5-Kalayaan U-turn 8 4:10 5:40",
+      "depth_in": 6,
+      "lat": 14.555977,
+      "lng": 121.062789
+    },
+    {
+      "location": "Group",
+      "depth_in": 6,
+      "lat": 14.532812,
+      "lng": 121.057631
+    },
+    {
+      "location": "Kalentong Market Place 37 3:05 On going/ not passable",
+      "depth_in": 6,
+      "lat": 14.590724,
+      "lng": 121.024523
+    },
+    {
+      "location": "Maysilo Circle 37 3:05 On going/ not passable",
+      "depth_in": 6,
+      "lat": 14.578107,
+      "lng": 121.034523
+    },
+    {
+      "location": "Roxas -Blvd UN 10 20:19 20:30",
+      "depth_in": 6,
+      "lat": 14.5768893,
+      "lng": 120.9760508
+    },
+    {
+      "location": "Quirino Ave. cor Singalong 10 20:19 Ongoing/ not passable",
+      "depth_in": 6,
+      "lat": 14.573483,
+      "lng": 120.993951
+    },
+    {
+      "location": "Guazon corner Quirino/Uniliver 8 20:48 On going/ passable",
+      "depth_in": 6,
+      "lat": 14.59043,
+      "lng": 121.001787
+    },
+    {
+      "location": "M. Naval 32 On going/NPLV",
+      "depth_in": 6,
+      "lat": 14.661516,
+      "lng": 120.945943
+    },
+    {
+      "location": "Gov. Pascual 20 On going/NPLV",
+      "depth_in": 6,
+      "lat": 14.664059,
+      "lng": 120.942184
+    },
+    {
+      "location": "Valenzuela 1 route Mc Arthur 20 8:00 On going/ not passable",
+      "depth_in": 6,
+      "lat": 14.658297,
+      "lng": 120.984035
+    },
+    {
+      "location": "Pasig 1 C5- Ortigas 13 14:15 On going/ not passable",
+      "depth_in": 6,
+      "lat": 14.558027,
+      "lng": 121.064314
+    },
+    {
+      "location": "Gov. Pascual 19\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.668005,
+      "lng": 120.96536
+    },
+    {
+      "location": "Malabon Market 18\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.656957,
+      "lng": 120.951163
+    },
+    {
+      "location": "FC Villa cor. Estrella 13\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.656225,
+      "lng": 120.951408
+    },
+    {
+      "location": "Borromeo St., Pinagsabugan 13\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.656463,
+      "lng": 120.95686
+    },
+    {
+      "location": "Rizal Ave. Gen LUna 10\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.658655,
+      "lng": 120.952396
+    },
+    {
+      "location": "Maysilo - Yanga 8\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.679065,
+      "lng": 120.96359
+    },
+    {
+      "location": "Brgy Concepcion- Aglipay 8\" 15:32 as of 6:am PATV",
+      "depth_in": 6,
+      "lat": 14.668561,
+      "lng": 120.947204
+    },
+    {
+      "location": "Manila 1 Quezon blvd (ilalim) 26\" 6:00 10:24",
+      "depth_in": 6,
+      "lat": 14.59634,
+      "lng": 120.983125
+    },
+    {
+      "location": "Manila 2 Lagusnilad tunnel 37\" 10:28 2:15 pm",
+      "depth_in": 6,
+      "lat": 14.589605,
+      "lng": 120.980789
+    },
+    {
+      "location": "Pasig 1 Ortigas Extension- SM East 13\" 4:00 11:30",
+      "depth_in": 6,
+      "lat": 14.587767,
+      "lng": 121.108548
+    },
+    {
+      "location": "ByPass road- Veinte Reales 37\" 14:00 6AM- 8\"",
+      "depth_in": 6,
+      "lat": 14.712856,
+      "lng": 120.968555
+    },
+    {
+      "location": "Bahay Kanlungan - Maysan 14\" 14:00 6AM SUBSIDED",
+      "depth_in": 6,
+      "lat": 14.704438,
+      "lng": 120.976385
+    },
+    {
+      "location": "P. DEato St. Balangkas 37\" 14:00 6am NPLV",
+      "depth_in": 6,
+      "lat": 14.708103,
+      "lng": 120.946122
+    },
+    {
+      "location": "the AO of malabon)",
+      "depth_in": 6,
+      "lat": 14.655761,
+      "lng": 120.958154
+    },
+    {
+      "location": "the AO of malabon)",
+      "depth_in": 6,
+      "lat": 14.658871,
+      "lng": 120.953002
+    },
+    {
+      "location": "the AO of malabon)",
+      "depth_in": 6,
+      "lat": 14.679943,
+      "lng": 120.961252
+    },
+    {
+      "location": "the AO of malabon)",
+      "depth_in": 6,
+      "lat": 14.658338,
+      "lng": 120.952219
+    },
+    {
+      "location": "the AO of malabon)",
+      "depth_in": 6,
+      "lat": 14.682409,
+      "lng": 120.94166
+    },
+    {
+      "location": "July 25, 2024",
+      "depth_in": 6,
+      "lat": 14.444773,
+      "lng": 121.05057
+    },
+    {
+      "location": "July 25, 2025",
+      "depth_in": 6,
+      "lat": 14.444804,
+      "lng": 121.048362
+    },
+    {
+      "location": "July 25, 2026",
+      "depth_in": 6,
+      "lat": 14.376248,
+      "lng": 121.047134
+    },
+    {
+      "location": "July 25, 2027",
+      "depth_in": 6,
+      "lat": 14.349884,
+      "lng": 121.064217
+    },
+    {
+      "location": "Revira st Polo",
+      "depth_in": 6,
+      "lat": 14.705508,
+      "lng": 120.947325
+    },
+    {
+      "location": "5:00",
+      "depth_in": 6,
+      "lat": 14.686739,
+      "lng": 120.957864
+    },
+    {
+      "location": "Barangay Bisig 7-8 14:45 PATV",
+      "depth_in": 6,
+      "lat": 14.715703,
+      "lng": 120.943204
+    },
+    {
+      "location": "Makati EDSA Orense nb 8 20:50 21:10",
+      "depth_in": 6,
+      "lat": 14.561612,
+      "lng": 121.042887
+    },
+    {
+      "location": "Quezon City Commonwealth Technohub EB 8 15:48 17:00",
+      "depth_in": 6,
+      "lat": 14.656294,
+      "lng": 121.057095
+    },
+    {
+      "location": "Caloocan 1 McArthur Hi-Way Calle Uno 3-4 16:23 17:45",
+      "depth_in": 6,
+      "lat": 14.65851,
+      "lng": 120.984027
+    },
+    {
+      "location": "Makati 1 EDSA Orense st. Guadalupe 8-10 16:41 17:25",
+      "depth_in": 6,
+      "lat": 14.561419,
+      "lng": 121.042625
+    },
+    {
+      "location": "RMB Altura 8 17:00 17:45",
+      "depth_in": 6,
+      "lat": 14.602043,
+      "lng": 121.007762
+    },
+    {
+      "location": "Roxas P. ocampo service road 2-3 17:35 17:45",
+      "depth_in": 6,
+      "lat": 14.560116,
+      "lng": 120.987201
+    },
+    {
+      "location": "Andrew Tramo 2-3 16:39 17:45",
+      "depth_in": 6,
+      "lat": 14.528068,
+      "lng": 121.004689
+    },
+    {
+      "location": "Edsa roxas intersection nb 8 16:44 17:45",
+      "depth_in": 6,
+      "lat": 14.537045,
+      "lng": 120.99285
+    },
+    {
+      "location": "C3 NLEX/ Connector 5-6 16:32 17:45",
+      "depth_in": 6,
+      "lat": 14.644896,
+      "lng": 120.976779
+    },
+    {
+      "location": "Taguig 1 C5 Kalayaan Elevated U-Turn 8 16:48 17:45",
+      "depth_in": 6,
+      "lat": 14.555475,
+      "lng": 121.062228
+    },
+    {
+      "location": "Sevilla st. 03-Jan Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.67260802,
+      "lng": 120.9659566
+    },
+    {
+      "location": "Lenio st. 02-Jan Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.65807499,
+      "lng": 120.9518817
+    },
+    {
+      "location": "Estrella st. 3-4 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.65557948,
+      "lng": 120.9497098
+    },
+    {
+      "location": "Rizal ave. st. 2-3 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.65904704,
+      "lng": 120.9528017
+    },
+    {
+      "location": "Panghulo Silverswan 4-5 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.69243352,
+      "lng": 120.9520817
+    },
+    {
+      "location": "Gov. Pascual Ma. Clara 2-3 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.66868232,
+      "lng": 120.9677261
+    },
+    {
+      "location": "Maysilo MH Del Pilar San Vicente 4-5 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.67771046,
+      "lng": 120.9622452
+    },
+    {
+      "location": "Santulan Tatawid 5-6 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.68676862,
+      "lng": 120.9576371
+    },
+    {
+      "location": "Tonsuya Sanciagco 3-4 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.66782133,
+      "lng": 120.9588157
+    },
+    {
+      "location": "F. Sevilla Malabon Market 7-8 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.65667007,
+      "lng": 120.9512233
+    },
+    {
+      "location": "Sacritia Gen Luna 3-4 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.65963194,
+      "lng": 120.9518388
+    },
+    {
+      "location": "Sacritia, C. Arellano 4-5 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.66667378,
+      "lng": 120.9476023
+    },
+    {
+      "location": "Hulong Duhat Don Basilio Gabriel 3-4 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.6823917,
+      "lng": 120.9417446
+    },
+    {
+      "location": "C. Arellano, Ibaba 5-6 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.664373,
+      "lng": 120.9487475
+    },
+    {
+      "location": "Sitio 6 Catmon 2-3 Viber 17:00",
+      "depth_in": 6,
+      "lat": 14.6686401,
+      "lng": 120.962422
+    },
+    {
+      "location": "Landline",
+      "depth_in": 36,
+      "lat": 14.630557,
+      "lng": 121.011086
+    },
+    {
+      "location": "USUSAN BLK 2 SITIO PUSAWAN 10 Viber 9:30",
+      "depth_in": 6,
+      "lat": 14.52882722,
+      "lng": 121.0627584
+    },
+    {
+      "location": "TUKTUKAN BAGONG SILANG 10 Viber 9:30",
+      "depth_in": 6,
+      "lat": 14.52951118,
+      "lng": 121.0702028
+    },
+    {
+      "location": "HAGONOY MOONLIGHT 5 Viber 9:30",
+      "depth_in": 6,
+      "lat": 14.51317129,
+      "lng": 121.0727093
+    },
+    {
+      "location": "Fort Bonifacio Lawton Ave 5 Viber 9:30",
+      "depth_in": 6,
+      "lat": 14.53797649,
+      "lng": 121.0415229
+    },
+    {
+      "location": "South Signal Herbs 10 Viber 9:30",
+      "depth_in": 6,
+      "lat": 14.50393044,
+      "lng": 121.0538455
+    },
+    {
+      "location": "Viber",
+      "depth_in": 6,
+      "lat": 14.70671773,
+      "lng": 120.9605954
+    },
+    {
+      "location": "Viber",
+      "depth_in": 6,
+      "lat": 14.70923628,
+      "lng": 120.9597498
+    },
+    {
+      "location": "Cruz, Maysan 8 Viber 8:00",
+      "depth_in": 6,
+      "lat": 14.70037132,
+      "lng": 120.9831985
+    },
+    {
+      "location": "Blas 5-6 Viber 8:00",
+      "depth_in": 6,
+      "lat": 14.71058973,
+      "lng": 120.9956044
+    },
+    {
+      "location": "Maysan 5-6 Viber 8:00",
+      "depth_in": 6,
+      "lat": 14.69815919,
+      "lng": 120.9760277
+    },
+    {
+      "location": "2-3 Viber",
+      "depth_in": 6,
+      "lat": 14.70904166,
+      "lng": 120.9576881
+    },
+    {
+      "location": "Pio Val. Marulas 6-8 Viber 9:20",
+      "depth_in": 6,
+      "lat": 14.67632084,
+      "lng": 120.9853765
+    },
+    {
+      "location": "3-4 Viber",
+      "depth_in": 6,
+      "lat": 14.700567,
+      "lng": 120.956831
+    },
+    {
+      "location": "Muntinlupa 1 ALABANG ZAPOTE ROAD 26-Jan 09/02/24 As of 5:00AM NPATV",
+      "depth_in": 6,
+      "lat": 14.4242067,
+      "lng": 121.032296
+    },
+    {
+      "location": "PM",
+      "depth_in": 6,
+      "lat": 14.556242,
+      "lng": 121.062884
+    },
+    {
+      "location": "2:16pm)",
+      "depth_in": 6,
+      "lat": 14.58135048,
+      "lng": 121.0536572
+    },
+    {
+      "location": "Subsided",
+      "depth_in": 6,
+      "lat": 14.52397373,
+      "lng": 121.011776
+    },
+    {
+      "location": "Subsided",
+      "depth_in": 6,
+      "lat": 14.65546669,
+      "lng": 121.0556285
+    },
+    {
+      "location": "Subsided",
+      "depth_in": 6,
+      "lat": 14.70206023,
+      "lng": 121.0865815
+    },
+    {
+      "location": "Maria Clara Araneta Ave 17 0950H As of 4:29 pm Subsided",
+      "depth_in": 6,
+      "lat": 14.63085641,
+      "lng": 121.0112798
+    },
+    {
+      "location": "Taguig 5 C-5 SM Aura 08-Jan As of 8:00:00 AM As of 1:30 pm Subsided",
+      "depth_in": 6,
+      "lat": 14.54601289,
+      "lng": 121.0550863
+    },
+    {
+      "location": "LIWASANG BONIFACIO  SERVICE ROAD 4 10:30 15:30",
+      "depth_in": 6,
+      "lat": 14.595226,
+      "lng": 120.980018
+    },
+    {
+      "location": "INTRAMUROS SERVICE ROAD 4 10:30 15:30",
+      "depth_in": 6,
+      "lat": 14.590753,
+      "lng": 120.980426
+    },
+    {
+      "location": "Navotas 1 C3 North Bay Blvd. SB 5 9:26 11:05",
+      "depth_in": 6,
+      "lat": 14.639894,
+      "lng": 120.95689
+    },
+    {
+      "location": "Sgt.River A.bonifacio EB and WB 5 9:14 10:55",
+      "depth_in": 6,
+      "lat": 14.643695,
+      "lng": 120.99356
+    },
+    {
+      "location": "Las Pinas 1 Canaynay Ave. cor. Tiongquiao Rd. 8\" 15:04 8:39:00 pm",
+      "depth_in": 6,
+      "lat": 14.46601,
+      "lng": 120.99605
+    },
+    {
+      "location": "Caloocan 1 10th - 11th Ave cor Serrano 8\" 12:18 3:43 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.61195718,
+      "lng": 121.0594443
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw Tunnel NB 8\" 9:15 2:52 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.58137125,
+      "lng": 121.0536679
+    },
+    {
+      "location": "Maysilo Circle, Mandaluyong 10\" 12:18 2:50 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.57819628,
+      "lng": 121.0345811
+    },
+    {
+      "location": "Roxas Blvd NB Us Embassy 9\" 9:28 4:47 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.57756112,
+      "lng": 120.9786559
+    },
+    {
+      "location": "M. Dela Fuente St 6-8\" 12:40 1:07 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.61148018,
+      "lng": 120.9944642
+    },
+    {
+      "location": "Antipolo St 6-8\" 12:40 1:23 pm Subsided",
+      "depth_in": 6,
+      "lat": 14.61317433,
+      "lng": 120.9963863
+    },
+    {
+      "location": "UN Ave Taft Ave NB (NBI) 8\" 12:56 3:27 pm subsided",
+      "depth_in": 6,
+      "lat": 14.58259377,
+      "lng": 120.9846624
+    },
+    {
+      "location": "Navotas 1 C3 North Bay Blvd 8\" 8:14 PATV",
+      "depth_in": 6,
+      "lat": 14.64033807,
+      "lng": 120.9572746
+    },
+    {
+      "location": "Pasay 1 Andrew Tramo 10\" 12:19 12:55 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.52819476,
+      "lng": 121.0047961
+    },
+    {
+      "location": "Bonifacio Drive 8\" 8:43 PATV",
+      "depth_in": 6,
+      "lat": 14.64438291,
+      "lng": 120.9994158
+    },
+    {
+      "location": "Katipunan Luzon after flyover NB 8\" 7:41 10:47 AM Subsided",
+      "depth_in": 6,
+      "lat": 14.66383987,
+      "lng": 121.0735276
+    },
+    {
+      "location": "Amoranto G. Araneta 19\" 14:49 3:35 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.6359943,
+      "lng": 121.008715
+    },
+    {
+      "location": "EDSA Reliance NB 13 21:05 21:36",
+      "depth_in": 6,
+      "lat": 14.576517,
+      "lng": 121.050495
+    },
+    {
+      "location": "EDSA Madison NB: 8 21:05 21:36",
+      "depth_in": 6,
+      "lat": 14.574805,
+      "lng": 121.049108
+    },
+    {
+      "location": "Taguig 1 C5-Kalayaan U-turn SB 8 21:15 21:47",
+      "depth_in": 6,
+      "lat": 14.556073,
+      "lng": 121.062731
+    },
+    {
+      "location": "Manila 1 Espa\u00f1a Blvd cor Antipolo St 6 16:40 16:57",
+      "depth_in": 6,
+      "lat": 14.61305,
+      "lng": 120.9965
+    },
+    {
+      "location": "EDSA Orense NB 8 18:37 19:11",
+      "depth_in": 6,
+      "lat": 14.561629,
+      "lng": 121.042894
+    },
+    {
+      "location": "EDSA after Guadalupe Bridge NB 8 18:38 20:55",
+      "depth_in": 6,
+      "lat": 14.568842,
+      "lng": 121.046157
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw tunnel NB 8 18:40 21:44",
+      "depth_in": 6,
+      "lat": 14.581161,
+      "lng": 121.053827
+    },
+    {
+      "location": "(outermost lane) 8 15:30 16:24",
+      "depth_in": 6,
+      "lat": 14.668591,
+      "lng": 121.075895
+    },
+    {
+      "location": "(outermost lane) 8 16:01 17:05",
+      "depth_in": 6,
+      "lat": 14.653892,
+      "lng": 121.054164
+    },
+    {
+      "location": "Commo Ever Gotesco EB 8 14:16 14:53",
+      "depth_in": 6,
+      "lat": 14.678391,
+      "lng": 121.083523
+    },
+    {
+      "location": "Caloocan 1 C3 NLEX Connector 8 15:06 15:36",
+      "depth_in": 6,
+      "lat": 14.644885,
+      "lng": 120.97702
+    },
+    {
+      "location": "12:04 AM",
+      "depth_in": 6,
+      "lat": 14.475387,
+      "lng": 121.000734
+    },
+    {
+      "location": "Along Taft Avenue, Escoda cor Padre Faura 8 15:04 17:02",
+      "depth_in": 6,
+      "lat": 14.582525,
+      "lng": 120.984765
+    },
+    {
+      "location": "Quirino Pedro Gil NB 8 20:06",
+      "depth_in": 6,
+      "lat": 14.578665,
+      "lng": 120.998542
+    },
+    {
+      "location": "Rizal Ave. Bulacan St. to Cavite St., Manila 8 21:53 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.625769,
+      "lng": 120.983087
+    },
+    {
+      "location": "5:30 AM",
+      "depth_in": 6,
+      "lat": 14.601751,
+      "lng": 121.004648
+    },
+    {
+      "location": "5:30 AM",
+      "depth_in": 6,
+      "lat": 14.606462,
+      "lng": 121.002378
+    },
+    {
+      "location": "Taft Quirino Intersection 8 21:50",
+      "depth_in": 6,
+      "lat": 14.570352,
+      "lng": 120.991711
+    },
+    {
+      "location": "Rizal Ave cor. R. Papa, Manila 8 22:16 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.635605,
+      "lng": 120.982067
+    },
+    {
+      "location": "03:36 AM",
+      "depth_in": 6,
+      "lat": 14.611202,
+      "lng": 120.994417
+    },
+    {
+      "location": "1:12:00 AM",
+      "depth_in": 6,
+      "lat": 14.581461,
+      "lng": 121.054075
+    },
+    {
+      "location": "Rizal Ave. cor. Tayuman St., Manila 8 22:33 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.616774,
+      "lng": 120.982591
+    },
+    {
+      "location": "Rizal Ave. Alvarez to Mayhaligue, Manila 8 22:36 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.609933,
+      "lng": 120.982329
+    },
+    {
+      "location": "Recto Ave. cor Rizal Ave., Manila 8 22:39 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.603641,
+      "lng": 120.982101
+    },
+    {
+      "location": "Tayuman cor. Abad Santos Ave. 8 23:01 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.616707,
+      "lng": 120.977384
+    },
+    {
+      "location": "Abad Santos Ave. cor. Antipolo St. 8 23:03 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.62335,
+      "lng": 120.978168
+    },
+    {
+      "location": "Abad Santos Ave. cor. Solis St., Manila 8 23:05 Oct.25, 2024 12:15 AM",
+      "depth_in": 6,
+      "lat": 14.627053,
+      "lng": 120.978854
+    },
+    {
+      "location": "03:15 AM",
+      "depth_in": 6,
+      "lat": 14.611476,
+      "lng": 120.994699
+    },
+    {
+      "location": "Sucat road infront of SM Sucat 37 19:46 Oct.25, 2024 3:20 AM",
+      "depth_in": 6,
+      "lat": 14.483869,
+      "lng": 120.994644
+    },
+    {
+      "location": "EVACOM,BRGY.SAN DIONISIO 19-37 17:00 Oct.25, 2024 3:51 AM",
+      "depth_in": 6,
+      "lat": 14.475108,
+      "lng": 121.001258
+    },
+    {
+      "location": "NAIA Rd. Terminal 2 EB/WB 8 15:16 16:30",
+      "depth_in": 6,
+      "lat": 14.512514,
+      "lng": 121.007613
+    },
+    {
+      "location": "Roxas Blvd. EDSA NB 8 18:25 22:00",
+      "depth_in": 6,
+      "lat": 14.53776,
+      "lng": 120.992522
+    },
+    {
+      "location": "04:20 AM",
+      "depth_in": 6,
+      "lat": 14.526581,
+      "lng": 121.010778
+    },
+    {
+      "location": "and SM Hypermarket 8 20:39",
+      "depth_in": 6,
+      "lat": 14.587452,
+      "lng": 121.079482
+    },
+    {
+      "location": "1:09:00 AM",
+      "depth_in": 6,
+      "lat": 14.588855,
+      "lng": 121.103799
+    },
+    {
+      "location": "Luzon after Flyover NB 4 8:00 11:50",
+      "depth_in": 6,
+      "lat": 14.67198,
+      "lng": 121.06869
+    },
+    {
+      "location": "E-rod Araneta SB 8 14:53 18:00",
+      "depth_in": 6,
+      "lat": 14.618974,
+      "lng": 121.015001
+    },
+    {
+      "location": "04:26 AM",
+      "depth_in": 6,
+      "lat": 14.546058,
+      "lng": 121.055212
+    },
+    {
+      "location": "ALONG BONI HI WAY 19 10/24/2024 23:03:00 Subsided as of 9:26am",
+      "depth_in": 6,
+      "lat": 14.5764085,
+      "lng": 121.0356767
+    },
+    {
+      "location": "BALLESTEROS 19 10/24/2024 23:03:00 Subsided as of 5:25am",
+      "depth_in": 6,
+      "lat": 14.5824426,
+      "lng": 121.0260822
+    },
+    {
+      "location": "I. LOPEZ 19 10/24/2024 23:03:00 Subsided as of 4:07am",
+      "depth_in": 6,
+      "lat": 14.5364289,
+      "lng": 121.0266094
+    },
+    {
+      "location": "LERMA 19 10/24/2024 23:03:00 Subsided as of 5:29am",
+      "depth_in": 6,
+      "lat": 14.581172,
+      "lng": 121.0242195
+    },
+    {
+      "location": "B.FRANCISCO 19 10/24/2024 23:03:00 Subsided as of 3:29am",
+      "depth_in": 6,
+      "lat": 14.5821365,
+      "lng": 121.0255003
+    },
+    {
+      "location": "Subsided as of 8:00am",
+      "depth_in": 6,
+      "lat": 14.582507,
+      "lng": 120.984826
+    },
+    {
+      "location": "Bravo",
+      "depth_in": 6,
+      "lat": 14.7077,
+      "lng": 120.960276
+    },
+    {
+      "location": "Caloocan 1 C3 Nlex Connector 13 19:44 20:57",
+      "depth_in": 6,
+      "lat": 14.645141,
+      "lng": 120.976046
+    },
+    {
+      "location": "Edsa Balintawak NB 8 19:07 19:30",
+      "depth_in": 6,
+      "lat": 14.657571,
+      "lng": 121.003977
+    },
+    {
+      "location": "Edsa Dario NB 8 19:20 19:30",
+      "depth_in": 6,
+      "lat": 14.657714,
+      "lng": 121.015587
+    },
+    {
+      "location": "EDSA Wilcon Munoz nb (outermost lane) 8 21:38 22:20",
+      "depth_in": 6,
+      "lat": 14.6283,
+      "lng": 121.010061
+    },
+    {
+      "location": "EDSA DArio nb (outermost lane) 8 21:40 22:20",
+      "depth_in": 6,
+      "lat": 14.657725,
+      "lng": 121.015602
+    },
+    {
+      "location": "McArthur HW (Maysan to Dalandan) 8 21:40 22:38",
+      "depth_in": 6,
+      "lat": 14.694551,
+      "lng": 120.964082
+    },
+    {
+      "location": "EDSA Balintawak NB 8 14:28 14:40",
+      "depth_in": 6,
+      "lat": 14.65752932,
+      "lng": 121.004051
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw nb 8 14:30 15:05",
+      "depth_in": 6,
+      "lat": 14.581185,
+      "lng": 121.053883
+    },
+    {
+      "location": "Manila 1 Espana Lacson wb 8 14:35 14:44",
+      "depth_in": 6,
+      "lat": 14.609711,
+      "lng": 120.99269
+    },
+    {
+      "location": "Quezon City Commonwealth Ilang Ilang EB 8 15:09 15:39",
+      "depth_in": 6,
+      "lat": 14.685059,
+      "lng": 121.08651
+    },
+    {
+      "location": "Quezon City Edsa Balintawak Nb (LRT) 8 15:39 15:41",
+      "depth_in": 6,
+      "lat": 14.657579,
+      "lng": 121.004007
+    },
+    {
+      "location": "Mandaluyong Edsa Ortigas intersection SB 8 18:40 19:00",
+      "depth_in": 6,
+      "lat": 14.592846,
+      "lng": 121.058053
+    },
+    {
+      "location": "Mandaluyong 1 EDSA SHAW TUNNEL NB 8 15:51 17:27",
+      "depth_in": 6,
+      "lat": 14.581225,
+      "lng": 121.053909
+    },
+    {
+      "location": "San Marcelino cor Natividad st. 8 15:30 16:00",
+      "depth_in": 6,
+      "lat": 14.59035,
+      "lng": 120.98379
+    },
+    {
+      "location": "Taft corner NBI 8 15:30 16:00",
+      "depth_in": 6,
+      "lat": 14.58149,
+      "lng": 120.985038
+    },
+    {
+      "location": "Espana cor Lacson  W-B 8 15:35 16:00",
+      "depth_in": 6,
+      "lat": 14.60974,
+      "lng": 120.99277
+    },
+    {
+      "location": "Mandaluyong 1 Edsa Shaw tunnel NB 8 22:44 23:25",
+      "depth_in": 6,
+      "lat": 14.581483,
+      "lng": 121.053722
+    },
+    {
+      "location": "00:01",
+      "depth_in": 6,
+      "lat": 14.57027,
+      "lng": 120.99166
+    },
+    {
+      "location": "00:48",
+      "depth_in": 6,
+      "lat": 14.516852,
+      "lng": 120.999681
+    },
+    {
+      "location": "01:30",
+      "depth_in": 6,
+      "lat": 14.524408,
+      "lng": 121.011773
+    },
+    {
+      "location": "C3 A. Mabini NB 8 18:10 20:28",
+      "depth_in": 6,
+      "lat": 14.642175,
+      "lng": 120.975549
+    },
+    {
+      "location": "Espa\u00f1a Lacson WB 8 17:53 20:39",
+      "depth_in": 6,
+      "lat": 14.60968,
+      "lng": 120.99285
+    },
+    {
+      "location": "Espa\u00f1a Dela Fuente EB/WB 8 18:31 19:36",
+      "depth_in": 6,
+      "lat": 14.611249,
+      "lng": 120.994519
+    },
+    {
+      "location": "ongoing project of DPWH",
+      "depth_in": 6,
+      "lat": 14.577574,
+      "lng": 120.978673
+    },
+    {
+      "location": "EDSA Tramo SB 8 17:32 19:02",
+      "depth_in": 6,
+      "lat": 14.537954,
+      "lng": 121.003205
+    },
+    {
+      "location": "Tramo Andrew SB 8 17:54 18:41",
+      "depth_in": 6,
+      "lat": 14.527814,
+      "lng": 121.005059
+    },
+    {
+      "location": "EDSA MRT Taft NB 8 18:04 18:44",
+      "depth_in": 6,
+      "lat": 14.53769,
+      "lng": 121.001426
+    },
+    {
+      "location": "Sgt. Rivera Sto. Domingo EB / WB 8 17:54 20:28",
+      "depth_in": 6,
+      "lat": 14.64483,
+      "lng": 121.005155
+    },
+    {
+      "location": "C3 road A. Bonifacio Ave. intersection 8 17:49 20:28",
+      "depth_in": 6,
+      "lat": 14.6441,
+      "lng": 120.993815
+    },
+    {
+      "location": "Quezon Ave. Biak na Bato WB 19 18:24 19:37",
+      "depth_in": 6,
+      "lat": 14.62526,
+      "lng": 121.090721
+    },
+    {
+      "location": "EDSA Balintawak NB 10 16:17 15:17",
+      "depth_in": 6,
+      "lat": 14.657742,
+      "lng": 121.001487
+    },
+    {
+      "location": "EDSA Dario NB 10 16:19 16:59",
+      "depth_in": 6,
+      "lat": 14.657751,
+      "lng": 121.015445
+    },
+    {
+      "location": "EDSA North Ave. NB 8 16:19 21:35",
+      "depth_in": 6,
+      "lat": 14.655037,
+      "lng": 121.030704
+    },
+    {
+      "location": "Araneta Avenue, Quezon City 12 16:56 17:45",
+      "depth_in": 6,
+      "lat": 14.623889,
+      "lng": 121.015166
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw Tunnel NB 4 19:12 19:26",
+      "depth_in": 6,
+      "lat": 14.58125,
+      "lng": 121.0536
+    },
+    {
+      "location": "EDSA after Quezon Ave. Flyover NB 8 18:36 19:49",
+      "depth_in": 6,
+      "lat": 14.646171,
+      "lng": 121.036481
+    },
+    {
+      "location": "EDSA Magallanes Split SB 8 19:24 20:00",
+      "depth_in": 6,
+      "lat": 14.542324,
+      "lng": 121.019661
+    },
+    {
+      "location": "Governor Pascual Ave. brgy. Catmon 14-16 16:30 18:26",
+      "depth_in": 6,
+      "lat": 14.668193,
+      "lng": 120.963362
+    },
+    {
+      "location": "Letre Cor. Lazcano st. Brgy Tonsuya 8-10 16:30 18:26",
+      "depth_in": 6,
+      "lat": 14.661177,
+      "lng": 120.968272
+    },
+    {
+      "location": "Gen Luna St. (Corner Burgos St ), Concepcion 3-4 17:15 18:26",
+      "depth_in": 6,
+      "lat": 14.66715786,
+      "lng": 120.948019
+    },
+    {
+      "location": "EDSA Ortigas Svc. Rd. SB 8 14:55 15:32",
+      "depth_in": 6,
+      "lat": 14.586897,
+      "lng": 121.056492
+    },
+    {
+      "location": "EDSA Highway 54 Mall SB 8 15:02 15:29",
+      "depth_in": 6,
+      "lat": 14.582141,
+      "lng": 121.054094
+    },
+    {
+      "location": "Espa\u00f1a Blvd cor Antipolo St. WB/EB 8 16:30 17:06",
+      "depth_in": 6,
+      "lat": 14.612728,
+      "lng": 120.996064
+    },
+    {
+      "location": "EB/WB) 8 15:24 15:38",
+      "depth_in": 6,
+      "lat": 14.58803,
+      "lng": 121.107128
+    },
+    {
+      "location": "Commonwealth Ever Go Tesco EB 8 15:25 15:42",
+      "depth_in": 6,
+      "lat": 14.67817086,
+      "lng": 121.0855186
+    },
+    {
+      "location": "Parish Church 10 16:03 17:35",
+      "depth_in": 6,
+      "lat": 14.64385436,
+      "lng": 120.994062
+    },
+    {
+      "location": "Pineda St.) 8 15:55 17:20",
+      "depth_in": 6,
+      "lat": 14.637735,
+      "lng": 120.993271
+    },
+    {
+      "location": "Sgt. Rivera corner C-3, Quezon City 26 15:53 17:25",
+      "depth_in": 6,
+      "lat": 14.643947,
+      "lng": 120.99361
+    },
+    {
+      "location": "Commonwealth Avenue cor University Ave. 8 15:50 17:20",
+      "depth_in": 6,
+      "lat": 14.655245,
+      "lng": 121.055585
+    },
+    {
+      "location": "Ma. Clara cor. Don Jose 19 17:03 18:22",
+      "depth_in": 6,
+      "lat": 14.63057,
+      "lng": 121.0111
+    },
+    {
+      "location": "Taguig 1 C5 Kalayaan Svc. Rd. (layby) SB 8 15:21 15:43",
+      "depth_in": 6,
+      "lat": 14.55894,
+      "lng": 121.062499
+    },
+    {
+      "location": "Pasay 1 ROXAS BUS STOP NB 8 22:23 PATV /",
+      "depth_in": 6,
+      "lat": 14.552041,
+      "lng": 120.989657
+    },
+    {
+      "location": "Commonwealth Bitoon Circle 8 13:20 14:00",
+      "depth_in": 6,
+      "lat": 14.70238763,
+      "lng": 121.0825733
+    },
+    {
+      "location": "Mindanao Ave- Gen. Luis 8 14:30 15:30",
+      "depth_in": 6,
+      "lat": 14.71967195,
+      "lng": 121.0123883
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Ortigas Svc. Rd. SB 4 18:50 19:07",
+      "depth_in": 6,
+      "lat": 14.593032,
+      "lng": 121.058113
+    },
+    {
+      "location": "Pasay 1 Andrew Ave. cor. Tramo WB 8 20:01 20:45",
+      "depth_in": 6,
+      "lat": 14.52812,
+      "lng": 121.004398
+    },
+    {
+      "location": "Caloocan 1 C3 NLEX Connector Intersection 19 17:16 19:00",
+      "depth_in": 6,
+      "lat": 14.64432956,
+      "lng": 120.9764769
+    },
+    {
+      "location": "Malabon 1 Gov Pascual Ave Brgy Catmon 8 17:13 20:30",
+      "depth_in": 6,
+      "lat": 14.67039582,
+      "lng": 120.9602568
+    },
+    {
+      "location": "Espana Blvd- Lacson to Vicente Cruz EB & WB 19 18:07 22:16",
+      "depth_in": 6,
+      "lat": 14.61164,
+      "lng": 120.995078
+    },
+    {
+      "location": "Espana Blvd Lacson to Dela Fuente 19 20:36 22:16",
+      "depth_in": 6,
+      "lat": 14.611125,
+      "lng": 120.99453
+    },
+    {
+      "location": "Ermita Manila 5 18:27 19:00",
+      "depth_in": 6,
+      "lat": 14.577844,
+      "lng": 120.987378
+    },
+    {
+      "location": "JAS Tayuman Intersection 8 20:37 21:15",
+      "depth_in": 6,
+      "lat": 14.616833,
+      "lng": 120.982257
+    },
+    {
+      "location": "EDSA Oliveros NB 8 17:07 17:14",
+      "depth_in": 6,
+      "lat": 14.65787488,
+      "lng": 121.0065504
+    },
+    {
+      "location": "EDSA Balintawak NB 8 17:10 17:33",
+      "depth_in": 6,
+      "lat": 14.6574197,
+      "lng": 121.0047614
+    },
+    {
+      "location": "Quezon Ave Biak na Bato EB/WB 37 17:01 18:30",
+      "depth_in": 6,
+      "lat": 14.6254997,
+      "lng": 121.0098279
+    },
+    {
+      "location": "SB/NB 19 17:35 18:14",
+      "depth_in": 6,
+      "lat": 14.65654529,
+      "lng": 121.0000063
+    },
+    {
+      "location": "Sto.Domingo Atok Street Quezon City 37 18:29 20:33",
+      "depth_in": 6,
+      "lat": 14.631478,
+      "lng": 121.00754
+    },
+    {
+      "location": "1",
+      "depth_in": 6,
+      "lat": 14.61325181,
+      "lng": 120.9963911
+    },
+    {
+      "location": "Edsa Shaw Tunnel NB 8 3:30:00 Subsided 5:20:00 AM",
+      "depth_in": 6,
+      "lat": 14.581393,
+      "lng": 121.053971
+    },
+    {
+      "location": "Mandaluyong City Hall- Maysilo 13 3:33:00 NPTLV",
+      "depth_in": 6,
+      "lat": 14.578139,
+      "lng": 121.034471
+    },
+    {
+      "location": "Malabon 1 Gov. Pascual Ave. Brgy. Acacia - Maria clara 5 15:42 18:00",
+      "depth_in": 6,
+      "lat": 14.668704,
+      "lng": 120.967564
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw blvd tunnel NB 4 15:05 15:37",
+      "depth_in": 6,
+      "lat": 14.581419,
+      "lng": 121.054004
+    },
+    {
+      "location": "Pasay 1 Andrews Avenue Tramo WB 8 15:00 15:37",
+      "depth_in": 6,
+      "lat": 14.537643,
+      "lng": 121.003432
+    },
+    {
+      "location": "Pasig 1 C5 - Ortigas service road SB 8 14:58 16:12",
+      "depth_in": 6,
+      "lat": 14.588816,
+      "lng": 121.063994
+    },
+    {
+      "location": "Commonwealth Ilang Ilang EB 8 14:23 16:00",
+      "depth_in": 6,
+      "lat": 14.684979,
+      "lng": 121.086461
+    },
+    {
+      "location": "Commonwealth Tandang Sora EB 8 14:38 15:38",
+      "depth_in": 6,
+      "lat": 14.664039,
+      "lng": 121.068911
+    },
+    {
+      "location": "Commonwealth-Batasan 8 15:31 15:40",
+      "depth_in": 6,
+      "lat": 14.687202,
+      "lng": 121.087195
+    },
+    {
+      "location": "Luzon corner Commonwealth SB and NB 13 14:48 15:42",
+      "depth_in": 6,
+      "lat": 14.665677,
+      "lng": 121.070743
+    },
+    {
+      "location": "Commonwealth - Ever 8 14:51 16:11",
+      "depth_in": 6,
+      "lat": 14.678352,
+      "lng": 121.083614
+    },
+    {
+      "location": "Commonwealth-Philcoa (University Belt) 8 14:35 14:40",
+      "depth_in": 6,
+      "lat": 14.655187,
+      "lng": 121.055584
+    },
+    {
+      "location": "C5 Katipunan CP Garcia SB 8 15:00 15:29",
+      "depth_in": 6,
+      "lat": 14.64802,
+      "lng": 121.0742
+    },
+    {
+      "location": "EDSA North Ave. NB 8 15:30 19:00",
+      "depth_in": 6,
+      "lat": 14.655467,
+      "lng": 121.030388
+    },
+    {
+      "location": "C5 Katipunan Ateneo gate2 NB 8 15:09 15:17",
+      "depth_in": 6,
+      "lat": 14.638274,
+      "lng": 121.074543
+    },
+    {
+      "location": "Araneta Maria Clara NB 8 16:35 18:13",
+      "depth_in": 6,
+      "lat": 14.630497,
+      "lng": 121.010892
+    },
+    {
+      "location": "Sto.Domingo Samat street both direction 8 17:05 18:16",
+      "depth_in": 6,
+      "lat": 14.638771,
+      "lng": 121.005518
+    },
+    {
+      "location": "Taguig 1 C5 Kalayaan service road SB 8 14:58 15:29",
+      "depth_in": 6,
+      "lat": 14.555712,
+      "lng": 121.062412
+    },
+    {
+      "location": "Pasay 1 Andrew Ave NB before Terminal 3 8 11:00 12:59",
+      "depth_in": 6,
+      "lat": 14.523731,
+      "lng": 121.012111
+    },
+    {
+      "location": "Makati 1 EDSA Guadalupe Bridge NB 4 20:24 21:00",
+      "depth_in": 6,
+      "lat": 14.56871328,
+      "lng": 121.0460638
+    },
+    {
+      "location": "(06/29/2025)",
+      "depth_in": 6,
+      "lat": 14.582066,
+      "lng": 121.054271
+    },
+    {
+      "location": "(Metrobase)",
+      "depth_in": 6,
+      "lat": 14.592873,
+      "lng": 121.001535
+    },
+    {
+      "location": "(Engr. Lapena)",
+      "depth_in": 6,
+      "lat": 14.597804,
+      "lng": 120.966178
+    },
+    {
+      "location": "(Metrobase)",
+      "depth_in": 6,
+      "lat": 14.528019,
+      "lng": 121.004906
+    },
+    {
+      "location": "Mandaluyong 1 EDSA SHAW TUNNEL NB 8 11:56 13:59",
+      "depth_in": 6,
+      "lat": 14.58162,
+      "lng": 121.053684
+    },
+    {
+      "location": "Mandaluyong 1 EDSA CENTRAL TERMINAL NB 4 4:20 5:05",
+      "depth_in": 6,
+      "lat": 14.579837,
+      "lng": 121.052967
+    },
+    {
+      "location": "G ARANETA AMORANTO ST. 19 5:29 7:50",
+      "depth_in": 6,
+      "lat": 14.635963,
+      "lng": 121.008875
+    },
+    {
+      "location": "Makati 1 Edsa- Orense NB 8 19:36 subsided: 7:37pm",
+      "depth_in": 6,
+      "lat": 14.5614033,
+      "lng": 121.0403686
+    },
+    {
+      "location": "Edsa Shaw tunnel NB 8 19:36 subsided: 9:37pm",
+      "depth_in": 6,
+      "lat": 14.5799896,
+      "lng": 121.049521
+    },
+    {
+      "location": "Edsa Ortigas SB Svc Road 8 19:36 subsided: 7:57pm",
+      "depth_in": 6,
+      "lat": 14.5926406,
+      "lng": 121.0561184
+    },
+    {
+      "location": "Quirino- Pedro Gil Intersection 8 20:04 subsided: 9:00pm",
+      "depth_in": 6,
+      "lat": 14.5731651,
+      "lng": 120.9872694
+    },
+    {
+      "location": "Taft Padre Faura Southbound 8 20:02 subsided: 10:15pm",
+      "depth_in": 6,
+      "lat": 14.5798829,
+      "lng": 120.9833688
+    },
+    {
+      "location": "Taft NBI Southbound 8 20:02 subsided: 10:15pm",
+      "depth_in": 6,
+      "lat": 14.5811891,
+      "lng": 120.9823208
+    },
+    {
+      "location": "Pasay 1 Tramo Andrew SB 8 19:36 subsided: 8:30pm",
+      "depth_in": 6,
+      "lat": 14.5286464,
+      "lng": 120.9989173
+    },
+    {
+      "location": "Taguig 1 C5 Kalayaan Svc Rd NB 8 19:36 subsided: 7:57pm",
+      "depth_in": 6,
+      "lat": 14.5564389,
+      "lng": 121.0580554
+    },
+    {
+      "location": "Dr. A Santos SM Sucat  SB & NB 37 Viber subsided 2:52 am",
+      "depth_in": 6,
+      "lat": 14.4679562,
+      "lng": 121.0131371
+    },
+    {
+      "location": "Dr. A Santos SM Olivarez SB & NB 19 Viber subsided 2:52 am",
+      "depth_in": 6,
+      "lat": 14.46700843,
+      "lng": 121.0153912
+    },
+    {
+      "location": "Dr. A Santos - Canaynay 19 Viber subsided 1:27 am",
+      "depth_in": 6,
+      "lat": 14.47542871,
+      "lng": 121.0012064
+    },
+    {
+      "location": "Dr. A Santos - Salvador Estate 37 Viber subsided 1:27 am",
+      "depth_in": 6,
+      "lat": 14.46219894,
+      "lng": 121.0249839
+    },
+    {
+      "location": "Pasay 1 TRAMO ANDREW AVE. SB 8 17:17 Subsided : 6:20PM",
+      "depth_in": 6,
+      "lat": 14.528011,
+      "lng": 121.004768
+    },
+    {
+      "location": "Manila 1 Quirino Guazon SB 8 7:01 7:45",
+      "depth_in": 6,
+      "lat": 14.59043,
+      "lng": 121.001605
+    },
+    {
+      "location": "Padre Faura to U. N Station 8 3:15",
+      "depth_in": 6,
+      "lat": 14.581257,
+      "lng": 120.985275
+    },
+    {
+      "location": "Padre Faura intersection taft Ave 8 3:15",
+      "depth_in": 6,
+      "lat": 14.579888,
+      "lng": 120.985938
+    },
+    {
+      "location": "Espa\u00f1a Blvd. M. Dela Fuente st. 8 4:47 6:26",
+      "depth_in": 6,
+      "lat": 14.611191,
+      "lng": 120.994617
+    },
+    {
+      "location": "Espa\u00f1a Blvd - Maceda 8 4:50 5:52",
+      "depth_in": 6,
+      "lat": 14.377857,
+      "lng": 121.046372
+    },
+    {
+      "location": "Espa\u00f1a Blvd - Bluemintritt 8 4:50",
+      "depth_in": 6,
+      "lat": 14.615441,
+      "lng": 120.999121
+    },
+    {
+      "location": "Espa\u00f1a antipolo 8 5:07 6:26",
+      "depth_in": 6,
+      "lat": 14.613005,
+      "lng": 120.996413
+    },
+    {
+      "location": "Maria Orosa st.Corner Kalaw 8 6:25",
+      "depth_in": 6,
+      "lat": 14.581965,
+      "lng": 120.981127
+    },
+    {
+      "location": "V.mapa rmb WB 8 6:45",
+      "depth_in": 6,
+      "lat": 14.60273,
+      "lng": 121.01601
+    },
+    {
+      "location": "Navotas 1 San Jose - M.Naval cor E. Tuazon st 9 5:25",
+      "depth_in": 6,
+      "lat": 14.66147,
+      "lng": 120.94585
+    },
+    {
+      "location": "Commonwealth University Avenue EB 8 6:24",
+      "depth_in": 6,
+      "lat": 14.655253,
+      "lng": 121.055621
+    },
+    {
+      "location": "Boni. Ave., Brgy. New Za\u00f1iga 8 14:30 18:43",
+      "depth_in": 6,
+      "lat": 14.583955,
+      "lng": 121.027817
+    },
+    {
+      "location": "Taft Ave., Pedro Gil PGH NB SB 8 8:40 12:35",
+      "depth_in": 6,
+      "lat": 14.57707,
+      "lng": 120.98772
+    },
+    {
+      "location": "Taft - UN. Ave. Service Rd. 8 8:42 12:40",
+      "depth_in": 6,
+      "lat": 14.58256,
+      "lng": 120.98482
+    },
+    {
+      "location": "Abad Santos Ave. cor. Antipolo St. 8 10:00 13:55",
+      "depth_in": 6,
+      "lat": 14.62328,
+      "lng": 120.97816
+    },
+    {
+      "location": "Santos, Manila 8 16:18 18:00",
+      "depth_in": 6,
+      "lat": 14.60471,
+      "lng": 120.97437
+    },
+    {
+      "location": "Roxas Blvd. Pedro Gil Svc. Rd 8 16:51 19:05",
+      "depth_in": 6,
+      "lat": 14.57311,
+      "lng": 120.98096
+    },
+    {
+      "location": "JOSE ABAD SANTOS,  Recto NB 8 16:36 16:43",
+      "depth_in": 6,
+      "lat": 14.60605,
+      "lng": 120.97482
+    },
+    {
+      "location": "TAFT AVENUE CORNER P. FAURA 8 20:48",
+      "depth_in": 6,
+      "lat": 14.57987,
+      "lng": 120.98595
+    },
+    {
+      "location": "Subsided as of 5:04 AM",
+      "depth_in": 6,
+      "lat": 14.63617,
+      "lng": 120.9823
+    },
+    {
+      "location": "ESPA\u00d1A BLVD. CORNER MACEDA ST. 8 20:48",
+      "depth_in": 6,
+      "lat": 14.61439,
+      "lng": 120.99794
+    },
+    {
+      "location": "U.N. STATION SOUTH BOUND 8 20:48",
+      "depth_in": 6,
+      "lat": 14.5825,
+      "lng": 120.98463
+    },
+    {
+      "location": "PEDRO GIL TAFT AVENUE 8 20:49",
+      "depth_in": 6,
+      "lat": 14.57614,
+      "lng": 120.98837
+    },
+    {
+      "location": "TAFT AVENUE CORNER APACIBLE 8 20:49 7:30",
+      "depth_in": 6,
+      "lat": 14.57869,
+      "lng": 120.98684
+    },
+    {
+      "location": "TAFT AVENUE IN FRONT OF PGH 8 20:49",
+      "depth_in": 6,
+      "lat": 14.57905,
+      "lng": 120.9865
+    },
+    {
+      "location": "22",
+      "depth_in": 6,
+      "lat": 14.5809,
+      "lng": 120.98416
+    },
+    {
+      "location": "RMB Altura Int. 8 21:55 6:30",
+      "depth_in": 6,
+      "lat": 14.6046,
+      "lng": 121.00935
+    },
+    {
+      "location": "Roxas Blvd. Pedro Gil Svc. Rd 8 21:50",
+      "depth_in": 6,
+      "lat": 14.57308,
+      "lng": 120.98094
+    },
+    {
+      "location": "HALL 8 21:54",
+      "depth_in": 6,
+      "lat": 14.59028,
+      "lng": 120.98075
+    },
+    {
+      "location": "Espa\u00f1a cor V.cruz 8 22:25",
+      "depth_in": 6,
+      "lat": 14.6117,
+      "lng": 120.99497
+    },
+    {
+      "location": "ESPA\u00d1A BOULEVARD CORNER QUINTOS ST 19 22:34",
+      "depth_in": 6,
+      "lat": 14.61332,
+      "lng": 120.99694
+    },
+    {
+      "location": "MACEDA ST. CORNER DIMASALANG 8 22:34",
+      "depth_in": 6,
+      "lat": 14.62365,
+      "lng": 120.98906
+    },
+    {
+      "location": "BLUMENTRITT ROAD CORNER ANTIPOLO ST 8 22:34",
+      "depth_in": 6,
+      "lat": 14.62298,
+      "lng": 120.98294
+    },
+    {
+      "location": "ABAD SANTOS CORNER ANTIPOLO ST 8 22:34 23:51",
+      "depth_in": 6,
+      "lat": 14.62346,
+      "lng": 120.97822
+    },
+    {
+      "location": "Subsided as of 5:36 AM",
+      "depth_in": 6,
+      "lat": 14.60963,
+      "lng": 120.99287
+    },
+    {
+      "location": "31",
+      "depth_in": 6,
+      "lat": 14.61303,
+      "lng": 120.99659
+    },
+    {
+      "location": "32",
+      "depth_in": 6,
+      "lat": 14.61118,
+      "lng": 120.99444
+    },
+    {
+      "location": "29",
+      "depth_in": 6,
+      "lat": 14.63286,
+      "lng": 120.97375
+    },
+    {
+      "location": "ROXAS BLVD- KALAW NB 8 23:40",
+      "depth_in": 6,
+      "lat": 14.57982,
+      "lng": 120.9774
+    },
+    {
+      "location": "BASECO , GK MAIN ROAD 8 23:18",
+      "depth_in": 6,
+      "lat": 14.58878,
+      "lng": 120.9702
+    },
+    {
+      "location": "AURORA BLVD NEAR TAMBUNTING 8 23:18",
+      "depth_in": 6,
+      "lat": 14.62643,
+      "lng": 120.98593
+    },
+    {
+      "location": "DIMASALANG NEAR SIMOUN 8 23:18",
+      "depth_in": 6,
+      "lat": 14.61987,
+      "lng": 120.98882
+    },
+    {
+      "location": "LACSON CORNER DAPITAN 8 23:18",
+      "depth_in": 6,
+      "lat": 14.61292,
+      "lng": 120.98966
+    },
+    {
+      "location": "TAYUMAN NEAR ANTONIO RIVIERA 8 23:18",
+      "depth_in": 6,
+      "lat": 14.61689,
+      "lng": 120.97612
+    },
+    {
+      "location": "12:40 AM 12:40 PM / July 20, 2025",
+      "depth_in": 6,
+      "lat": 14.62482,
+      "lng": 120.98678
+    },
+    {
+      "location": "4:28 AM 10:30AM / July 20, 2025",
+      "depth_in": 6,
+      "lat": 14.58321,
+      "lng": 120.983398
+    },
+    {
+      "location": "4:46 AM 6:14AM / July 20, 2025",
+      "depth_in": 6,
+      "lat": 14.57998,
+      "lng": 120.97728
+    },
+    {
+      "location": "4:46 AM 10:30 AM/ July 20,2025",
+      "depth_in": 6,
+      "lat": 14.56439,
+      "lng": 120.98528
+    },
+    {
+      "location": "4:46 AM",
+      "depth_in": 6,
+      "lat": 14.58339,
+      "lng": 120.98399
+    },
+    {
+      "location": "Tramo sb brgy 185 going terminal 3 8 9:13 12:30",
+      "depth_in": 6,
+      "lat": 14.527605,
+      "lng": 121.00655
+    },
+    {
+      "location": "COMMO DO\u00d1A CARMEN WB 8 8:34 9:02",
+      "depth_in": 6,
+      "lat": 14.705126,
+      "lng": 121.081868
+    },
+    {
+      "location": "C3 Balintawak 13 9:30 13:28",
+      "depth_in": 6,
+      "lat": 14.644054,
+      "lng": 120.993507
+    },
+    {
+      "location": "Maria Clara St. cor. Don Jose St 8 10:34 18:00",
+      "depth_in": 6,
+      "lat": 14.64377,
+      "lng": 120.993658
+    },
+    {
+      "location": "Araneta, Maria Clara NB 8 10:21 14:51",
+      "depth_in": 6,
+      "lat": 14.630587,
+      "lng": 121.011163
+    },
+    {
+      "location": "NS Amoranto St. LTO 10 16:52 18:05",
+      "depth_in": 6,
+      "lat": 14.63545,
+      "lng": 121.007862
+    },
+    {
+      "location": "Quezon Ave. Biak na Bato EB/WB 8 17:06 17:15",
+      "depth_in": 6,
+      "lat": 14.625283,
+      "lng": 121.009838
+    },
+    {
+      "location": "EDSA Mu\u00f1oz Wilcon NB 8 20:09 21:09",
+      "depth_in": 6,
+      "lat": 14.657901,
+      "lng": 121.016696
+    },
+    {
+      "location": "Quezon Ave. Biak na Bato WB 8 21:40",
+      "depth_in": 6,
+      "lat": 14.625274,
+      "lng": 121.009779
+    },
+    {
+      "location": "MAYSAN, PASO DE BLAS - NLEX, BAGBAGUIN 10 - 13 9:30 11:40",
+      "depth_in": 6,
+      "lat": 14.708408,
+      "lng": 120.992916
+    },
+    {
+      "location": "Karuhatan Baliwag Stop Light Valenzuela 8 20:23 23:30",
+      "depth_in": 6,
+      "lat": 14.6889,
+      "lng": 120.974551
+    },
+    {
+      "location": "Macarthur Highway Fatima Valenzuela 8 - 10 20:30 23:30",
+      "depth_in": 6,
+      "lat": 14.677946,
+      "lng": 120.980128
+    },
+    {
+      "location": "Wilcon, Dalandanan, MacArthur Highway 8 20:25 23:30",
+      "depth_in": 6,
+      "lat": 14.707747,
+      "lng": 120.960319
+    },
+    {
+      "location": "27",
+      "depth_in": 6,
+      "lat": 14.629087,
+      "lng": 121.012221
+    },
+    {
+      "location": "CEMETERY 8 22:34 5:40:00 AM/ July 20, 2025",
+      "depth_in": 6,
+      "lat": 14.62604,
+      "lng": 120.98909
+    },
+    {
+      "location": "2025",
+      "depth_in": 6,
+      "lat": 14.6327,
+      "lng": 120.97462
+    },
+    {
+      "location": "Roxas Blvd Service Road UN 8 7:00:00 AM 11:00 AM/ July 20,2025",
+      "depth_in": 6,
+      "lat": 14.57898,
+      "lng": 120.97791
+    },
+    {
+      "location": "Roxas Blvd Service Road Salas to Pedro Gil 8 7:00:00 AM 11:00 AM/ July 20,2025",
+      "depth_in": 6,
+      "lat": 14.57315,
+      "lng": 120.98095
+    },
+    {
+      "location": "UN Taft Ave., NB 8 7:00:00 AM 10:30AM/ July 20,2025",
+      "depth_in": 6,
+      "lat": 14.58262,
+      "lng": 120.98459
+    },
+    {
+      "location": "C3 NLEX Connector - Knee Deep 19 19:05",
+      "depth_in": 6,
+      "lat": 14.6458446,
+      "lng": 120.9764917
+    },
+    {
+      "location": "Singko 8 15:45 6:00 AM (July 21, 2025)",
+      "depth_in": 6,
+      "lat": 14.42586166,
+      "lng": 121.0020584
+    },
+    {
+      "location": "Makati 1 Magallanes, Edsa Chino Roces NB 13 9:58:00 AM 12:19:00 PM",
+      "depth_in": 6,
+      "lat": 14.551607,
+      "lng": 121.013567
+    },
+    {
+      "location": "9:58:00 AM 2:21:00 PM",
+      "depth_in": 6,
+      "lat": 14.581998,
+      "lng": 121.054233
+    },
+    {
+      "location": "10:50:00 AM 2:58:00 PM",
+      "depth_in": 6,
+      "lat": 14.592847,
+      "lng": 121.001524
+    },
+    {
+      "location": "Taft Avenue corner Padre Faura 8 10:37:00 AM",
+      "depth_in": 6,
+      "lat": 14.579896,
+      "lng": 120.985978
+    },
+    {
+      "location": "service road 8 10:50:00 AM 2:50:00 PM",
+      "depth_in": 6,
+      "lat": 14.559715,
+      "lng": 120.987169
+    },
+    {
+      "location": "Roxas blvd UN intersection and Service road 8 10:50:00 AM",
+      "depth_in": 6,
+      "lat": 14.578841,
+      "lng": 120.97774
+    },
+    {
+      "location": "JAS Tayuman nb 8 10:50:00 AM",
+      "depth_in": 6,
+      "lat": 14.616827,
+      "lng": 120.982269
+    },
+    {
+      "location": "Taft Avenue from Apacible to Escoda, 8 9:47:00 AM",
+      "depth_in": 6,
+      "lat": 14.577351,
+      "lng": 120.987677
+    },
+    {
+      "location": "TAFT Ave Cor Gen Malvar",
+      "depth_in": 6,
+      "lat": 14.63965019,
+      "lng": 120.9558154
+    },
+    {
+      "location": "TAFT AVE. Cor. NBI UN Ave. Intersection",
+      "depth_in": 6,
+      "lat": 14.582373,
+      "lng": 120.984514
+    },
+    {
+      "location": "2:02:00 PM",
+      "depth_in": 6,
+      "lat": 14.582547,
+      "lng": 120.982084
+    },
+    {
+      "location": "Espa\u00f1a Blvd cor M Dela Fuente",
+      "depth_in": 6,
+      "lat": 14.611205,
+      "lng": 120.994465
+    },
+    {
+      "location": "9:43:00 AM 2:40:00 PM",
+      "depth_in": 6,
+      "lat": 14.528001,
+      "lng": 121.004839
+    },
+    {
+      "location": "MIA Road 8 10:50:00 AM 11:00:00 AM",
+      "depth_in": 6,
+      "lat": 14.517574,
+      "lng": 120.993331
+    },
+    {
+      "location": "Pasig 1 Ortigas Extension 8 10:46:00 AM 1:30:00 PM",
+      "depth_in": 6,
+      "lat": 14.589775,
+      "lng": 121.079779
+    },
+    {
+      "location": "10:50:00 AM 2:22:00 PM",
+      "depth_in": 6,
+      "lat": 14.65797966,
+      "lng": 121.0153531
+    },
+    {
+      "location": "Balintawak fronting St. Joseph Church 8 10:35:00 AM",
+      "depth_in": 6,
+      "lat": 14.65651729,
+      "lng": 120.9990408
+    },
+    {
+      "location": "Infront of LTFRB along Regalado SM Fairview 37 11:54:00 AM",
+      "depth_in": 6,
+      "lat": 14.72185157,
+      "lng": 121.0612691
+    },
+    {
+      "location": "Commonwealth Batasan 10 12:12:00 PM",
+      "depth_in": 6,
+      "lat": 14.6876208,
+      "lng": 121.086992
+    },
+    {
+      "location": "Commonwealth Bitoon 14 12:12:00 PM",
+      "depth_in": 6,
+      "lat": 14.70437606,
+      "lng": 121.0827904
+    },
+    {
+      "location": "Commonwealth Winston 8 6:35:00 PM 7:22:00 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.7051833,
+      "lng": 121.0782488
+    },
+    {
+      "location": "University Avenue corner Commonweatlh 8 11:21:00 AM",
+      "depth_in": 6,
+      "lat": 14.65489288,
+      "lng": 121.0584186
+    },
+    {
+      "location": "Edsa NLEX 8 12:42:00 PM",
+      "depth_in": 6,
+      "lat": 14.657341,
+      "lng": 121.00024
+    },
+    {
+      "location": "Fatima Phil Gun Club Cor Mc Arthur Highway 8 11:16:00 AM 4:10 PM",
+      "depth_in": 6,
+      "lat": 14.695157,
+      "lng": 120.970634
+    },
+    {
+      "location": "7:41:00 PM Subsided",
+      "depth_in": 6,
+      "lat": 14.72150712,
+      "lng": 121.0520868
+    },
+    {
+      "location": "5:00am)",
+      "depth_in": 6,
+      "lat": 14.471026,
+      "lng": 120.998411
+    },
+    {
+      "location": "5:00am)",
+      "depth_in": 6,
+      "lat": 14.4717715,
+      "lng": 121.0163287
+    },
+    {
+      "location": "5:00am)",
+      "depth_in": 6,
+      "lat": 14.4845903,
+      "lng": 120.9878923
+    },
+    {
+      "location": "5:00am)",
+      "depth_in": 6,
+      "lat": 14.4191337,
+      "lng": 121.0476249
+    },
+    {
+      "location": "5:00am)",
+      "depth_in": 6,
+      "lat": 14.4733256,
+      "lng": 120.9961848
+    },
+    {
+      "location": "5:00am)",
+      "depth_in": 6,
+      "lat": 14.5560813,
+      "lng": 121.0060083
+    },
+    {
+      "location": "Pasay 1 Edsa - Roxas Blvd NB & SB 8 6:00:00 AM",
+      "depth_in": 6,
+      "lat": 14.5367257,
+      "lng": 120.9936477
+    },
+    {
+      "location": "Mandaluyong 1 Edsa Shaw Tunnel NB 10 6:00:00 AM",
+      "depth_in": 6,
+      "lat": 14.5812304,
+      "lng": 121.05362
+    },
+    {
+      "location": "rcvd 5:00AM) 9:54pm Subsided",
+      "depth_in": 6,
+      "lat": 14.466008,
+      "lng": 120.967857
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.463832,
+      "lng": 120.968951
+    },
+    {
+      "location": "2025) 1:50 PM ( July 22, 2025)",
+      "depth_in": 6,
+      "lat": 14.558336,
+      "lng": 121.006952
+    },
+    {
+      "location": "Leono St Brgy Tanong 19 10:58AM July 22, 2025",
+      "depth_in": 6,
+      "lat": 14.653743,
+      "lng": 120.954522
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.660163,
+      "lng": 120.951626
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.659733,
+      "lng": 120.960199
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.658082,
+      "lng": 120.951533
+    },
+    {
+      "location": "9:40 AM (July 22, 2025) NPLV",
+      "depth_in": 6,
+      "lat": 14.616784,
+      "lng": 120.977164
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.60395341,
+      "lng": 120.981942
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.5605381,
+      "lng": 120.9892508
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.57877,
+      "lng": 120.977752
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.57992397,
+      "lng": 120.9773936
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.58638129,
+      "lng": 120.9825434
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.594328,
+      "lng": 120.97979
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.59530448,
+      "lng": 120.9763298
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.572496,
+      "lng": 120.990486
+    },
+    {
+      "location": "Palanca Quinta Market",
+      "depth_in": 6,
+      "lat": 14.59675963,
+      "lng": 120.9829403
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.57119406,
+      "lng": 120.9922165
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.60510396,
+      "lng": 120.9774916
+    },
+    {
+      "location": "2025)",
+      "depth_in": 6,
+      "lat": 14.481698,
+      "lng": 120.996363
+    },
+    {
+      "location": "2025) 2:22:00 PM",
+      "depth_in": 6,
+      "lat": 14.657474,
+      "lng": 121.014022
+    },
+    {
+      "location": "2025) PATV",
+      "depth_in": 6,
+      "lat": 14.655259,
+      "lng": 121.055626
+    },
+    {
+      "location": "2025) PATV",
+      "depth_in": 6,
+      "lat": 14.64427848,
+      "lng": 120.9930956
+    },
+    {
+      "location": "22,2025)",
+      "depth_in": 6,
+      "lat": 14.7039136,
+      "lng": 120.9590735
+    },
+    {
+      "location": "Pasay 1 Edsa- Heritage NB & SB",
+      "depth_in": 8,
+      "lat": 14.5363984,
+      "lng": 120.9918224
+    },
+    {
+      "location": "Mandaluyong 1 Edsa Shaw tunnel NB",
+      "depth_in": 8,
+      "lat": 14.5812544,
+      "lng": 121.052233
+    },
+    {
+      "location": "Taft -Un",
+      "depth_in": 8,
+      "lat": 14.5825551,
+      "lng": 120.9797554
+    },
+    {
+      "location": "Roxas Blvd Infront Us Embassy Svc Rd",
+      "depth_in": 8,
+      "lat": 14.5771613,
+      "lng": 120.9728032
+    },
+    {
+      "location": "Caloocan 1 A. mabini, caloocan city (damayan st. Tulay) 10 8:15 10:00",
+      "depth_in": 6,
+      "lat": 14.636917,
+      "lng": 120.975353
+    },
+    {
+      "location": "18:28",
+      "depth_in": 6,
+      "lat": 14.465934,
+      "lng": 120.968232
+    },
+    {
+      "location": "Makati 1 Edsa-magallanes-pasong tamo tunnel 8 9:00 9:34",
+      "depth_in": 6,
+      "lat": 14.540894,
+      "lng": 121.018448
+    },
+    {
+      "location": "GOV. PASCUAL BRGY.CATMON 8 7:24 9:20",
+      "depth_in": 6,
+      "lat": 14.665442,
+      "lng": 120.971566
+    },
+    {
+      "location": "M.H. Del Pilar st. Brgy. Maysilo 13 9:30 15:55",
+      "depth_in": 6,
+      "lat": 14.681197,
+      "lng": 120.960478
+    },
+    {
+      "location": "16:40pm",
+      "depth_in": 6,
+      "lat": 14.680689,
+      "lng": 120.941291
+    },
+    {
+      "location": "Rizal ave. Extn.(cor. Gen. Luna)  brgy. Ta\u00f1ong 19 17:18 22:55",
+      "depth_in": 6,
+      "lat": 14.658667,
+      "lng": 120.95248
+    },
+    {
+      "location": "Kalaw Avenue (Eastbound and Westbound) 8 7:52 10:12",
+      "depth_in": 6,
+      "lat": 14.58175,
+      "lng": 120.980714
+    },
+    {
+      "location": "Taft  Ave., Kalaw 8 7:30 10:12",
+      "depth_in": 6,
+      "lat": 14.583503,
+      "lng": 120.98392
+    },
+    {
+      "location": "Roxas cor Kalaw svc rd 8 7:30 15:01",
+      "depth_in": 6,
+      "lat": 14.579953,
+      "lng": 120.977367
+    },
+    {
+      "location": "21:30",
+      "depth_in": 6,
+      "lat": 14.573131,
+      "lng": 120.981083
+    },
+    {
+      "location": "Roxas UN svc rd. 8 7:30 15:01",
+      "depth_in": 6,
+      "lat": 14.578873,
+      "lng": 120.977922
+    },
+    {
+      "location": "17:18",
+      "depth_in": 6,
+      "lat": 14.582434,
+      "lng": 120.984598
+    },
+    {
+      "location": "Rd 8 6:35 13:35",
+      "depth_in": 6,
+      "lat": 14.577626,
+      "lng": 120.978567
+    },
+    {
+      "location": "Taft Avenue-Pedro Gil Intersection 10 8:06 17:50",
+      "depth_in": 6,
+      "lat": 14.576108,
+      "lng": 120.988287
+    },
+    {
+      "location": "Taft Ave. PGH 8 19:00 20:31",
+      "depth_in": 6,
+      "lat": 14.578765,
+      "lng": 120.986607
+    },
+    {
+      "location": "7:35am",
+      "depth_in": 6,
+      "lat": 14.579874,
+      "lng": 120.985971
+    },
+    {
+      "location": "6:47 AM PATV",
+      "depth_in": 6,
+      "lat": 14.57345281,
+      "lng": 120.9811332
+    },
+    {
+      "location": "17:02",
+      "depth_in": 6,
+      "lat": 14.490596,
+      "lng": 120.991733
+    },
+    {
+      "location": "6:00:00 AM",
+      "depth_in": 6,
+      "lat": 14.475114,
+      "lng": 121.001127
+    },
+    {
+      "location": "7/24/2025",
+      "depth_in": 6,
+      "lat": 14.485002,
+      "lng": 120.992345
+    },
+    {
+      "location": "Edsa - Roxas Blvd NB & SB 8 6:00 10:40",
+      "depth_in": 6,
+      "lat": 14.537081,
+      "lng": 120.992495
+    },
+    {
+      "location": "Andrews cor tramo 8 9:19 11:00",
+      "depth_in": 6,
+      "lat": 14.528172,
+      "lng": 121.004735
+    },
+    {
+      "location": "MacArthur Highway, T. Santiago, G. Lazaro St 8 10:30 17:20",
+      "depth_in": 6,
+      "lat": 14.712682,
+      "lng": 120.983612
+    },
+    {
+      "location": "7:57am",
+      "depth_in": 6,
+      "lat": 14.707616,
+      "lng": 120.960368
+    },
+    {
+      "location": "Caloocan 1 A. Mabini St. (Casili Bridge to Damayan) 8 8:23 13:00",
+      "depth_in": 6,
+      "lat": 14.637033,
+      "lng": 120.975388
+    },
+    {
+      "location": "Gov. Pascual Catmon st. 8 21:00",
+      "depth_in": 6,
+      "lat": 14.668101,
+      "lng": 120.965714
+    },
+    {
+      "location": "Caloocan 1 A.Mabini St.(Casili Bridge to Damayan St) 8 10:03 13:15",
+      "depth_in": 6,
+      "lat": 14.637051,
+      "lng": 120.975401
+    },
+    {
+      "location": "Gov Pascual Catmon NB and SB 8 6:52 8:10",
+      "depth_in": 6,
+      "lat": 14.670287,
+      "lng": 120.949082
+    },
+    {
+      "location": "MH Del Pilar Maysilo EB and WB 8 17:00 18:20",
+      "depth_in": 6,
+      "lat": 14.688424,
+      "lng": 120.95706
+    },
+    {
+      "location": "Gen. Luna st. Brgy. Concepcion 19 10:51 23:20",
+      "depth_in": 6,
+      "lat": 14.668257,
+      "lng": 120.947368
+    },
+    {
+      "location": "Edsa Shaw Tunnel NB 8 7:53 12:36",
+      "depth_in": 6,
+      "lat": 14.581119,
+      "lng": 121.053831
+    },
+    {
+      "location": "F. Ortigas St., Brgy. New Zaniga 10 11:32 13:26",
+      "depth_in": 6,
+      "lat": 14.585748,
+      "lng": 121.031082
+    },
+    {
+      "location": "Roxas blvd Pedro Gil service road 8 17:00 19:11",
+      "depth_in": 6,
+      "lat": 14.577793,
+      "lng": 120.978388
+    },
+    {
+      "location": "Roxas blvd Kalaw Service road 8 9:30 10:11",
+      "depth_in": 6,
+      "lat": 14.579923,
+      "lng": 120.977599
+    },
+    {
+      "location": "Taft ave Gen Malvar NB 8 9:30 16:40",
+      "depth_in": 6,
+      "lat": 14.574824,
+      "lng": 120.989124
+    },
+    {
+      "location": "Taft ave Pedro Gil NB 8 9:30 16:40",
+      "depth_in": 6,
+      "lat": 14.576152,
+      "lng": 120.98838
+    },
+    {
+      "location": "Roxas Blvd (Pedro Gil to Emerald Nb) 19:11",
+      "depth_in": 6,
+      "lat": 14.575396,
+      "lng": 120.979908
+    },
+    {
+      "location": "F. Sevilla Blvd. Ta\u00f1ong (Bayan)",
+      "depth_in": 6,
+      "lat": 14.657425,
+      "lng": 120.950994
+    },
+    {
+      "location": "C. Arellano Brgy. Concepcion",
+      "depth_in": 6,
+      "lat": 14.668447,
+      "lng": 120.946244
+    },
+    {
+      "location": "Don Basilio Bautista,brgy. hulong duhat",
+      "depth_in": 6,
+      "lat": 14.680385,
+      "lng": 120.941373
+    },
+    {
+      "location": "Rizal ave extension near Malabon City Hall",
+      "depth_in": 6,
+      "lat": 14.657897,
+      "lng": 120.951219
+    },
+    {
+      "location": "Taft ave Quirino NB 8 9:30 16:40",
+      "depth_in": 6,
+      "lat": 14.57039,
+      "lng": 120.991662
+    },
+    {
+      "location": "Roxas Blvd svc rd (Pedro Gil to Salas St) 8 11:11 19:11",
+      "depth_in": 6,
+      "lat": 14.573247,
+      "lng": 120.981238
+    },
+    {
+      "location": "Road 10 corner C3 Eb and Wb 8 6:59 14:00",
+      "depth_in": 6,
+      "lat": 14.639341,
+      "lng": 120.95603
+    },
+    {
+      "location": "M.Naval corner Santiago WB and EB 8 7:01",
+      "depth_in": 6,
+      "lat": 14.658172,
+      "lng": 120.947435
+    },
+    {
+      "location": "Andrew Tramo SB to Wb 8 7:10 8:51",
+      "depth_in": 6,
+      "lat": 14.528126,
+      "lng": 121.004744
+    },
+    {
+      "location": "Edsa cor Roxas blvd. SB 8 7:12 9:31",
+      "depth_in": 6,
+      "lat": 14.537226,
+      "lng": 120.992619
+    },
+    {
+      "location": "Andrews Domestic eb/wb 8 11:14 12:14",
+      "depth_in": 6,
+      "lat": 14.527354,
+      "lng": 120.999682
+    },
+    {
+      "location": "Edsa Roxas Intersection NB 19 11:33 12:33",
+      "depth_in": 6,
+      "lat": 14.536982,
+      "lng": 120.99266
+    },
+    {
+      "location": "Rd 8 10:10 18:15",
+      "depth_in": 6,
+      "lat": 14.708248,
+      "lng": 120.960123
+    },
+    {
+      "location": "Mandaluyong 1 Edsa Shaw Tunnel 8 15:09 15:55",
+      "depth_in": 6,
+      "lat": 14.580404,
+      "lng": 121.053056
+    },
+    {
+      "location": "Katipunan after Luzon Flyover NB 20:29",
+      "depth_in": 6,
+      "lat": 14.63253,
+      "lng": 121.074228
+    },
+    {
+      "location": "5:09:00 AM",
+      "depth_in": 6,
+      "lat": 14.577552,
+      "lng": 120.978531
+    },
+    {
+      "location": "Mcarthur Calle Uno EB: 8 13:05 13:29",
+      "depth_in": 6,
+      "lat": 14.657822,
+      "lng": 120.983889
+    },
+    {
+      "location": "Samson corner Lapu-Lapu st 8 13:18 15:00",
+      "depth_in": 6,
+      "lat": 14.657164,
+      "lng": 120.982429
+    },
+    {
+      "location": "Accacia/Tinajeros 4 13:05 14:00",
+      "depth_in": 6,
+      "lat": 14.671832,
+      "lng": 120.970424
+    },
+    {
+      "location": "EDSA Ortigas intersection 8 12:41 13:18",
+      "depth_in": 6,
+      "lat": 14.59304,
+      "lng": 121.05842
+    },
+    {
+      "location": "EDSA Shaw Tunnel NB 8 12:58 13:33",
+      "depth_in": 6,
+      "lat": 14.58144,
+      "lng": 121.05337
+    },
+    {
+      "location": "Manila 1 UN / UNILEVER ALONG CRISTOBAL ST 8 12:47 13:20",
+      "depth_in": 6,
+      "lat": 14.586082,
+      "lng": 120.993771
+    },
+    {
+      "location": "Pasig 1 C5 cor Ortigas SB Service road Valle Verde VI 8 12:51 13:01",
+      "depth_in": 6,
+      "lat": 14.589777,
+      "lng": 121.079714
+    },
+    {
+      "location": "Maria Clara Street Don Jose: 19 15:00 16:34",
+      "depth_in": 6,
+      "lat": 14.630105,
+      "lng": 121.010084
+    },
+    {
+      "location": "17:00",
+      "depth_in": 6,
+      "lat": 14.657408,
+      "lng": 120.995424
+    },
+    {
+      "location": "Valenzuela 1 MacArthur Highway, Elysian Creek, BBB 8 13:29 13:53",
+      "depth_in": 6,
+      "lat": 14.673765,
+      "lng": 120.981758
+    },
+    {
+      "location": "Caloocan 1 C3 Road corner NLEX Connector 8 15:33 4:51 pm Subsided",
+      "depth_in": 6,
+      "lat": 14.644754,
+      "lng": 120.976279
+    },
+    {
+      "location": "EDSA Olivers- Balintawak NB 8 15:26 3:36pm Subsided",
+      "depth_in": 6,
+      "lat": 14.657337,
+      "lng": 121.003263
+    },
+    {
+      "location": "Commonwealth- Regalado 10 15:40 4:38pm Subsided",
+      "depth_in": 6,
+      "lat": 14.710542,
+      "lng": 121.061036
+    },
+    {
+      "location": "Mc Arthur HIway BBB Marulas 10 17:20 5:45pm Subsided",
+      "depth_in": 6,
+      "lat": 14.667066,
+      "lng": 120.982967
+    },
+    {
+      "location": "August 15, 2025",
+      "depth_in": 6,
+      "lat": 14.698933,
+      "lng": 120.963143
+    },
+    {
+      "location": "August 15, 2026",
+      "depth_in": 6,
+      "lat": 14.707732,
+      "lng": 120.960321
+    },
+    {
+      "location": "August 15, 2027",
+      "depth_in": 6,
+      "lat": 14.707115,
+      "lng": 120.960522
+    },
+    {
+      "location": "Paranaque 1 Ninoy Aquino Ave.corner V. Medina St. SB 8 15:07 17:30",
+      "depth_in": 6,
+      "lat": 14.50575,
+      "lng": 121.000734
+    },
+    {
+      "location": "Mundo EB/WB 8 14:01 15:50",
+      "depth_in": 6,
+      "lat": 14.52605067,
+      "lng": 121.010714
+    },
+    {
+      "location": "Makati 1  Roxas, Buendia NB 8 9:00 12:44",
+      "depth_in": 6,
+      "lat": 14.552253,
+      "lng": 120.989705
+    },
+    {
+      "location": "Ortigas La Salle Gate 6 WB, 8 9:51 10:45",
+      "depth_in": 6,
+      "lat": 14.596791,
+      "lng": 121.053785
+    },
+    {
+      "location": "Roxas Quirino Service road Nb 8 9:00 12:11",
+      "depth_in": 6,
+      "lat": 14.570488,
+      "lng": 120.991633
+    },
+    {
+      "location": "intersection 8 8:51 12:11",
+      "depth_in": 6,
+      "lat": 14.569929,
+      "lng": 120.991666
+    },
+    {
+      "location": "SM manila and manila hall vicinity 8 9:35 19:26",
+      "depth_in": 6,
+      "lat": 14.589598,
+      "lng": 120.982077
+    },
+    {
+      "location": "Leveriza corner Quirino Ave: 8 9:35 19:26",
+      "depth_in": 6,
+      "lat": 14.567707,
+      "lng": 120.989541
+    },
+    {
+      "location": "Taft Ave. Quirino - Quirino Ave 8 9:35 17:26",
+      "depth_in": 6,
+      "lat": 14.569345,
+      "lng": 120.991933
+    },
+    {
+      "location": "Infront of Ospital Ng Maynila 13 9:35 19:26",
+      "depth_in": 6,
+      "lat": 14.564536,
+      "lng": 120.987101
+    },
+    {
+      "location": "Taft Ave. corner Nakpil St 8 9:35 19:26",
+      "depth_in": 6,
+      "lat": 14.573843,
+      "lng": 120.989672
+    },
+    {
+      "location": "Pedro Gil Infront of PCU 8 9:35 17:26",
+      "depth_in": 6,
+      "lat": 14.575875,
+      "lng": 120.988564
+    },
+    {
+      "location": "Pedro Gil corner taft Ave 8 9:35 17:26",
+      "depth_in": 6,
+      "lat": 14.576141,
+      "lng": 120.988385
+    },
+    {
+      "location": "Pedro Gil infront of PGH: 8 9:35 17:26",
+      "depth_in": 6,
+      "lat": 14.576985,
+      "lng": 120.984884
+    },
+    {
+      "location": "Roxas Katigbak Sb and NB 8 10:04 13:10",
+      "depth_in": 6,
+      "lat": 14.582923,
+      "lng": 120.975576
+    },
+    {
+      "location": "Roxas Pedro Gil NB and SB, 10 10:25 13:08",
+      "depth_in": 6,
+      "lat": 14.581391,
+      "lng": 121.012045
+    },
+    {
+      "location": "Espa\u00f1a Dela Fuente EB and Wb 8 11:26 13:48",
+      "depth_in": 6,
+      "lat": 14.611205,
+      "lng": 120.994431
+    },
+    {
+      "location": "Marvar Taft South and North bound 8 11:52 19:26",
+      "depth_in": 6,
+      "lat": 14.574742,
+      "lng": 120.989129
+    },
+    {
+      "location": "Roxas Un Avenue service road 8 14:00 15:20",
+      "depth_in": 6,
+      "lat": 14.577742,
+      "lng": 120.97837
+    },
+    {
+      "location": "roxas kalaw service road 8 13:58 14:51",
+      "depth_in": 6,
+      "lat": 14.57988,
+      "lng": 120.977446
+    },
+    {
+      "location": "Manila City Hall to San Marcelino 17:56",
+      "depth_in": 6,
+      "lat": 14.589554,
+      "lng": 120.98196
+    },
+    {
+      "location": "Taft Infront of Adamson (To Kalaw) 17:56",
+      "depth_in": 6,
+      "lat": 14.587304,
+      "lng": 120.985228
+    },
+    {
+      "location": "PNU to Ayala 19:26",
+      "depth_in": 6,
+      "lat": 14.588069,
+      "lng": 120.98422
+    },
+    {
+      "location": "Padre Faura to Intersection 17:26",
+      "depth_in": 6,
+      "lat": 14.579918,
+      "lng": 120.986098
+    },
+    {
+      "location": "PNU Taft 17:26",
+      "depth_in": 6,
+      "lat": 14.586706,
+      "lng": 120.983131
+    },
+    {
+      "location": "roxas kalaw nb and sb 14:51",
+      "depth_in": 6,
+      "lat": 14.579885,
+      "lng": 120.977395
+    },
+    {
+      "location": "Taft Ave. Kalaw 8 16:30 17:57",
+      "depth_in": 6,
+      "lat": 14.583509,
+      "lng": 120.98394
+    },
+    {
+      "location": "Taft UN Ave 4 16:30 18:09",
+      "depth_in": 6,
+      "lat": 14.582378,
+      "lng": 120.984525
+    },
+    {
+      "location": "Gate of Manila City Hall Sm Side 8 9:35 17:26",
+      "depth_in": 6,
+      "lat": 14.589492,
+      "lng": 120.981014
+    },
+    {
+      "location": "Taft to Shrine 18:30",
+      "depth_in": 6,
+      "lat": 14.591448,
+      "lng": 120.981004
+    },
+    {
+      "location": "Villegas to City Hall 17:26",
+      "depth_in": 6,
+      "lat": 14.589802,
+      "lng": 120.981899
+    },
+    {
+      "location": "Taft to Underpass 19:26",
+      "depth_in": 6,
+      "lat": 14.589763,
+      "lng": 120.980881
+    },
+    {
+      "location": "Infront of Kartilya Ng Katipunan 19:26",
+      "depth_in": 6,
+      "lat": 14.591039,
+      "lng": 120.981872
+    },
+    {
+      "location": "Infront of Manila City Hall 17:26",
+      "depth_in": 6,
+      "lat": 14.589513,
+      "lng": 120.981946
+    },
+    {
+      "location": "Kalaw Facing Taft 17:26",
+      "depth_in": 6,
+      "lat": 14.583503,
+      "lng": 120.98387
+    },
+    {
+      "location": "Padre Faura to Intesection 17:26",
+      "depth_in": 6,
+      "lat": 14.579922,
+      "lng": 120.986072
+    },
+    {
+      "location": "Quirino Station (Walk Way) 17:26",
+      "depth_in": 6,
+      "lat": 14.569888,
+      "lng": 120.991656
+    },
+    {
+      "location": "Quirino Station (Facing V Cruz) 17:26",
+      "depth_in": 6,
+      "lat": 14.570227,
+      "lng": 120.991509
+    },
+    {
+      "location": "Taft NBI Parking Infront of Adamson 17:26",
+      "depth_in": 6,
+      "lat": 14.58154,
+      "lng": 120.985193
+    },
+    {
+      "location": "Taft Ave. (NBI) 17:26",
+      "depth_in": 6,
+      "lat": 14.581247,
+      "lng": 120.985325
+    },
+    {
+      "location": "Pedro Gil (Walk Way) 1726",
+      "depth_in": 6,
+      "lat": 14.578779,
+      "lng": 120.997263
+    },
+    {
+      "location": "Quirino Ave. Soutbound 1726",
+      "depth_in": 6,
+      "lat": 14.57889,
+      "lng": 120.998489
+    },
+    {
+      "location": "Highschool ( north bound) 8 9:21 11:14",
+      "depth_in": 6,
+      "lat": 14.466832,
+      "lng": 121.015498
+    },
+    {
+      "location": "Edsa Roxas NB 8 9:00 12:15",
+      "depth_in": 6,
+      "lat": 14.537106,
+      "lng": 120.992692
+    },
+    {
+      "location": "Buendia World Trade Center 37 10:28 14:01",
+      "depth_in": 6,
+      "lat": 14.551635,
+      "lng": 120.986884
+    },
+    {
+      "location": "EDSA Ortigas after flyover 8 14:30 15:22",
+      "depth_in": 6,
+      "lat": 14.581277,
+      "lng": 121.053897
+    },
+    {
+      "location": "EDSA Shaw blvd Tunnel SB 8 14:36 15:29",
+      "depth_in": 6,
+      "lat": 14.58115,
+      "lng": 121.05339
+    },
+    {
+      "location": "EDSA Shaw blvd after tunnel SB 8-9 14:39 15:12",
+      "depth_in": 6,
+      "lat": 14.581463,
+      "lng": 121.05338
+    },
+    {
+      "location": "EDSA Shaw blvd tunnel NB 8 14:51 17:00",
+      "depth_in": 6,
+      "lat": 14.580556,
+      "lng": 121.054314
+    },
+    {
+      "location": "EDSA Reliance NB 13 14:40 15:39",
+      "depth_in": 6,
+      "lat": 14.576851,
+      "lng": 121.050569
+    },
+    {
+      "location": "P Burgos Northbound Fronting of KKK 8 15:12 15:45",
+      "depth_in": 6,
+      "lat": 14.565197,
+      "lng": 121.031075
+    },
+    {
+      "location": "Dela Fuente Espana intersection: 8 15:23 16:35",
+      "depth_in": 6,
+      "lat": 14.612811,
+      "lng": 120.996191
+    },
+    {
+      "location": "Pasig 1 C5 Tiendesitas SB: (Eagle Street NB) 19 15:10 15:39",
+      "depth_in": 6,
+      "lat": 14.585904,
+      "lng": 121.078904
+    },
+    {
+      "location": "EDSA Shaw Tunnel 8 18:39 19:58",
+      "depth_in": 6,
+      "lat": 14.58127283,
+      "lng": 121.0536035
+    },
+    {
+      "location": "EDSA Ortigas SB 8 18:39 19:00",
+      "depth_in": 6,
+      "lat": 14.593284,
+      "lng": 121.058271
+    },
+    {
+      "location": "EDSA Highway 54 Mall SB 8 18:39 19:22",
+      "depth_in": 6,
+      "lat": 14.584963,
+      "lng": 121.055607
+    },
+    {
+      "location": "EDSA After Quezon Ave. 8 18:39 19:22",
+      "depth_in": 6,
+      "lat": 14.64488055,
+      "lng": 121.0379977
+    },
+    {
+      "location": "Samson Rd. cor. Lapu lapu St. 8 16:20 17:11",
+      "depth_in": 6,
+      "lat": 14.657153,
+      "lng": 120.982376
+    },
+    {
+      "location": "Samson Rd. UE 8 16:31 17:12",
+      "depth_in": 6,
+      "lat": 14.657677,
+      "lng": 120.975415
+    },
+    {
+      "location": "McArthur Highway Calle Uno 8 16:36 17:48",
+      "depth_in": 6,
+      "lat": 14.658706,
+      "lng": 120.98398
+    },
+    {
+      "location": "Malabon 1 gov. Pascual ave. brgy Catmon 19 17:10 20:10",
+      "depth_in": 6,
+      "lat": 14.670271,
+      "lng": 120.949073
+    },
+    {
+      "location": "EDSA Centris service road NB 8 14:33 16:31",
+      "depth_in": 6,
+      "lat": 14.642121,
+      "lng": 121.03905
+    },
+    {
+      "location": "EDSA Balintawak NB 8 14:42 16:01",
+      "depth_in": 6,
+      "lat": 14.657579,
+      "lng": 121.005527
+    },
+    {
+      "location": "Elliptical road Kalayaan Avenue 16:24",
+      "depth_in": 6,
+      "lat": 14.648845,
+      "lng": 121.051065
+    },
+    {
+      "location": "C5 Katipunan Ateneo NB 16:17",
+      "depth_in": 6,
+      "lat": 14.639539,
+      "lng": 121.074635
+    },
+    {
+      "location": "EDSA North Avenue NB 16:12",
+      "depth_in": 6,
+      "lat": 14.655114,
+      "lng": 121.030454
+    },
+    {
+      "location": "C5 Katipunan Aurora service road SB 19 14:52 15:41",
+      "depth_in": 6,
+      "lat": 14.631921,
+      "lng": 121.07419
+    },
+    {
+      "location": "Edsa West Avenue SB 8 15:05 16:18",
+      "depth_in": 6,
+      "lat": 14.65538,
+      "lng": 121.030071
+    },
+    {
+      "location": "Luzon Ave. c5 INT. 8 14:17 16:24",
+      "depth_in": 6,
+      "lat": 14.665543,
+      "lng": 121.070786
+    },
+    {
+      "location": "Commonwealth winston 19 15:12 16:30",
+      "depth_in": 6,
+      "lat": 14.705144,
+      "lng": 121.07826
+    },
+    {
+      "location": "Edsa Kamuning intersection NB and SB 8 15:02 16:18",
+      "depth_in": 6,
+      "lat": 14.634612,
+      "lng": 121.043511
+    },
+    {
+      "location": "Commowealth Bitoon West Bound 8 15:19 17:00",
+      "depth_in": 6,
+      "lat": 14.704545,
+      "lng": 121.08256
+    },
+    {
+      "location": "EDSA Mother Ignacia SB 8 15:22 16:18",
+      "depth_in": 6,
+      "lat": 14.64013,
+      "lng": 121.03103
+    },
+    {
+      "location": "Quezon Avenue Lung Center EB and WB 8-9 15:22 16:24",
+      "depth_in": 6,
+      "lat": 14.648537,
+      "lng": 121.044778
+    },
+    {
+      "location": "Araneta Maria Clara NB and SB 19 15:39 21:00",
+      "depth_in": 6,
+      "lat": 14.630682,
+      "lng": 121.01124
+    },
+    {
+      "location": "Commonwealth UP Gym EB 37 15:43 17:01",
+      "depth_in": 6,
+      "lat": 14.659909,
+      "lng": 121.062488
+    },
+    {
+      "location": "EDSA Quezon Avenue Tunnel WB and EB 19 15:43 16:05",
+      "depth_in": 6,
+      "lat": 14.627707,
+      "lng": 121.012567
+    },
+    {
+      "location": "Manila 1 Roxas Blvd. P. Ocampo Service Road 8 20:44 21:35",
+      "depth_in": 6,
+      "lat": 14.55970244,
+      "lng": 120.9869594
+    },
+    {
+      "location": "Pasay 1 ANDREW TRAMO INT. 8 20:12 21:16",
+      "depth_in": 6,
+      "lat": 14.5280108,
+      "lng": 121.0047013
+    },
+    {
+      "location": "Quirino Station Northbound 8 5:10 6:00",
+      "depth_in": 6,
+      "lat": 14.57027,
+      "lng": 120.99155
+    },
+    {
+      "location": "Pedro Gil 8 5:10 6:00",
+      "depth_in": 6,
+      "lat": 14.5788,
+      "lng": 120.99726
+    },
+    {
+      "location": "Quirino Station to Taft 8 5:10 6:00",
+      "depth_in": 6,
+      "lat": 14.570452,
+      "lng": 120.991478
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw Tunnel NB 8 13:32 14:48",
+      "depth_in": 6,
+      "lat": 14.581991,
+      "lng": 121.054239
+    },
+    {
+      "location": "Manila 1 Roxas Pedro Gil NB Service Road 8 13:50 15:12",
+      "depth_in": 6,
+      "lat": 14.573255,
+      "lng": 120.981272
+    },
+    {
+      "location": "City hall, Muntinlupa City 8 12:51 13:20",
+      "depth_in": 6,
+      "lat": 14.395145,
+      "lng": 121.044883
+    },
+    {
+      "location": "Antonio, Paranaque City 13 12:00 13:33",
+      "depth_in": 6,
+      "lat": 14.46097,
+      "lng": 121.02777
+    },
+    {
+      "location": "Highschool 8 12:26 17:10",
+      "depth_in": 6,
+      "lat": 14.478739,
+      "lng": 120.998695
+    },
+    {
+      "location": "San Dionisio, Paranaque City 8 12:36 17:00",
+      "depth_in": 6,
+      "lat": 14.475065,
+      "lng": 121.001082
+    },
+    {
+      "location": "Pasay 1 Roxas EDSA Intersection NB 8 13:45 15:03",
+      "depth_in": 6,
+      "lat": 14.536978,
+      "lng": 120.992668
+    },
+    {
+      "location": "n''bound (sub 1821H)",
+      "depth_in": 6,
+      "lat": 14.657307,
+      "lng": 120.994562
+    },
+    {
+      "location": "C3 NLEX Connector Int. 8 17:21 17:48",
+      "depth_in": 6,
+      "lat": 14.644847,
+      "lng": 120.976563
+    },
+    {
+      "location": "Mc Arthur Highway Calle Uno NB 8 16:40 17:24",
+      "depth_in": 6,
+      "lat": 14.657736,
+      "lng": 120.98399
+    },
+    {
+      "location": "EDSA Balintawak nb 8 15:36 16:51",
+      "depth_in": 6,
+      "lat": 14.65759,
+      "lng": 121.00398
+    },
+    {
+      "location": "EDSA Oliveros nb 8 15:37 16:47",
+      "depth_in": 6,
+      "lat": 14.657612,
+      "lng": 121.006561
+    },
+    {
+      "location": "EDSA North Ave. nb 8 16:13 17:19",
+      "depth_in": 6,
+      "lat": 14.655242,
+      "lng": 121.030556
+    },
+    {
+      "location": "EDSA after Q.Ave f/o nb 8 16:15 17:24",
+      "depth_in": 6,
+      "lat": 14.645097,
+      "lng": 121.037107
+    },
+    {
+      "location": "N.S Amoranto 19 17:30",
+      "depth_in": 6,
+      "lat": 14.631379,
+      "lng": 120.998872
+    },
+    {
+      "location": "G. Araneta Avenue 8 17:30 19:30",
+      "depth_in": 6,
+      "lat": 14.623908,
+      "lng": 121.015212
+    },
+    {
+      "location": "Dr. A Santos Infront of SM Sucat 16:20",
+      "depth_in": 6,
+      "lat": 14.484508,
+      "lng": 120.994182
+    },
+    {
+      "location": "City Hall 8 9:50 10:04",
+      "depth_in": 6,
+      "lat": 14.395027,
+      "lng": 121.044871
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw Tunnel NB 8 13:51 14:36",
+      "depth_in": 6,
+      "lat": 14.58133915,
+      "lng": 121.0536155
+    },
+    {
+      "location": "1:00 AM",
+      "depth_in": 6,
+      "lat": 14.686484,
+      "lng": 120.957833
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw Blvd tunnel nb 8 16:13 18:36",
+      "depth_in": 6,
+      "lat": 14.58119,
+      "lng": 121.053834
+    },
+    {
+      "location": "P. Burgos St., Southbound, Ermita, Manila 8 19:43 20:55",
+      "depth_in": 6,
+      "lat": 14.593993,
+      "lng": 120.979017
+    },
+    {
+      "location": "Infront of Hidden Garden, Lawton, Manila 8 19:43 20:55",
+      "depth_in": 6,
+      "lat": 14.593913,
+      "lng": 120.979585
+    },
+    {
+      "location": "Roxas Boulevard, In front of DPWH 8 19:43 20:55",
+      "depth_in": 6,
+      "lat": 14.587991,
+      "lng": 120.972546
+    },
+    {
+      "location": "Taft Ave., Ayala Boulevard, Ermita, Manila 8 19:43 20:55",
+      "depth_in": 6,
+      "lat": 14.586261,
+      "lng": 120.982576
+    },
+    {
+      "location": "Espana cor Antipolo St. 21:42",
+      "depth_in": 6,
+      "lat": 14.612908,
+      "lng": 120.996351
+    },
+    {
+      "location": "Taft Avenue Cor. Padre Faura St., Ermita, 8 19:43 20:55",
+      "depth_in": 6,
+      "lat": 14.579896,
+      "lng": 120.98603
+    },
+    {
+      "location": "Taft Avenue Corner Escoda St., Ermita, 8 19:43 20:55",
+      "depth_in": 6,
+      "lat": 14.577368,
+      "lng": 120.987691
+    },
+    {
+      "location": "12:00 AM",
+      "depth_in": 6,
+      "lat": 14.605509,
+      "lng": 121.018707
+    },
+    {
+      "location": "12:00 AM",
+      "depth_in": 6,
+      "lat": 14.605419,
+      "lng": 121.018356
+    },
+    {
+      "location": "5:18 AM",
+      "depth_in": 6,
+      "lat": 14.706542,
+      "lng": 120.960717
+    },
+    {
+      "location": "5:18 AM",
+      "depth_in": 6,
+      "lat": 14.708546,
+      "lng": 120.959916
+    },
+    {
+      "location": "Makati 1 EDSA Magallanes Split SB 8 16:04 17:36",
+      "depth_in": 6,
+      "lat": 14.54225127,
+      "lng": 121.0195388
+    },
+    {
+      "location": "Mandaluyong 1 EDSA Shaw Tunnel NB 8 15:44 17:50",
+      "depth_in": 6,
+      "lat": 14.58268107,
+      "lng": 121.0534516
+    },
+    {
+      "location": "Mandaluyong 1 Edsa Shaw Tunnel NB 8 11:07 11:47",
+      "depth_in": 6,
+      "lat": 14.58326261,
+      "lng": 121.0531083
+    },
+    {
+      "location": "Manila 1 Roxas P.Ocampo Service road 8 11:19 11:42",
+      "depth_in": 6,
+      "lat": 14.55992333,
+      "lng": 120.9872277
+    },
+    {
+      "location": "Dr. A. Santos Ave.-Canaynay Ave 8 10:42 12:20",
+      "depth_in": 6,
+      "lat": 14.47541825,
+      "lng": 121.0011742
+    },
+    {
+      "location": "Mia road Wb Park and Fly 8 11:14 11:42",
+      "depth_in": 6,
+      "lat": 14.51660764,
+      "lng": 121.0001835
+    },
+    {
+      "location": "Andrew Tramo Wb infront Shell 8 10:43 11:33",
+      "depth_in": 6,
+      "lat": 14.52824696,
+      "lng": 121.0050561
+    },
+    {
+      "location": "Edsa Roxas NB 8 10:46 11:34",
+      "depth_in": 6,
+      "lat": 14.536997,
+      "lng": 120.992644
+    },
+    {
+      "location": "East Service road Nichols 8 10:47 11:34",
+      "depth_in": 6,
+      "lat": 14.51218,
+      "lng": 121.0317156
+    },
+    {
+      "location": "Andrews near terminal oval 8 11:06 11:45",
+      "depth_in": 6,
+      "lat": 14.52814671,
+      "lng": 121.0045061
+    },
+    {
+      "location": "Caloocan 1 C3 Nlex Connector NB and Sb 8 13:01 15:45",
+      "depth_in": 6,
+      "lat": 14.692362,
+      "lng": 121.02333
+    },
+    {
+      "location": "Gov. Pascual ave. (Sitio 6), brgy. Catmon 8 13:30 15:00",
+      "depth_in": 6,
+      "lat": 14.668701,
+      "lng": 120.962493
+    },
+    {
+      "location": "(Ma.Clara ) 4 13:34 15:13",
+      "depth_in": 6,
+      "lat": 14.668738,
+      "lng": 120.967587
+    },
+    {
+      "location": "Edsa Shaw Tunnel NB 8 10:39 15:00",
+      "depth_in": 6,
+      "lat": 14.581207,
+      "lng": 121.053843
+    },
+    {
+      "location": "Edsa Ortigas DMW Sb 8 12:40 12:55",
+      "depth_in": 6,
+      "lat": 14.593186,
+      "lng": 121.058208
+    },
+    {
+      "location": "Roxas P.Ocampo service road NB 8 13:29 15:37",
+      "depth_in": 6,
+      "lat": 14.559674,
+      "lng": 120.987106
+    },
+    {
+      "location": "Taft - UN Ave. 8 14:02 15:30",
+      "depth_in": 6,
+      "lat": 14.582416,
+      "lng": 120.984589
+    },
+    {
+      "location": "Pasay 1 Roxas blvd Heritage before EDSA NB 19 14:02 15:00",
+      "depth_in": 6,
+      "lat": 14.536308,
+      "lng": 120.992711
+    },
+    {
+      "location": "C5 Julia Vargas Sb 8 12:40 12:53",
+      "depth_in": 6,
+      "lat": 14.582699,
+      "lng": 121.07674
+    },
+    {
+      "location": "C5 Ortigas service road Sb 8 12:40 15:18",
+      "depth_in": 6,
+      "lat": 14.59344,
+      "lng": 121.058275
+    },
+    {
+      "location": "Edsa Dario Sb 8 12:40 12:55",
+      "depth_in": 6,
+      "lat": 14.657525,
+      "lng": 121.015502
+    },
+    {
+      "location": "C5 katipunan Ateneo NB 8 12:40 13:05",
+      "depth_in": 6,
+      "lat": 14.639794,
+      "lng": 121.07465
+    },
+    {
+      "location": "G.Araneta P.Florentino NB 19 12:40 15:02",
+      "depth_in": 6,
+      "lat": 14.629282,
+      "lng": 121.012541
+    },
+    {
+      "location": "Quezon Avenue BIR rd Eb 8 12:58 13:30",
+      "depth_in": 6,
+      "lat": 14.646158,
+      "lng": 121.0409
+    },
+    {
+      "location": "Araneta Maria Clara Nb/SB 37 12:58 16:30",
+      "depth_in": 6,
+      "lat": 14.630564,
+      "lng": 121.011032
+    },
+    {
+      "location": "Quezon Avenue infront Capitol Eb 19 13:11 14:02",
+      "depth_in": 6,
+      "lat": 14.634514,
+      "lng": 121.022051
+    },
+    {
+      "location": "Edsa North Avenue Nb 8 13:21 13:58",
+      "depth_in": 6,
+      "lat": 14.655015,
+      "lng": 121.030681
+    },
+    {
+      "location": "East Avenue Elliptical 8 13:42 16:21",
+      "depth_in": 6,
+      "lat": 14.648775,
+      "lng": 121.048587
+    },
+    {
+      "location": "Taguig 1 C5 Kalayaan service road SB 8 12:49 13:43",
+      "depth_in": 6,
+      "lat": 14.556229,
+      "lng": 121.06294
+    },
+    {
+      "location": "MacArthur Highway - Karuhatan 8 13:15 13:45",
+      "depth_in": 6,
+      "lat": 14.689929,
+      "lng": 120.974009
+    },
+    {
+      "location": "McArthur Calle Uno Eb 8 13:21 15:09",
+      "depth_in": 6,
+      "lat": 14.658722,
+      "lng": 120.984016
+    },
+    {
+      "location": "Makati 1 C5 Kalayaan Svc. Rd. SB 8 14:33 14:48",
+      "depth_in": 6,
+      "lat": 14.5564146,
+      "lng": 121.0633596
+    },
+    {
+      "location": "EDSA Ortigas Svc. Rd. SB 8 14:27 14:47",
+      "depth_in": 6,
+      "lat": 14.59300913,
+      "lng": 121.0582012
+    },
+    {
+      "location": "EDSA Shaw Tunnel NB 8 14:31 16:31",
+      "depth_in": 6,
+      "lat": 14.58129313,
+      "lng": 121.0535942
+    },
+    {
+      "location": "EDSA NORTH AVE. NB 8 14:29 15:01",
+      "depth_in": 6,
+      "lat": 14.65425153,
+      "lng": 121.0326681
+    },
+    {
+      "location": "EDSA After Quezon Ave. Flyover NB 8 14:31 14:48",
+      "depth_in": 6,
+      "lat": 14.6462632,
+      "lng": 121.0366155
+    },
+    {
+      "location": "INTERSECTION 8 10:20 11:13",
+      "depth_in": 6,
+      "lat": 14.53214,
+      "lng": 121.003995
+    },
+    {
+      "location": "Kalayaan Elliptical NB/SB 8 16:20 17:11",
+      "depth_in": 6,
+      "lat": 14.648853,
+      "lng": 121.051112
+    },
+    {
+      "location": "JP. Rizal, brgy. Ta\u00f1ong 8 17:25 17:20",
+      "depth_in": 6,
+      "lat": 14.665454,
+      "lng": 120.97152
     }
   ]
 }

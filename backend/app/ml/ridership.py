@@ -76,11 +76,26 @@ def _load_lstm():
         return None
 
 
+def _load_line_curves() -> dict[str, dict[int, float]]:
+    # per-line hourly demand curves from real counts, when a line has its own
+    # data. today: edsa busway (kamuning station hourly boardings, may 2025,
+    # dotr workbook). lines without a curve fall back to the mrt-3 shape.
+    curves: dict[str, dict[int, float]] = {}
+    path = _MODEL_DIR / "busway_hourly_curve.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        curves[data["line"]] = {int(h): float(v) for h, v in data["curve"].items()}
+    except Exception:
+        pass
+    return curves
+
+
 class RidershipPredictor:
     def __init__(self) -> None:
         self._lstm = _load_lstm()
         self._curve = _load_real_curve()
         self._calibration = _load_calibration()
+        self._line_curves = _load_line_curves()
         if self._lstm is not None:
             self.name = "lstm-ridership"
         elif self._curve is not None:
@@ -129,7 +144,13 @@ class RidershipPredictor:
         return headways[_hour_band(hour)] / ref
 
     def predict(self, edge: Edge, hour: int) -> float:
-        # crowding for this edge at this hour, 0..1
+        # crowding for this edge at this hour, 0..1. a line with its own real
+        # hourly curve (edsa busway) uses it directly; others use the mrt-3
+        # demand shape scaled by their headway-based capacity factor
+        line_curve = self._line_curves.get(edge.mode)
+        if line_curve:
+            demand = line_curve.get(hour % 24, min(line_curve.values()))
+            return _clamp01(edge.ridership * demand)
         return _clamp01(edge.ridership * self.demand_factor(hour) * self.line_factor(edge.mode, hour))
 
 
