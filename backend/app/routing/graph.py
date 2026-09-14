@@ -165,10 +165,31 @@ def _use_dense() -> bool:
     return (_DATA / "anchors_discretized.json").exists() and (_DATA / "graph_discretized.json").exists()
 
 
+def _use_geojson() -> bool:
+    # princess's virtual_stops.geojson (155 real ltfrb jeepney routes) is the
+    # top tier when present. SCPH_GEOJSON=0 falls back to the discretized
+    # corridors, SCPH_DENSE_GRAPH=0 all the way down to the coarse 10-node graph.
+    import os
+    if os.getenv("SCPH_GEOJSON", "1") == "0":
+        return False
+    from . import geojson_network
+    return geojson_network.available()
+
+
 @lru_cache(maxsize=1)
 def load_graph() -> Graph:
     # build the graph once and keep it cached
-    if _use_dense():
+    if _use_geojson():
+        from . import geojson_network
+        anchors = _load_json("anchors.json")["anchors"]
+        anchor_pos = {a["id"]: {"lat": a["lat"], "lng": a["lng"]} for a in anchors}
+        stops, jeep_edges, _stats = geojson_network.build_jeepney_layer(anchor_pos)
+        anchors = anchors + stops
+        # rail + edsa bus corridors stay from graph.json; the jeepney layer
+        # comes entirely from the geojson routes
+        raw_edges = [e for e in _load_json("graph.json")["edges"]
+                     if e["mode"] != "Jeepney"] + jeep_edges
+    elif _use_dense():
         anchors = _load_json("anchors_discretized.json")["anchors"]
         raw_edges = _load_json("graph_discretized.json")["edges"]
     else:
@@ -185,7 +206,9 @@ def load_graph() -> Graph:
         graph.adjacency[a["id"]] = []
 
     def add_edge(src: str, dst: str, mode: str, e: dict) -> None:
-        dist = graph.straight_line_km(src, dst)
+        # geojson edges carry the REAL along-road spacing; otherwise fall back
+        # to the straight-line distance between the endpoints
+        dist = float(e["distance_km"]) if e.get("distance_km") else graph.straight_line_km(src, dst)
         # time = distance / mode speed, in minutes
         speed = MODE_SPEED_KMH.get(mode, MAX_SPEED_KMH)
         base_time = dist / speed * 60.0
