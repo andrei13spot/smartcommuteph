@@ -174,9 +174,11 @@
   // the visible half of the pruning story.
   async function playExpansion(map, origin, destination, profile) {
     try {
+      const studentMode = localStorage.getItem("smartCommute_studentMode") === "true";
+      const passenger_type = studentMode ? "student" : "regular";
       const [inspect, network] = await Promise.all([
         getJSON("/api/inspect", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ origin, destination, profile }) }),
+          body: JSON.stringify({ origin, destination, profile, passenger_type }) }),
         getJSON("/api/map/network"),
       ]);
       const pos = {};
@@ -205,17 +207,21 @@
   async function initResultMap() {
     const { map, el } = baseMap("result-map", "dark");
     keepSized(map, el);
-    const origin = localStorage.getItem("smartCommute_routeOriginId") || "cubao";
-    const destination = localStorage.getItem("smartCommute_routeDestId") || "pasay";
-    const profile = localStorage.getItem("smartCommute_selectedProfile") || "safest";
+    const origin = localStorage.getItem("smartCommute_routeOriginId");
+    const destination = localStorage.getItem("smartCommute_routeDestId");
+    const profile = localStorage.getItem("smartCommute_selectedProfile");
     try {
       const animation = playExpansion(map, origin, destination, profile);
+      const studentMode = localStorage.getItem("smartCommute_studentMode") === "true";
+      const passenger_type = studentMode ? "student" : "regular";
       const { geojson, route, colors } = await getJSON("/api/map/route", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination, profile }),
+        body: JSON.stringify({ origin, destination, profile, passenger_type }),
       });
       await animation;
+      window.currentResultMap = map;
+      window.currentRouteGeoJSON = geojson;
       drawCollection(map, geojson);
       buildModeLegend("result-legend", route.summary.modes, colors);
       fillResultTiles(route);
@@ -236,18 +242,44 @@
     const s = route.summary;
     const set = (id, val) => { const e = document.getElementById(id); if (e) e.innerText = val; };
     const fare = s.fare_discounted_php != null ? s.fare_discounted_php : s.fare_php;
-    set("detail-1-label", "Time");   set("detail-1-value", Math.round(s.time_min) + "m");
-    set("detail-2-label", "Fare");   set("detail-2-value", "₱" + Math.round(fare));
-    set("detail-3-label", "Transfers"); set("detail-3-value", String(s.transfers));
-    set("detail-4-label", "Flood");  set("detail-4-value", route.criteria.R.level);
-    // headline = the profile's prioritized number, live
+    const timeVal = Math.round(s.time_min) + "m";
+    const fareVal = "₱" + Math.round(fare);
+    const transfersVal = String(s.transfers);
+    const floodVal = route.criteria.R.level;
+    const crowdVal = route.criteria.T.level;
+
     const pr = route.profile.priority;
+    let metrics = [];
+    if (route.profile.id === "uncrowded") {
+        metrics = [
+            { l: "Time", v: timeVal }, { l: "Fare", v: fareVal }, { l: "Transfers", v: transfersVal }, { l: "Flood", v: floodVal }
+        ];
+    } else if (route.profile.id === "cheapest") {
+        metrics = [
+            { l: "Time", v: timeVal }, { l: "Crowd", v: crowdVal }, { l: "Transfers", v: transfersVal }, { l: "Flood", v: floodVal }
+        ];
+    } else if (route.profile.id === "safest") {
+        metrics = [
+            { l: "Time", v: timeVal }, { l: "Fare", v: fareVal }, { l: "Transfers", v: transfersVal }, { l: "Crowd", v: crowdVal }
+        ];
+    } else { // convenient
+        metrics = [
+            { l: "Time", v: timeVal }, { l: "Fare", v: fareVal }, { l: "Crowd", v: crowdVal }, { l: "Flood Risk", v: floodVal }
+        ];
+    }
+
+    set("detail-1-label", metrics[0].l); set("detail-1-value", metrics[0].v);
+    set("detail-2-label", metrics[1].l); set("detail-2-value", metrics[1].v);
+    set("detail-3-label", metrics[2].l); set("detail-3-value", metrics[2].v);
+    set("detail-4-label", metrics[3].l); set("detail-4-value", metrics[3].v);
+
+    // headline = the profile's prioritized number, live
     const headline = pr === "F" ? "₱" + Math.round(fare)
-      : pr === "T" ? route.criteria.T.level
-      : pr === "R" ? route.criteria.R.level
-      : String(s.transfers);
-    const sub = pr === "F" ? "Lowest Total Fare" : pr === "T" ? "Crowd level"
-      : pr === "R" ? "Flood risk" : "Vehicle changes";
+      : pr === "T" ? crowdVal
+      : pr === "R" ? floodVal
+      : transfersVal;
+    const sub = pr === "F" ? "Lowest total fare" : pr === "T" ? "Crowd Level"
+      : pr === "R" ? "Flood risk" : "Vehicle Changes";
     set("dynamic-result-summary", headline);
     set("dynamic-result-sub", sub);
     // the why-this-route card, straight from the engine
@@ -261,15 +293,27 @@
   function fillCompareCard(card, route) {
     const set = (sel, val) => { const e = card.querySelector(sel); if (e) e.innerText = val; };
     const s = route.summary;
+    const timeVal = `${Math.round(s.time_min)}m`;
+    const fareVal = `₱${Math.round(s.fare_discounted_php != null ? s.fare_discounted_php : s.fare_php)}`;
+    const transfersVal = String(s.transfers);
+    const floodVal = route.criteria.R.level;
+    const crowdVal = route.criteria.T.level;
+    
+    let metrics = [];
+    if (route.profile.id === "uncrowded") {
+        metrics = [ ["TIME", timeVal], ["FARE", fareVal], ["TRANSFERS", transfersVal], ["FLOOD", floodVal] ];
+    } else if (route.profile.id === "cheapest") {
+        metrics = [ ["TIME", timeVal], ["CROWD", crowdVal], ["TRANSFERS", transfersVal], ["FLOOD", floodVal] ];
+    } else if (route.profile.id === "safest") {
+        metrics = [ ["TIME", timeVal], ["FARE", fareVal], ["TRANSFERS", transfersVal], ["CROWD", crowdVal] ];
+    } else {
+        metrics = [ ["TIME", timeVal], ["FARE", fareVal], ["CROWD", crowdVal], ["FLOOD RISK", floodVal] ];
+    }
+
     card.dataset.routeData = JSON.stringify(route);
     set(".compare-card-title", route.prioritized.title);
     set(".compare-card-body p.text-secondary", route.prioritized.subtitle);
-    const metrics = [
-      ["TIME", `${Math.round(s.time_min)}m`],
-      ["FARE", `₱${Math.round(s.fare_php)}`],
-      ["TRANSFERS", String(s.transfers)],
-      ["FLOOD", route.criteria.R.level],
-    ];
+    
     card.querySelectorAll(".compare-metric").forEach((el, i) => {
       if (!metrics[i]) return;
       const lbl = el.querySelector(".compare-metric-label");
@@ -282,14 +326,16 @@
 
   // compare.html: a small static route map inside each profile card
   async function initCompareMaps() {
-    const origin = localStorage.getItem("smartCommute_routeOriginId") || "cubao";
-    const destination = localStorage.getItem("smartCommute_routeDestId") || "pasay";
+    const origin = localStorage.getItem("smartCommute_routeOriginId");
+    const destination = localStorage.getItem("smartCommute_routeDestId");
+    const studentMode = localStorage.getItem("smartCommute_studentMode") === "true";
+    const passenger_type = studentMode ? "student" : "regular";
     let data;
     try {
       data = await getJSON("/api/map/compare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination }),
+        body: JSON.stringify({ origin, destination, passenger_type }),
       });
     } catch (err) {
       console.warn("compare maps unavailable:", err);
@@ -340,6 +386,7 @@
     const item = window.compareRouteDataMap[profileId];
     const map = L.map(newEl, { zoomControl: true, scrollWheelZoom: false }).setView(METRO_CENTER, 12);
     window.currentModalMap = map;
+    window.currentModalGeoJSON = item.geojson;
     L.tileLayer(TILES.dark, tileOpts("dark", true)).addTo(map);
     const layer = L.geoJSON(item.geojson, { style: styleLine, pointToLayer }).addTo(map);
     const b = item.geojson.bounds || layer.getBounds();

@@ -243,12 +243,46 @@ function buildQueryList(anchors, profiles) {
     });
 }
 
+function showToast(message) {
+    const existing = document.querySelector('.custom-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.innerHTML = `<div class="custom-toast-icon">!</div><div>${message}</div>`;
+    document.body.appendChild(toast);
+    
+    toast.offsetHeight;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        if(toast.parentElement) {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 3000);
+}
+
 function filterQueryLog() {
-    const query = $('query-filter').value.trim().toLowerCase();
+    const originFilter = $('query-filter-origin') ? $('query-filter-origin').value : '';
+    let destFilter = $('query-filter-dest') ? $('query-filter-dest').value : '';
+    
+    if (originFilter && destFilter && originFilter === destFilter) {
+        showToast("Starting point and destination cannot be the same.");
+        $('query-filter-dest').value = '';
+        destFilter = '';
+    }
+
     const items = document.querySelectorAll('#query-list .query-log-item');
+    
     items.forEach(item => {
-        const text = `${item.dataset.od} ${item.dataset.profile}`;
-        item.style.display = query && !text.includes(query) ? 'none' : '';
+        const itemOrigin = item.dataset.oid;
+        const itemDest = item.dataset.did;
+        
+        let matchesOrigin = !originFilter || itemOrigin === originFilter;
+        let matchesDest = !destFilter || itemDest === destFilter;
+        
+        item.style.display = (matchesOrigin && matchesDest) ? '' : 'none';
     });
 }
 
@@ -460,7 +494,20 @@ async function init() {
     renderAhp('safest', true);
     renderDecomp(null, true);
     renderModels({});
-    $('query-filter').addEventListener('input', filterQueryLog);
+    const originFilter = $('query-filter-origin');
+    const destFilter = $('query-filter-dest');
+    const clearBtn = $('query-filter-clear');
+    if (originFilter) originFilter.addEventListener('change', filterQueryLog);
+    if (destFilter) destFilter.addEventListener('change', filterQueryLog);
+    
+    if (clearBtn) {
+        clearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (originFilter) originFilter.value = '';
+            if (destFilter) destFilter.value = '';
+            filterQueryLog();
+        });
+    }
     
     try {
         const [bench, ml, anchors, profiles] = await Promise.all([
