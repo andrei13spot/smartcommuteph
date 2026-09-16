@@ -19,6 +19,10 @@ const MODE_COLORS = {
   "Jeepney": "#f59e0b",
 };
 
+process.on("unhandledRejection", (err) => {
+  console.error("unhandled rejection (kept alive):", err && err.message ? err.message : err);
+});
+
 const app = express();
 app.use(express.json());
 
@@ -259,15 +263,22 @@ app.post("/api/map/compare", async (req, res) => {
   }
 });
 
-// thin pass-throughs so the frontend stays same-origin
-app.get("/api/map/anchors", async (_req, res) => {
-  const { status, data } = await callPython("/api/anchors");
-  res.status(status).json(data);
-});
-app.get("/api/map/profiles", async (_req, res) => {
-  const { status, data } = await callPython("/api/profiles");
-  res.status(status).json(data);
-});
+// thin pass-throughs so the frontend stays same-origin. each one is wrapped:
+// if the engine is down these must answer 502, not crash the gateway process
+// (an unhandled fetch rejection exits node)
+function passthrough(enginePath) {
+  return async (req, res) => {
+    try {
+      const qs = new URLSearchParams(req.query).toString();
+      const { status, data } = await callPython(enginePath + (qs ? "?" + qs : ""));
+      res.status(status).json(data);
+    } catch (err) {
+      res.status(502).json({ error: "engine unreachable", detail: String(err) });
+    }
+  };
+}
+app.get("/api/map/anchors", passthrough("/api/anchors"));
+app.get("/api/map/profiles", passthrough("/api/profiles"));
 
 // dev dashboard status feed
 app.get("/api/status", async (_req, res) => {
@@ -280,11 +291,7 @@ app.get("/api/status", async (_req, res) => {
 });
 
 // researcher dashboard feeds
-app.get("/api/benchmark", async (req, res) => {
-  const qs = new URLSearchParams(req.query).toString();
-  const { status, data } = await callPython("/api/benchmark" + (qs ? "?" + qs : ""));
-  res.status(status).json(data);
-});
+app.get("/api/benchmark", passthrough("/api/benchmark"));
 // 360 row benchmark log, csv or json (fetched raw since it can be csv text)
 app.get("/api/benchmark/log", async (req, res) => {
   const qs = new URLSearchParams(req.query).toString();
@@ -300,13 +307,14 @@ app.get("/api/benchmark/log", async (req, res) => {
     res.status(502).json({ error: "engine unreachable", detail: String(err) });
   }
 });
-app.get("/api/ml-metrics", async (_req, res) => {
-  const { status, data } = await callPython("/api/ml-metrics");
-  res.status(status).json(data);
-});
+app.get("/api/ml-metrics", passthrough("/api/ml-metrics"));
 app.post("/api/inspect", async (req, res) => {
-  const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
-  res.status(status).json(data);
+  try {
+    const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
+    res.status(status).json(data);
+  } catch (err) {
+    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+  }
 });
 
 app.get("/healthz", async (_req, res) => {
