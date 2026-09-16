@@ -146,3 +146,31 @@ def test_hour_and_line_change_crowding():
     # and lines differ from each other at the same hour (supply differs)
     from app.ml.ridership import predictor
     assert predictor.line_factor("LRT-2", 8) != predictor.line_factor("MRT-3", 8)
+
+
+def test_rail_legs_priced_by_official_matrix():
+    # the dotr-mrt3 fare matrix prices rail legs by board/alight station
+    from app.profiles import resolve_profile
+    from app.routing.fares import path_fare
+
+    g = load_graph()
+    ctx = CostContext(g, hour=8, rainfall_mm=30.0)
+    full = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
+    assert all(e.mode == "MRT-3" for e in full.edges)
+    assert path_fare(g, full.edges) == 28.0  # official north ave -> taft
+    short = shortest_route(g, "cubao", "shaw", resolve_profile("convenient"), ctx)
+    assert path_fare(g, short.edges) == 16.0  # official cubao -> shaw
+
+
+def test_rail_corridors_run_through_real_stations():
+    # corridors are threaded through stations.json: sm_north -> pasay must pass
+    # the actual mrt stations, with pass-through nodes hidden from the anchors
+    from app.profiles import resolve_profile
+
+    g = load_graph()
+    ctx = CostContext(g, hour=8, rainfall_mm=30.0)
+    r = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
+    names = {g.nodes[e.dst].name for e in r.edges}
+    for must in ("Quezon MRT", "Kamuning MRT", "Ortigas MRT", "Guadalupe MRT"):
+        assert must in names, f"missing station {must}"
+    assert len(g.real_nodes) == 10  # stations never leak into the od anchors

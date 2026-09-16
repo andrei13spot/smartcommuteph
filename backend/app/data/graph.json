@@ -1,5 +1,5 @@
 {
-  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php. lrt-2 ridership baselines (0.73) derived from the lrta entry/exit statistics march 2026: lrt-2 weekday 7-9am entries (57,851) vs mrt-3 (55,098, 2024-25 reports), ratio 1.05 x the mrt-3 baseline mean 0.70.",
+  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php. lrt-2 ridership baselines (0.73) derived from the lrta entry/exit statistics march 2026: lrt-2 weekday 7-9am entries (57,851) vs mrt-3 (55,098, 2024-25 reports), ratio 1.05 x the mrt-3 baseline mean 0.70. edsa-bus corridor distances where mapped come from the dotr busway distances sheet (monumento-north ave 5.28km, north ave-nepa q mart 2.91km, pitx-taft 4.87km); unmapped segments stay straight-line.",
   "modes": [
     "LRT-1",
     "LRT-2",
@@ -70,7 +70,8 @@
       "mode": "EDSA-Bus",
       "fare": 15,
       "ridership": 0.5,
-      "flood_risk": 0.45
+      "flood_risk": 0.45,
+      "distance_km": 5.28
     },
     {
       "from": "sm_north",
@@ -78,7 +79,8 @@
       "mode": "EDSA-Bus",
       "fare": 13,
       "ridership": 0.4,
-      "flood_risk": 0.5
+      "flood_risk": 0.5,
+      "distance_km": 2.91
     },
     {
       "from": "cubao",
@@ -102,7 +104,8 @@
       "mode": "EDSA-Bus",
       "fare": 20,
       "ridership": 0.4,
-      "flood_risk": 0.35
+      "flood_risk": 0.35,
+      "distance_km": 4.87
     },
     {
       "from": "pasay",

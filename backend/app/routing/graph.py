@@ -222,6 +222,17 @@ def load_graph() -> Graph:
         graph.edges[edge.id] = edge
         graph.adjacency[src].append(edge)
 
+    # thread rail corridors through the real stations (stations.json) so the
+    # lines follow actual station coordinates and legs are station-accurate
+    from .rail_stations import subdivide_rail
+    station_nodes, raw_edges = subdivide_rail(anchors, raw_edges)
+    for a in station_nodes:
+        graph.nodes[a["id"]] = Node(
+            id=a["id"], name=a["name"], area=a["area"],
+            lat=a["lat"], lng=a["lng"], lines=tuple(a["lines"]), virtual=True,
+        )
+        graph.adjacency[a["id"]] = []
+
     for e in raw_edges:
         add_edge(e["from"], e["to"], e["mode"], e)
         add_edge(e["to"], e["from"], e["mode"], e)  # reverse direction

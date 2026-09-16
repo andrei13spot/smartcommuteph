@@ -1,0 +1,66 @@
+{
+  "description": "ordered station lists per rail line with real coordinates. the loader threads rail corridor edges through these stations so the map follows the actual line and leg distances are station-accurate. lrt-2 coords are the official lrta 'line 2 geographic coordinates' document (formal data request, all 13 stations incl. the 2021 east extension); lrt-1 and mrt-3 come from the dotc gtfs release (2015, via github.com/sakayph/gtfs stops.txt). the lrt-1 cavite extension stations (edsa to pitx) post-date the feed and stay unsubdivided until an official source lands.",
+  "lines": {
+    "LRT-2": {
+      "source": "lrta line 2 geographic coordinates doc (official, 13 stations)",
+      "stations": [
+        { "name": "Recto LRT", "lat": 14.6035, "lng": 120.9835 },
+        { "name": "Legarda LRT", "lat": 14.6009, "lng": 120.9926 },
+        { "name": "Pureza LRT", "lat": 14.6019, "lng": 121.0054 },
+        { "name": "V. Mapa LRT", "lat": 14.6041, "lng": 121.0171 },
+        { "name": "J. Ruiz LRT", "lat": 14.61057, "lng": 121.0261 },
+        { "name": "Gilmore LRT", "lat": 14.61354, "lng": 121.03415 },
+        { "name": "Betty Go-Belmonte LRT", "lat": 14.6186, "lng": 121.0428 },
+        { "name": "Araneta Center-Cubao LRT", "lat": 14.6228, "lng": 121.053 },
+        { "name": "Anonas LRT", "lat": 14.628, "lng": 121.0648 },
+        { "name": "Katipunan LRT", "lat": 14.6308, "lng": 121.0727 },
+        { "name": "Santolan LRT-2", "lat": 14.6221, "lng": 121.0859 },
+        { "name": "Marikina LRT", "lat": 14.6204, "lng": 121.1003 },
+        { "name": "Antipolo LRT", "lat": 14.62477, "lng": 121.12138 }
+      ]
+    },
+    "LRT-1": {
+      "source": "dotc gtfs 2015 stops.txt (lrta baclaran-roosevelt, 20 stations)",
+      "stations": [
+        { "name": "Baclaran LRT", "lat": 14.5339, "lng": 120.998 },
+        { "name": "EDSA LRT", "lat": 14.5381, "lng": 121.001 },
+        { "name": "Libertad LRT", "lat": 14.5479, "lng": 120.999 },
+        { "name": "Gil Puyat LRT", "lat": 14.5543, "lng": 120.997 },
+        { "name": "Vito Cruz LRT", "lat": 14.5636, "lng": 120.995 },
+        { "name": "Quirino Ave LRT", "lat": 14.5703, "lng": 120.992 },
+        { "name": "Pedro Gil LRT", "lat": 14.5763, "lng": 120.988 },
+        { "name": "UN Ave LRT", "lat": 14.5826, "lng": 120.985 },
+        { "name": "Central Terminal LRT", "lat": 14.5928, "lng": 120.982 },
+        { "name": "Carriedo LRT", "lat": 14.5991, "lng": 120.981 },
+        { "name": "Doroteo Jose LRT", "lat": 14.6053, "lng": 120.982 },
+        { "name": "Bambang LRT", "lat": 14.6109, "lng": 120.982 },
+        { "name": "Tayuman LRT", "lat": 14.6168, "lng": 120.983 },
+        { "name": "Blumentritt LRT", "lat": 14.6228, "lng": 120.983 },
+        { "name": "Abad Santos LRT", "lat": 14.6306, "lng": 120.982 },
+        { "name": "R. Papa LRT", "lat": 14.636, "lng": 120.982 },
+        { "name": "5th Ave LRT", "lat": 14.6444, "lng": 120.984 },
+        { "name": "Monumento LRT", "lat": 14.6561, "lng": 120.984 },
+        { "name": "Balintawak LRT", "lat": 14.6574, "lng": 121.004 },
+        { "name": "Roosevelt LRT", "lat": 14.6575, "lng": 121.022 }
+      ]
+    },
+    "MRT-3": {
+      "source": "dotc gtfs 2015 stops.txt (mrtc taft-north avenue, 13 stations)",
+      "stations": [
+        { "name": "Taft Ave MRT", "lat": 14.5376, "lng": 121.001 },
+        { "name": "Magellanes MRT", "lat": 14.5421, "lng": 121.02 },
+        { "name": "Ayala MRT", "lat": 14.5492, "lng": 121.028 },
+        { "name": "Buendia MRT", "lat": 14.5541, "lng": 121.034 },
+        { "name": "Guadalupe MRT", "lat": 14.5666, "lng": 121.045 },
+        { "name": "Boni MRT", "lat": 14.5729, "lng": 121.048 },
+        { "name": "Shaw MRT", "lat": 14.581, "lng": 121.054 },
+        { "name": "Ortigas MRT", "lat": 14.5878, "lng": 121.057 },
+        { "name": "Santolan MRT", "lat": 14.6075, "lng": 121.057 },
+        { "name": "Cubao MRT", "lat": 14.6194, "lng": 121.051 },
+        { "name": "Kamuning MRT", "lat": 14.6352, "lng": 121.043 },
+        { "name": "Quezon MRT", "lat": 14.6426, "lng": 121.039 },
+        { "name": "North Avenue MRT", "lat": 14.65177, "lng": 121.03234 }
+      ]
+    }
+  }
+}
