@@ -93,14 +93,14 @@
                                 <div class="col-lg-7 d-flex flex-column map-preview-card">
                                     <div class="position-relative flex-grow-1 border border-2 rounded-4 d-flex flex-column align-items-center justify-content-center p-4 text-center overflow-hidden shadow-inner map-preview-shell">
                                         
-                                        <div class="position-absolute top-0 start-0 m-3">   
+                                        <div class="position-absolute top-0 start-0 m-3 z-1">   
                                             <span class="badge rounded-pill px-3 py-2 fw-medium text-white shadow-sm map-preview-badge">
                                                 <!-- Changed 'Live API GIS Overlay' to 'Live Route View' -->
                                                 <span class="me-1.5 map-preview-tag">●</span> Live Route View
                                             </span>
                                         </div>
 
-                                        <div id="result-map"></div>
+                                        <div id="result-map" class="w-100 h-100 position-absolute top-0 start-0 z-0"></div>
                                     </div>
                                     <div id="result-legend" class="map-legend d-flex flex-wrap gap-3 mt-4"></div>
                                 </div>
