@@ -172,7 +172,18 @@
   // result.html: the a* expansion animation while the route loads, then the
   // computed route. the yellow wave is every node the search actually popped -
   // the visible half of the pruning story.
-  async function playExpansion(map, origin, destination, profile) {
+  async function playExpansion(map, el, origin, destination, profile) {
+    // the search cloud runs on a CANVAS renderer: one bitmap layer instead of
+    // thousands of svg nodes, so it stays smooth even at ~2,400 expansions.
+    // when the route is ready the cloud fades out gradually - no hard cut.
+    const label = document.createElement("div");
+    label.className = "astar-loading";
+    label.style.cssText = "position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;" +
+      "background:rgba(15,23,42,.85);color:#ffcc02;padding:6px 14px;border-radius:999px;" +
+      "font-size:.78rem;font-weight:600;letter-spacing:.03em;pointer-events:none;";
+    label.innerText = "Running A* · pruning the search space…";
+    el.style.position = el.style.position || "relative";
+    el.appendChild(label);
     try {
       const studentMode = localStorage.getItem("smartCommute_studentMode") === "true";
       const passenger_type = studentMode ? "student" : "regular";
@@ -186,6 +197,7 @@
         if (f.geometry && f.geometry.type === "Point" && f.properties && f.properties.id)
           pos[f.properties.id] = f.geometry.coordinates;
       });
+      const canvas = L.canvas({ padding: 0.3 });
       const order = inspect.expanded_order || [];
       const layers = [];
       const chunk = Math.max(1, Math.ceil(order.length / 60));
@@ -193,15 +205,30 @@
         for (const id of order.slice(i, i + chunk)) {
           const c = pos[id];
           if (!c) continue;
-          const m = L.circleMarker([c[1], c[0]], { radius: 5, color: "#ffcc02", fillColor: "#ff9500", fillOpacity: 0.5, weight: 1 }).addTo(map);
-          layers.push(m);
-          setTimeout(() => { try { m.setStyle({ radius: 2, fillOpacity: 0.15, weight: 0.5 }); } catch (e) {} }, 260);
+          layers.push(L.circleMarker([c[1], c[0]], { renderer: canvas, radius: 4,
+            color: "#ffcc02", fillColor: "#ff9500", fillOpacity: 0.45, weight: 1 }).addTo(map));
         }
-        await new Promise((r) => setTimeout(r, 30));
+        await new Promise((r) => setTimeout(r, 28));
       }
-      // fade the search cloud out once the route draws
-      setTimeout(() => layers.forEach((m) => { try { map.removeLayer(m); } catch (e) {} }), 2600);
-    } catch (err) { /* animation is decorative: never block the route */ }
+      label.innerText = `Pruned: ${inspect.expanded_nodes} nodes explored vs ${inspect.baseline_nodes} baseline`;
+      // graceful fade: step the whole cloud's opacity down, then remove
+      return () => {
+        let op = 0.45;
+        const fade = setInterval(() => {
+          op -= 0.06;
+          if (op <= 0) {
+            clearInterval(fade);
+            layers.forEach((m) => { try { map.removeLayer(m); } catch (e) {} });
+            try { label.remove(); } catch (e) {}
+            return;
+          }
+          layers.forEach((m) => { try { m.setStyle({ fillOpacity: op, opacity: op }); } catch (e) {} });
+        }, 90);
+      };
+    } catch (err) {
+      try { label.remove(); } catch (e) {}
+      return () => {};
+    }
   }
 
   async function initResultMap() {
@@ -211,7 +238,7 @@
     const destination = localStorage.getItem("smartCommute_routeDestId");
     const profile = localStorage.getItem("smartCommute_selectedProfile");
     try {
-      const animation = playExpansion(map, origin, destination, profile);
+      const animation = playExpansion(map, el, origin, destination, profile);
       const studentMode = localStorage.getItem("smartCommute_studentMode") === "true";
       const passenger_type = studentMode ? "student" : "regular";
       const { geojson, route, colors } = await getJSON("/api/map/route", {
@@ -219,10 +246,11 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ origin, destination, profile, passenger_type }),
       });
-      await animation;
+      const fadeOut = await animation;
       window.currentResultMap = map;
       window.currentRouteGeoJSON = geojson;
       drawCollection(map, geojson);
+      if (fadeOut) setTimeout(fadeOut, 900);
       buildModeLegend("result-legend", route.summary.modes, colors);
       fillResultTiles(route);
 
