@@ -1,5 +1,5 @@
 {
-  "description": "ordered station lists per rail line with real coordinates. the loader threads rail corridor edges through these stations so the map follows the actual line and leg distances are station-accurate. lrt-2 coords are the official lrta 'line 2 geographic coordinates' document (formal data request, all 13 stations incl. the 2021 east extension); lrt-1 and mrt-3 come from the dotc gtfs release (2015, via github.com/sakayph/gtfs stops.txt). the lrt-1 cavite extension stations (edsa to pitx) post-date the feed and stay unsubdivided until an official source lands.",
+  "description": "ordered station lists per rail line with real coordinates. the loader threads rail corridor edges through these stations so the map follows the actual line and leg distances are station-accurate. lrt-2 coords are the official lrta 'line 2 geographic coordinates' document (formal data request, all 13 stations incl. the 2021 east extension); lrt-1 and mrt-3 come from the dotc gtfs release (2013, via github.com/sakayph/gtfs stops.txt). the lrt-1 cavite extension stations (edsa to pitx) post-date the feed and stay unsubdivided until an official source lands.",
   "lines": {
     "LRT-2": {
       "source": "lrta line 2 geographic coordinates doc (official, 13 stations)",
@@ -20,7 +20,7 @@
       ]
     },
     "LRT-1": {
-      "source": "dotc gtfs 2015 stops.txt (lrta baclaran-roosevelt, 20 stations)",
+      "source": "dotc gtfs 2013 stops.txt (lrta baclaran-roosevelt, 20 stations)",
       "stations": [
         { "name": "Baclaran LRT", "lat": 14.5339, "lng": 120.998 },
         { "name": "EDSA LRT", "lat": 14.5381, "lng": 121.001 },
@@ -45,7 +45,7 @@
       ]
     },
     "MRT-3": {
-      "source": "dotc gtfs 2015 stops.txt (mrtc taft-north avenue, 13 stations)",
+      "source": "dotc gtfs 2013 stops.txt (mrtc taft-north avenue, 13 stations)",
       "stations": [
         { "name": "Taft Ave MRT", "lat": 14.5376, "lng": 121.001 },
         { "name": "Magellanes MRT", "lat": 14.5421, "lng": 121.02 },

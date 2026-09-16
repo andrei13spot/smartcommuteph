@@ -3,6 +3,7 @@
 // python engine's route output into geojson the leaflet frontend can draw.
 // the python engine (routing + ml) runs separately on PYTHON_API_URL.
 import express from "express";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,6 +11,72 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FRONTEND_DIR = path.resolve(__dirname, ".."); // repo root holds the .html/.css/.js
 const PORT = process.env.PORT || 8080;
 const PYTHON_API_URL = process.env.PYTHON_API_URL || "http://127.0.0.1:8000";
+
+// real track polylines (dotc gtfs 2013 shapes.txt) so rail/busway segments are
+// drawn along the actual alignment instead of straight station-to-station
+// chords. drawing-only: distances and fares stay on the calibrated values.
+const SHAPES_PATH = path.resolve(__dirname, "../backend/app/data/line_shapes.json");
+let LINE_SHAPES = { lines: {}, aliases: {} };
+try {
+  LINE_SHAPES = JSON.parse(fs.readFileSync(SHAPES_PATH, "utf-8"));
+} catch {
+  console.warn("line_shapes.json not found - segments draw straight");
+}
+
+const SNAP_KM = 0.8; // an endpoint further than this off its line's shape falls back to straight
+function havKm(lat1, lng1, lat2, lng2) {
+  const rad = Math.PI / 180;
+  const a = Math.sin(((lat2 - lat1) * rad) / 2) ** 2 +
+    Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(((lng2 - lng1) * rad) / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(a));
+}
+
+function shapeFor(mode) {
+  const lines = LINE_SHAPES.lines || {};
+  const key = lines[mode] ? mode : (LINE_SHAPES.aliases || {})[mode];
+  return key && lines[key] ? lines[key].points : null;
+}
+
+// closest point ON the polyline (not just the nearest vertex - snapping to a
+// vertex that sits behind the station made the line double back and draw a
+// little spur at each stop). planar approx is fine at metro scale.
+function projectOnShape(pts, lat, lng) {
+  const ky = 110.574, kx = 111.32 * Math.cos((lat * Math.PI) / 180);
+  let best = null;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const ax = (pts[i][1] - lng) * kx, ay = (pts[i][0] - lat) * ky;
+    const bx = (pts[i + 1][1] - lng) * kx, by = (pts[i + 1][0] - lat) * ky;
+    const dx = bx - ax, dy = by - ay;
+    const len2 = dx * dx + dy * dy;
+    let t = len2 ? -(ax * dx + ay * dy) / len2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    const px = ax + t * dx, py = ay + t * dy;
+    const d = Math.sqrt(px * px + py * py);
+    if (!best || d < best.d) best = { d, seg: i, t,
+      lat: pts[i][0] + t * (pts[i + 1][0] - pts[i][0]),
+      lng: pts[i][1] + t * (pts[i + 1][1] - pts[i][1]) };
+  }
+  return best;
+}
+
+// [lat,lng] waypoints from a to b along the line's shape (endpoints included),
+// or null when the shape does not cover this hop (then the caller draws
+// straight). the path runs monotonically between the two projections, so it
+// never backtracks past a station.
+function bendPoints(a, b, mode) {
+  const pts = shapeFor(mode);
+  if (!pts) return null;
+  const pa = projectOnShape(pts, a.lat, a.lng);
+  const pb = projectOnShape(pts, b.lat, b.lng);
+  if (!pa || !pb || pa.d > SNAP_KM || pb.d > SNAP_KM) return null;
+  const ka = pa.seg + pa.t, kb = pb.seg + pb.t;
+  if (Math.abs(ka - kb) < 1e-9) return null;
+  const fwd = ka < kb;
+  const [p1, p2] = fwd ? [pa, pb] : [pb, pa];
+  const path = [[p1.lat, p1.lng], ...pts.slice(p1.seg + 1, p2.seg + 1), [p2.lat, p2.lng]];
+  if (!fwd) path.reverse();
+  return [[a.lat, a.lng], ...path, [b.lat, b.lng]];
+}
 
 const MODE_COLORS = {
   "LRT-1": "#ef4444",
@@ -72,15 +139,13 @@ function pointFeature(anchor, role, mode) {
 }
 
 function lineFeature(a, b, mode) {
+  const bent = bendPoints(a, b, mode);
+  const coordinates = bent
+    ? bent.map(([lat, lng]) => [lng, lat])
+    : [[a.lng, a.lat], [b.lng, b.lat]];
   return {
     type: "Feature",
-    geometry: {
-      type: "LineString",
-      coordinates: [
-        [a.lng, a.lat],
-        [b.lng, b.lat],
-      ],
-    },
+    geometry: { type: "LineString", coordinates },
     properties: { mode, color: MODE_COLORS[mode] || "#334155" },
   };
 }
@@ -148,13 +213,22 @@ function checkOd(req, res, needProfile) {
   return true;
 }
 
-// geometry = list of [lat,lng] from origin to destination
+// geometry = list of [lat,lng] from origin to destination, bent along the
+// real track shape wherever the segment's line has one
 async function routeGeometry(route) {
   const anchors = await getAnchorIndex();
   const segs = route.segments || [];
   if (!segs.length) return [];
-  const ids = [segs[0].from_id, ...segs.map((s) => s.to_id)];
-  return ids.map((id) => anchors.get(id)).filter(Boolean).map((a) => [a.lat, a.lng]);
+  const out = [];
+  for (const s of segs) {
+    const a = anchors.get(s.from_id);
+    const b = anchors.get(s.to_id);
+    if (!a || !b) continue;
+    const pts = bendPoints(a, b, s.mode) || [[a.lat, a.lng], [b.lat, b.lng]];
+    if (!out.length) out.push(pts[0]);
+    out.push(...pts.slice(1));
+  }
+  return out;
 }
 
 // 8 kpis mapped from the engine response
@@ -311,6 +385,19 @@ app.get("/api/ml-metrics", passthrough("/api/ml-metrics"));
 app.post("/api/inspect", async (req, res) => {
   try {
     const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
+    // give each route leg its bent [lat,lng] waypoints so the playback overlay
+    // follows the real track like the route map does
+    if (status === 200 && data && Array.isArray(data.decomposition)) {
+      try {
+        const anchors = await getAnchorIndex();
+        for (const leg of data.decomposition) {
+          const a = anchors.get(leg.from_id);
+          const b = anchors.get(leg.to_id);
+          const pts = a && b ? bendPoints(a, b, leg.mode) : null;
+          if (pts) leg.points = pts;
+        }
+      } catch {}
+    }
     res.status(status).json(data);
   } catch (err) {
     res.status(502).json({ error: "engine unreachable", detail: String(err) });
