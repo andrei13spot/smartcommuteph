@@ -304,28 +304,43 @@ async function playInspect(q) {
     if ($('ov-origin')) $('ov-origin').innerText = d.origin || q.origin;
     if ($('ov-dest')) $('ov-dest').innerText = d.destination || q.destination;
     // expansion wave: every state a* popped, in order - the search spreading out.
-    // chunked so even ~700 expansions on the dense graph play in about 3s
+    // chunked so even ~700 expansions on the dense graph play in about 3s.
+    // the cloud draws on a canvas renderer in its own pane (one bitmap, not
+    // hundreds of svg nodes) and the bright wavefront settles per chunk
+    // instead of one timer per marker - both were making the playback stutter
+    const pane = map.getPane('prunePane') || map.createPane('prunePane');
+    pane.style.zIndex = 450;
+    pane.style.pointerEvents = 'none';
+    const cloud = L.canvas({ padding: 0.3, pane: 'prunePane' });
+    const settled = { radius: 2.5, fillOpacity: 0.22, weight: 0.5 };
     const order = d.expanded_order || [];
     const chunk = Math.max(1, Math.ceil(order.length / 90));
+    let wavefront = [];
     for (let i = 0; i < order.length; i += chunk) {
         if (token !== PLAY_TOKEN) return;
+        const batch = [];
         for (const id of order.slice(i, i + chunk)) {
             const a = BY_ID[id]; if (!a) continue;
-            const m = L.circleMarker([a.lat, a.lng], { radius: 6, color: '#ffcc02', fillColor: '#ff9500', fillOpacity: 0.55, weight: 1 }).addTo(map);
-            animLayers.push(m);
-            setTimeout(() => { try { m.setStyle({ radius: 2.5, fillOpacity: 0.22, weight: 0.5 }); } catch (e) {} }, 240);
+            const m = L.circleMarker([a.lat, a.lng], { renderer: cloud, pane: 'prunePane', interactive: false,
+                radius: 6, color: '#ffcc02', fillColor: '#ff9500', fillOpacity: 0.55, weight: 1 }).addTo(map);
+            animLayers.push(m); batch.push(m);
         }
+        wavefront.forEach(m => { try { m.setStyle(settled); } catch (e) {} });
+        wavefront = batch;
         await sleep(33);
     }
-    // the winning route on top of the pruned search cloud
+    wavefront.forEach(m => { try { m.setStyle(settled); } catch (e) {} });
+    // the winning route on top of the pruned search cloud, bent along the real
+    // track where the gateway attached shape waypoints (leg.points)
     const legs = d.decomposition || [];
     const lchunk = Math.max(1, Math.ceil(legs.length / 60));
     for (let i = 0; i < legs.length; i += lchunk) {
         if (token !== PLAY_TOKEN) return;
         for (const leg of legs.slice(i, i + lchunk)) {
             const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
-            if (!a || !b) continue;
-            animLayers.push(L.polyline([[a.lat, a.lng], [b.lat, b.lng]], { color: MODE_COLORS[leg.mode] || '#0071e3', weight: 6, opacity: 0.95 }).addTo(map));
+            const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
+            if (!pts) continue;
+            animLayers.push(L.polyline(pts, { color: MODE_COLORS[leg.mode] || '#0071e3', weight: 6, opacity: 0.95 }).addTo(map));
         }
         await sleep(30);
     }

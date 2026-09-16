@@ -197,7 +197,15 @@
         if (f.geometry && f.geometry.type === "Point" && f.properties && f.properties.id)
           pos[f.properties.id] = f.geometry.coordinates;
       });
-      const canvas = L.canvas({ padding: 0.3 });
+      // the whole cloud lives in its own pane so the fade is one css opacity
+      // transition on the pane div (gpu-composited) instead of restyling
+      // thousands of markers on a timer - that per-marker loop was the lag
+      const pane = map.getPane("prunePane") || map.createPane("prunePane");
+      pane.style.zIndex = 450;
+      pane.style.pointerEvents = "none";
+      pane.style.transition = "opacity .8s ease";
+      pane.style.opacity = "1";
+      const canvas = L.canvas({ padding: 0.3, pane: "prunePane" });
       const order = inspect.expanded_order || [];
       const layers = [];
       const chunk = Math.max(1, Math.ceil(order.length / 60));
@@ -205,25 +213,21 @@
         for (const id of order.slice(i, i + chunk)) {
           const c = pos[id];
           if (!c) continue;
-          layers.push(L.circleMarker([c[1], c[0]], { renderer: canvas, radius: 4,
+          layers.push(L.circleMarker([c[1], c[0]], { renderer: canvas, pane: "prunePane",
+            interactive: false, radius: 4,
             color: "#ffcc02", fillColor: "#ff9500", fillOpacity: 0.45, weight: 1 }).addTo(map));
         }
         await new Promise((r) => setTimeout(r, 28));
       }
       label.innerText = `Pruned: ${inspect.expanded_nodes} nodes explored vs ${inspect.baseline_nodes} baseline`;
-      // graceful fade: step the whole cloud's opacity down, then remove
+      // graceful fade: dim the pane, then clean up once it is invisible
       return () => {
-        let op = 0.45;
-        const fade = setInterval(() => {
-          op -= 0.06;
-          if (op <= 0) {
-            clearInterval(fade);
-            layers.forEach((m) => { try { map.removeLayer(m); } catch (e) {} });
-            try { label.remove(); } catch (e) {}
-            return;
-          }
-          layers.forEach((m) => { try { m.setStyle({ fillOpacity: op, opacity: op }); } catch (e) {} });
-        }, 90);
+        pane.style.opacity = "0";
+        setTimeout(() => {
+          layers.forEach((m) => { try { map.removeLayer(m); } catch (e) {} });
+          try { label.remove(); } catch (e) {}
+          pane.style.opacity = "1";
+        }, 850);
       };
     } catch (err) {
       try { label.remove(); } catch (e) {}
