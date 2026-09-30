@@ -26,6 +26,8 @@ class Profile:
     w_P: float          # transfer-friction weight
     cr: float | None = None          # mean consistency ratio of accepted respondents
     weights_source: str = "placeholder (0.55/0.15 split)"
+    n_respondents: int | None = None  # respondents fed to the ahp pipeline
+    n_accepted: int | None = None     # respondents that passed cr < 0.10
 
     @property
     def weights(self) -> dict[str, float]:
@@ -76,6 +78,7 @@ def _build_profiles() -> dict[str, Profile]:
                     id=pid, name=name, theme=theme, priority=priority, tagline=tagline,
                     w_T=w["T"], w_F=w["F"], w_R=w["R"], w_P=w["P"],
                     cr=p.get("mean_cr_accepted"), weights_source=src,
+                    n_respondents=p.get("n_respondents"), n_accepted=p.get("n_accepted"),
                 )
                 loaded = True
             except Exception:

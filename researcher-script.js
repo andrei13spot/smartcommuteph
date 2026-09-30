@@ -123,6 +123,12 @@ function renderAhp(profileId, isEmpty = false) {
     
     const crDisplay = isEmpty ? "—" : `CR = ${(p.cr || 0.07).toFixed(2)} ${(p.cr || 0.07) < 0.1 ? '✓' : ''}`;
     html += `<div class="ahp-cr"><span class="ahcr-l">Consistency Ratio</span><span class="ahcr-v">${crDisplay}</span></div>`;
+    // say plainly where the weights come from: the survey is not in yet, so
+    // the engine runs the real ahp pipeline on synthetic respondents
+    if (!isEmpty && /simulated|mock/i.test(p.weights_source || '')) {
+        const counts = p.n_accepted ? ` · ${p.n_accepted} of ${p.n_respondents} simulated respondents passed CR < 0.10` : '';
+        html += `<div class="ahp-src">Synthetic data${counts}. Replaced once the commuter survey is complete.</div>`;
+    }
     $('ahp-bars').innerHTML = html;
 }
 
@@ -168,8 +174,16 @@ function initMap() {
 function clearAnim() { animLayers.forEach(l => map.removeLayer(l)); animLayers = []; }
 
 function renderDecomp(d, isEmpty = false) {
-    const vals = { R: 0.18, T: 0.47, P: 0.31, F: 0.21 };
-    const max = Math.max(...Object.values(vals));
+    // real numbers from the a* run: each criterion's normalized value averaged
+    // over the route, weighted by leg time (the N' terms of the cost equation)
+    const legs = (d && d.decomposition) || [];
+    const time = legs.reduce((s, l) => s + (l.base_time || 0), 0);
+    if (!legs.length || !time) isEmpty = true;
+    const vals = {};
+    ["R","T","P","F"].forEach(k => {
+        vals[k] = isEmpty ? 0 : legs.reduce((s, l) => s + (l.base_time || 0) * (l[k] || 0), 0) / time;
+    });
+    const max = Math.max(...Object.values(vals)) || 1;
     let html = ["R","T","P","F"].map(k => {
         const w = vals[k];
         const displayVal = isEmpty ? "—" : w.toFixed(2);
@@ -184,7 +198,7 @@ function renderDecomp(d, isEmpty = false) {
         </div>`;
     }).join('');
     $('cd-legs').innerHTML = html;
-    $('cd-total').innerText = isEmpty ? "—" : (d ? d.total_cost : '62.4');
+    $('cd-total').innerText = isEmpty ? "—" : Math.round(d.total_cost * 100) / 100;
 }
 
 document.addEventListener('click', (e) => {
@@ -222,9 +236,10 @@ function buildQueryList(anchors, profiles) {
             });
         });
     });
-    container.innerHTML = items.map(item => `
+    // data-idx is the observation number on the timeline (45 od pairs x 4 profiles)
+    container.innerHTML = items.map((item, idx) => `
         <div class="query-log-item" data-profile="${item.profile}" data-od="${item.od.toLowerCase()}"
-             data-oid="${item.oid}" data-did="${item.did}">
+             data-oid="${item.oid}" data-did="${item.did}" data-idx="${idx}">
             <div class="qli-top">
                 <div class="qli-od">${item.od}</div>
                 <div class="qli-profile ${item.profile}"><span class="qlip-dot"></span>${item.profileName}</div>
@@ -232,15 +247,8 @@ function buildQueryList(anchors, profiles) {
             <div class="qli-bottom">click to run · a* playback</div>
         </div>
     `).join('');
-    // clicking a query runs the real a* and animates the expansion (pruning view)
-    container.querySelectorAll('.query-log-item').forEach(el => {
-        el.addEventListener('click', () => {
-            container.querySelectorAll('.query-log-item').forEach(x => x.classList.remove('active'));
-            el.classList.add('active');
-            LAST_QUERY = { origin: el.dataset.oid, destination: el.dataset.did, profile: el.dataset.profile, el };
-            playInspect(LAST_QUERY);
-        });
-    });
+    // clicks are handled by one delegated listener (initQueryLogClicks), which
+    // runs the real a* and animates the expansion through activateQuery
 }
 
 function showToast(message) {
@@ -289,8 +297,53 @@ function filterQueryLog() {
 let LAST_QUERY = null;
 let PLAY_TOKEN = 0;
 
-async function playInspect(q) {
-    if (!q || !map) return;
+// an arrow that rides the winning route from origin to destination. it walks
+// the same waypoints the line is drawn from, so it follows every bend of the
+// real track, and it turns to face the direction of travel. timers, not
+// requestAnimationFrame, so the replay keeps moving when the tab is hidden.
+function travel(route, ms, token, color) {
+    if (!route || route.length < 2) return Promise.resolve(true);
+    const cum = [0];
+    for (let i = 1; i < route.length; i++) {
+        const a = route[i - 1], b = route[i];
+        const kx = Math.cos(((a[0] + b[0]) / 2) * Math.PI / 180);
+        cum.push(cum[i - 1] + Math.hypot((b[1] - a[1]) * kx, b[0] - a[0]));
+    }
+    const total = cum[cum.length - 1];
+    if (!total) return Promise.resolve(true);
+    if (token !== PLAY_TOKEN) return Promise.resolve(false);
+    const icon = L.divIcon({ className: 'route-traveler', iconSize: [26, 26], iconAnchor: [13, 13],
+        html: `<div class="rt-arrow"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 4 L22 12 L3 20 L8 12 Z" fill="#fff" stroke="${color}" stroke-width="2.4" stroke-linejoin="round"/></svg></div>` });
+    const marker = L.marker(route[0], { icon, interactive: false, keyboard: false, zIndexOffset: 1200 }).addTo(map);
+    animLayers.push(marker);
+    const t0 = performance.now();
+    let seg = 1;
+    return new Promise(resolve => {
+        const tick = () => {
+            if (token !== PLAY_TOKEN) { try { map.removeLayer(marker); } catch (e) {} resolve(false); return; }
+            const f = Math.min(1, (performance.now() - t0) / ms);
+            const target = f * total;
+            while (seg < cum.length - 1 && cum[seg] < target) seg++;
+            const a = route[seg - 1], b = route[seg];
+            const span = cum[seg] - cum[seg - 1];
+            const u = span ? (target - cum[seg - 1]) / span : 1;
+            marker.setLatLng([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u]);
+            const pa = map.latLngToLayerPoint(a), pb = map.latLngToLayerPoint(b);
+            const el = marker.getElement() && marker.getElement().querySelector('.rt-arrow');
+            if (el && (pa.x !== pb.x || pa.y !== pb.y)) el.style.transform = `rotate(${Math.atan2(pb.y - pa.y, pb.x - pa.x)}rad)`;
+            if (f < 1) setTimeout(tick, 16);
+            else { try { map.removeLayer(marker); } catch (e) {} resolve(true); }
+        };
+        tick();
+    });
+}
+
+// opts.fast is the timeline replay: same real a* run, shorter animation.
+// resolves true when the playback ran to the end, false if it was superseded
+// by another selection or the engine could not be reached.
+async function playInspect(q, opts = {}) {
+    if (!q || !map) return false;
+    const fast = !!opts.fast;
     const token = ++PLAY_TOKEN;
     animLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} });
     animLayers = [];
@@ -299,10 +352,15 @@ async function playInspect(q) {
         const res = await fetch('/api/inspect', { method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ origin: q.origin, destination: q.destination, profile: q.profile }) });
         d = await res.json();
-    } catch (e) { return; }
-    if (token !== PLAY_TOKEN || !d || !d.found) return;
+    } catch (e) { return false; }
+    if (token !== PLAY_TOKEN || !d || !d.found) return false;
     if ($('ov-origin')) $('ov-origin').innerText = d.origin || q.origin;
     if ($('ov-dest')) $('ov-dest').innerText = d.destination || q.destination;
+    renderDecomp(d);
+    // frame the whole search (every expanded node plus the route) before it
+    // plays, so nothing animates outside the view
+    const frame = (d.expanded_order || []).concat(d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
+    if (frame.length > 1) map.fitBounds(frame, { padding: [50, 50], maxZoom: 14, animate: !fast });
     // expansion wave: every state a* popped, in order - the search spreading out.
     // chunked so even ~700 expansions on the dense graph play in about 3s.
     // the cloud draws on a canvas renderer in its own pane (one bitmap, not
@@ -314,10 +372,10 @@ async function playInspect(q) {
     const cloud = L.canvas({ padding: 0.3, pane: 'prunePane' });
     const settled = { radius: 2.5, fillOpacity: 0.22, weight: 0.5 };
     const order = d.expanded_order || [];
-    const chunk = Math.max(1, Math.ceil(order.length / 90));
+    const chunk = Math.max(1, Math.ceil(order.length / (fast ? 26 : 90)));
     let wavefront = [];
     for (let i = 0; i < order.length; i += chunk) {
-        if (token !== PLAY_TOKEN) return;
+        if (token !== PLAY_TOKEN) return false;
         const batch = [];
         for (const id of order.slice(i, i + chunk)) {
             const a = BY_ID[id]; if (!a) continue;
@@ -327,35 +385,129 @@ async function playInspect(q) {
         }
         wavefront.forEach(m => { try { m.setStyle(settled); } catch (e) {} });
         wavefront = batch;
-        await sleep(33);
+        await sleep(fast ? 16 : 33);
     }
     wavefront.forEach(m => { try { m.setStyle(settled); } catch (e) {} });
     // the winning route on top of the pruned search cloud, bent along the real
-    // track where the gateway attached shape waypoints (leg.points)
+    // track where the gateway attached shape waypoints (leg.points). the same
+    // waypoints are collected into one line for the travelling arrow.
     const legs = d.decomposition || [];
-    const lchunk = Math.max(1, Math.ceil(legs.length / 60));
+    const route = [];
+    const lchunk = Math.max(1, Math.ceil(legs.length / (fast ? 8 : 60)));
     for (let i = 0; i < legs.length; i += lchunk) {
-        if (token !== PLAY_TOKEN) return;
+        if (token !== PLAY_TOKEN) return false;
         for (const leg of legs.slice(i, i + lchunk)) {
             const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
             const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
             if (!pts) continue;
             animLayers.push(L.polyline(pts, { color: MODE_COLORS[leg.mode] || '#0071e3', weight: 6, opacity: 0.95 }).addTo(map));
+            pts.forEach(p => {
+                const last = route[route.length - 1];
+                if (!last || last[0] !== p[0] || last[1] !== p[1]) route.push(p);
+            });
         }
-        await sleep(30);
+        await sleep(fast ? 12 : 30);
     }
+    // a newer selection may have started during that last pause: stop here so
+    // this run cannot add its markers, counters or arrow on top of it
+    if (token !== PLAY_TOKEN) return false;
     const o = BY_ID[d.origin_id], de = BY_ID[d.destination_id];
     if (o) animLayers.push(L.circleMarker([o.lat, o.lng], { radius: 8, color: '#fff', fillColor: '#30d158', fillOpacity: 1, weight: 2 }).addTo(map).bindTooltip('Origin'));
     if (de) animLayers.push(L.circleMarker([de.lat, de.lng], { radius: 8, color: '#fff', fillColor: '#ff3b30', fillOpacity: 1, weight: 2 }).addTo(map).bindTooltip('Destination'));
-    const pts = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
-    if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 14 });
+    // a single click then zooms in on the route; the replay keeps its framing
+    if (!fast) {
+        const pts = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
+        if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 14 });
+    }
     // real counters: nodes expanded vs the baseline run, execution ms, g at goal
     if ($('ov-nodes')) $('ov-nodes').innerText = d.expanded_nodes;
     if ($('ov-nodes-delta')) $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
     if ($('ov-ms')) $('ov-ms').innerHTML = `${d.query_ms}<span class="ovc-unit">ms</span>`;
     if ($('ov-cost')) $('ov-cost').innerText = Math.round(d.total_cost * 10) / 10;
     if (q.el) q.el.querySelector('.qli-bottom').innerText = `${d.expanded_nodes} nodes · ${d.query_ms} ms · vs ${d.baseline_nodes} baseline`;
-    if (window.renderDecomp) try { renderDecomp(d); } catch (e) {}
+    const arrived = await travel(route, fast ? 800 : 1800, token, PROFILE_DOT[q.profile] || '#0071e3');
+    if (arrived && fast) await sleep(250);
+    return arrived && token === PLAY_TOKEN;
+}
+
+// ---- timeline: the play button replays the whole benchmark run ----
+// position = how many observations have played. segments before it are lit.
+const TL = { playing: false, index: 0, run: 0 };
+const tlItems = () => Array.from(document.querySelectorAll('#query-list .query-log-item'));
+const tlSegs = () => Array.from(document.querySelectorAll('#timeline-segments .tl-seg'));
+
+function paintTimeline(position, label, current = -1) {
+    const segs = tlSegs();
+    const total = tlItems().length || segs.length;
+    segs.forEach((s, i) => {
+        s.classList.toggle('completed', i < position);
+        s.classList.toggle('current', i === current);
+    });
+    const meta = document.querySelector('.timeline-meta');
+    if (meta) meta.innerHTML = `<strong>${position}</strong> / ${total} <span style="color: var(--rule); margin: 0 4px;">·</span> ${label}`;
+    const cursor = document.querySelector('.timeline-cursor');
+    if (cursor) cursor.style.left = (total ? position / total * 100 : 0) + '%';
+    const btn = document.querySelector('.play-btn');
+    if (btn) {
+        btn.classList.toggle('playing', TL.playing);
+        btn.setAttribute('aria-label', TL.playing ? 'Pause' : 'Play');
+    }
+}
+
+async function runTimeline() {
+    const total = tlItems().length;
+    if (!total) return;
+    if (TL.index >= total) TL.index = 0;   // a finished run replays from observation 1
+    TL.playing = true;
+    const run = ++TL.run;
+    let failed = false;
+    while (TL.playing && run === TL.run && TL.index < total) {
+        // read the list fresh each step: init() rebuilds it once the api answers
+        const i = TL.index, item = tlItems()[i];
+        if (!item) break;
+        if (item.style.display === 'none') { TL.index = i + 1; continue; }   // respect the od filter
+        paintTimeline(i, 'Playing', i);
+        // keep the running query in view inside the log without scrolling the page
+        const box = $('query-list');
+        if (box) box.scrollTop += item.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 2 + item.clientHeight / 2;
+        const ok = await activateQuery(item, { fast: true });
+        if (run !== TL.run) return;        // a manual selection took over the timeline
+        if (!ok) { failed = true; break; }   // engine unreachable: stop, do not spin through 180 failures
+        TL.index = i + 1;
+    }
+    TL.playing = false;
+    // on a failure the index stays on the observation that did not run, so
+    // play retries it, and that observation (the selected row) is outlined
+    const done = !failed && TL.index >= total;
+    paintTimeline(TL.index, failed ? 'Engine unreachable' : done ? 'Complete' : 'Paused',
+        failed ? TL.index : done ? -1 : TL.index - 1);
+}
+
+function initTimelinePlay() {
+    const btn = document.querySelector('.play-btn');
+    if (btn) btn.addEventListener('click', () => {
+        if (TL.playing) {
+            // pause after the observation on screen finishes, so the map is never left half drawn
+            TL.playing = false;
+            paintTimeline(TL.index, 'Pausing…', TL.index);
+        } else {
+            runTimeline();
+        }
+    });
+    // a segment is an observation: clicking it jumps the dashboard to that query
+    const track = $('timeline-segments');
+    if (track) track.addEventListener('click', (e) => {
+        const seg = e.target.closest('.tl-seg');
+        const item = seg && tlItems()[tlSegs().indexOf(seg)];
+        if (item) item.click();
+    });
+}
+
+// one entry point for a real click and for the timeline replay
+function activateQuery(item, opts = {}) {
+    syncSelectionUI(item);
+    LAST_QUERY = { origin: item.dataset.oid, destination: item.dataset.did, profile: item.dataset.profile, el: item };
+    return playInspect(LAST_QUERY, opts);
 }
 
 function buildTimeline() {
@@ -366,6 +518,7 @@ function buildTimeline() {
     for (let i = 0; i < 180; i++) {
         const seg = document.createElement('div');
         seg.className = 'tl-seg completed ' + profiles[i % 4];
+        seg.title = `Observation ${i + 1}`;
         container.appendChild(seg);
     }
 }
@@ -424,76 +577,57 @@ function initQueryLogClicks() {
     }
 
     if (!queryList) return;
-    
-    // Use event delegation to handle clicks efficiently
+
+    // one delegated listener: a real click stops the replay and takes over
     queryList.addEventListener('click', (e) => {
         const clickedItem = e.target.closest('.query-log-item');
         if (!clickedItem) return;
-
-        // 1. UNLOCK the legend now that a query has been selected!
-        if (legendBox) {
-            legendBox.classList.remove('disabled');
+        TL.playing = false;
+        TL.run++;
+        const idx = Number(clickedItem.dataset.idx);
+        if (!Number.isNaN(idx)) {
+            TL.index = idx + 1;
+            paintTimeline(idx + 1, 'Paused', idx);
         }
-
-        // 2. Remove the active class from all query log items
-        document.querySelectorAll('.query-log-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // 3. Add the active class to the clicked query log item
-        clickedItem.classList.add('active');
-
-        // 4. Sync and lock the corresponding map legend button
-        const activeProfile = clickedItem.dataset.profile;
-        
-        // Reset ALL legend buttons (remove lock, remove selection, update aria)
-        document.querySelectorAll('.ov-legend .leg-item').forEach(btn => {
-            btn.removeAttribute('data-locked');
-            btn.classList.remove('selected');
-            btn.setAttribute('aria-pressed', 'false');
-        });
-
-        // Find the matching legend button, force it ON, and lock it
-        const targetBtn = document.querySelector(`.ov-legend .leg-item[data-profile="${activeProfile}"]`);
-        if (targetBtn) {
-            targetBtn.classList.add('selected');
-            targetBtn.setAttribute('aria-pressed', 'true');
-            targetBtn.setAttribute('data-locked', 'true'); // Prevents toggling off
-        }
-
-        // Future implementation: Trigger map/chart updates here
-        // --- NEW DYNAMIC UPDATES ---
-
-        // 1. Grab the Origin -> Destination text from the clicked item
-        const activeOD = clickedItem.querySelector('.qli-od').innerText;
-        
-        // 2. Split the string by the arrow and populate the pills
-        const odParts = activeOD.split(' → ');
-        if (odParts.length === 2) {
-            const originPill = document.getElementById('cd-origin');
-            const destPill = document.getElementById('cd-dest');
-            if (originPill) originPill.innerText = odParts[0];
-            if (destPill) destPill.innerText = odParts[1];
-        }
-
-        // 3. Generate mock dynamic values based on the selected profile
-        let dynamicVals = { R: 0.18, T: 0.47, P: 0.31, F: 0.21 };
-        let dynamicTotal = '62.4';
-        
-        if (activeProfile === 'uncrowded') { 
-            dynamicVals = { R: 0.12, T: 0.65, P: 0.21, F: 0.15 }; dynamicTotal = '58.2'; 
-        } else if (activeProfile === 'cheapest') { 
-            dynamicVals = { R: 0.20, T: 0.30, P: 0.15, F: 0.70 }; dynamicTotal = '45.1'; 
-        } else if (activeProfile === 'safest') { 
-            dynamicVals = { R: 0.75, T: 0.22, P: 0.35, F: 0.25 }; dynamicTotal = '68.9'; 
-        } else if (activeProfile === 'convenient') { 
-            dynamicVals = { R: 0.15, T: 0.28, P: 0.60, F: 0.30 }; dynamicTotal = '54.7'; 
-        }
-
-        // 4. Populate the side panel with real data!
-        renderAhp(activeProfile, false);
-        renderDecomp({ vals: dynamicVals, total_cost: dynamicTotal }, false);
+        activateQuery(clickedItem);
     });
+}
+
+// everything the dashboard shows for a selected query, except the map
+// playback: legend lock, od pills, ahp weights. the cost decomposition
+// fills in with the real a* numbers as soon as the inspect response lands.
+function syncSelectionUI(item) {
+    const legendBox = document.querySelector('.ov-legend');
+    if (legendBox) legendBox.classList.remove('disabled');
+
+    document.querySelectorAll('.query-log-item.active').forEach(x => x.classList.remove('active'));
+    item.classList.add('active');
+
+    const activeProfile = item.dataset.profile;
+    document.querySelectorAll('.ov-legend .leg-item').forEach(btn => {
+        btn.removeAttribute('data-locked');
+        btn.classList.remove('selected');
+        btn.setAttribute('aria-pressed', 'false');
+    });
+    const targetBtn = document.querySelector(`.ov-legend .leg-item[data-profile="${activeProfile}"]`);
+    if (targetBtn) {
+        targetBtn.classList.add('selected');
+        targetBtn.setAttribute('aria-pressed', 'true');
+        targetBtn.setAttribute('data-locked', 'true'); // Prevents toggling off
+    }
+
+    const odParts = item.querySelector('.qli-od').innerText.split(' → ');
+    if (odParts.length === 2) {
+        const originPill = document.getElementById('cd-origin');
+        const destPill = document.getElementById('cd-dest');
+        if (originPill) originPill.innerText = odParts[0];
+        if (destPill) destPill.innerText = odParts[1];
+    }
+
+    // blank the decomposition until this query's own numbers arrive, so the
+    // panel never shows the previous route's values under the new od pills
+    renderDecomp(null, true);
+    renderAhp(activeProfile, false);
 }
 
 async function init() {
@@ -504,6 +638,7 @@ async function init() {
     PROFILES = DEFAULT_PROFILES;
     buildQueryList(DEFAULT_ANCHORS, DEFAULT_PROFILES);
     initQueryLogClicks();
+    initTimelinePlay();
     
     // Set to empty placeholders on initial load
     renderAhp('safest', true);

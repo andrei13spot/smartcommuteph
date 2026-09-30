@@ -600,3 +600,17 @@ footer .label .mini-mark { width: 14px; height: 14px; border-radius: 4px; backgr
     font-weight: bold;
     font-size: 12px;
 }
+
+/* timeline replay: the play button steps through the 180 observations */
+.dash-timeline .play-btn.playing::before { content: "❚❚"; margin-left: 0; font-size: 9px; letter-spacing: 1px; }
+.timeline-segments .tl-seg { cursor: pointer; transition: opacity .2s ease; }
+.timeline-segments .tl-seg:not(.completed) { opacity: 0.16; }
+.timeline-segments .tl-seg.current { opacity: 1; box-shadow: inset 0 0 0 2px var(--ink); }
+.timeline-cursor { transition: left .25s ease; pointer-events: none; }
+
+/* arrow that rides the winning route along every bend of the line */
+.route-traveler { background: none; border: none; }
+.route-traveler .rt-arrow { width: 26px; height: 26px; transform-origin: 50% 50%; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .55)); }
+
+/* where the ahp weights come from (synthetic until the survey lands) */
+.ahp-src { margin-top: 8px; font-size: 10.5px; line-height: 1.4; color: var(--ink-tertiary); }
