@@ -1,9 +1,137 @@
 {
-  "description": "real track polylines per rail line from the dotc gtfs 2013 shapes.txt (github.com/sakayph/gtfs). drawing-only: the gateway bends rail and busway map segments along these so lines follow the actual alignment on the map; leg distances and fares keep the calibrated official values. the edsa carousel reuses the mrt-3 shape via the alias (same edsa median alignment, taft to north avenue); any hop whose endpoint sits more than 0.8 km off its line's shape (e.g. pitx-taft, lrt-2 east extension) falls back to a straight segment instead of guessing.",
+  "description": "real alignment polylines per line. drawing-only: the gateway bends rail and busway map segments along these so lines follow the actual alignment on the map; leg distances and fares keep the calibrated official values. the rail shapes come from the dotc gtfs 2013 shapes.txt (github.com/sakayph/gtfs). where the 2013 feed predates the line (lrt-2 east extension, lrt-1 cavite extension) and for the edsa carousel busway, the geometry comes from openstreetmap, the road-geometry source the paper already names. any hop whose endpoint sits more than 0.8 km off its line's shape falls back to a straight segment instead of guessing.",
   "lines": {
     "LRT-1": {
-      "source": "dotc gtfs 2013 shapes.txt shape 882144 (route 880747, lrta baclaran-roosevelt)",
+      "source": "dotc gtfs 2013 shapes.txt shape 882144 (route 880747, lrta baclaran-roosevelt), extended south of baclaran along the cavite extension with the openstreetmap light-rail main-line ways (c) openstreetmap contributors, odbl, retrieved 2026-10-01 through the overpass api",
       "points": [
+        [
+          14.486317,
+          120.989925
+        ],
+        [
+          14.487777,
+          120.99067
+        ],
+        [
+          14.488691,
+          120.991265
+        ],
+        [
+          14.489181,
+          120.991465
+        ],
+        [
+          14.495228,
+          120.992533
+        ],
+        [
+          14.495795,
+          120.992873
+        ],
+        [
+          14.497062,
+          120.994052
+        ],
+        [
+          14.497454,
+          120.994262
+        ],
+        [
+          14.497887,
+          120.994359
+        ],
+        [
+          14.500447,
+          120.994316
+        ],
+        [
+          14.50096,
+          120.994173
+        ],
+        [
+          14.501412,
+          120.993885
+        ],
+        [
+          14.501753,
+          120.993496
+        ],
+        [
+          14.502012,
+          120.992908
+        ],
+        [
+          14.502145,
+          120.991064
+        ],
+        [
+          14.502343,
+          120.990496
+        ],
+        [
+          14.502911,
+          120.989902
+        ],
+        [
+          14.503607,
+          120.989681
+        ],
+        [
+          14.504239,
+          120.989763
+        ],
+        [
+          14.506933,
+          120.990843
+        ],
+        [
+          14.508295,
+          120.991276
+        ],
+        [
+          14.512076,
+          120.992224
+        ],
+        [
+          14.514228,
+          120.992547
+        ],
+        [
+          14.520977,
+          120.993236
+        ],
+        [
+          14.522674,
+          120.993329
+        ],
+        [
+          14.526643,
+          120.99333
+        ],
+        [
+          14.531265,
+          120.992836
+        ],
+        [
+          14.531787,
+          120.993093
+        ],
+        [
+          14.532044,
+          120.993523
+        ],
+        [
+          14.532256,
+          120.99641
+        ],
+        [
+          14.532386,
+          120.9968
+        ],
+        [
+          14.533886,
+          120.998029
+        ],
         [
           14.5339,
           120.998
@@ -239,15 +367,11 @@
         [
           14.6575,
           121.022
-        ],
-        [
-          14.6575,
-          121.022
         ]
       ]
     },
     "LRT-2": {
-      "source": "dotc gtfs 2013 shapes.txt shape 880814 (route 880801, lrta recto-santolan; predates the 2021 east extension, marikina/antipolo stay straight)",
+      "source": "dotc gtfs 2013 shapes.txt shape 880814 (route 880801, lrta recto-santolan), extended east of santolan to antipolo with the openstreetmap main-line ways named lrt line 2 (c) openstreetmap contributors, odbl, retrieved 2026-10-01 through the overpass api",
       "points": [
         [
           14.6035,
@@ -442,36 +566,28 @@
           121.086
         ],
         [
-          14.6223,
-          121.086
+          14.621727,
+          121.086459
         ],
         [
-          14.6223,
-          121.086
+          14.620654,
+          121.0876
         ],
         [
-          14.62227,
-          121.08603
+          14.618944,
+          121.08987
         ],
         [
-          14.62221,
-          121.08601
+          14.618636,
+          121.09081
         ],
         [
-          14.62256,
-          121.08565
+          14.61861,
+          121.091803
         ],
         [
-          14.6223,
-          121.086
-        ],
-        [
-          14.6223,
-          121.086
-        ],
-        [
-          14.6223,
-          121.086
+          14.625323,
+          121.124037
         ]
       ]
     },
@@ -581,23 +697,290 @@
         [
           14.65177,
           121.03234
+        ]
+      ]
+    },
+    "EDSA-Bus": {
+      "source": "openstreetmap route relation 10183711 'route 1: edsa carousel' (monumento to pitx), member ways chained in relation order and simplified to a 6 m tolerance (c) openstreetmap contributors, odbl, retrieved 2026-10-01 through the overpass api; trimmed at the pitx terminal entry (the relation continues around the terminal loop)",
+      "points": [
+        [
+          14.657144,
+          120.986405
         ],
         [
-          14.65173,
-          121.0323
+          14.657606,
+          121.019959
         ],
         [
-          14.65177,
-          121.03234
+          14.65731,
+          121.022233
         ],
         [
-          14.65177,
-          121.03234
+          14.655663,
+          121.029699
+        ],
+        [
+          14.655495,
+          121.030032
+        ],
+        [
+          14.651149,
+          121.032941
+        ],
+        [
+          14.632707,
+          121.044925
+        ],
+        [
+          14.602236,
+          121.058938
+        ],
+        [
+          14.600712,
+          121.059439
+        ],
+        [
+          14.599173,
+          121.059663
+        ],
+        [
+          14.5974,
+          121.059613
+        ],
+        [
+          14.595686,
+          121.059217
+        ],
+        [
+          14.589397,
+          121.057188
+        ],
+        [
+          14.584005,
+          121.055327
+        ],
+        [
+          14.582339,
+          121.05438
+        ],
+        [
+          14.573071,
+          121.047546
+        ],
+        [
+          14.571818,
+          121.046903
+        ],
+        [
+          14.570999,
+          121.046585
+        ],
+        [
+          14.565094,
+          121.044943
+        ],
+        [
+          14.56409,
+          121.044545
+        ],
+        [
+          14.563171,
+          121.044028
+        ],
+        [
+          14.561874,
+          121.042974
+        ],
+        [
+          14.561347,
+          121.042402
+        ],
+        [
+          14.558168,
+          121.03862
+        ],
+        [
+          14.556761,
+          121.037091
+        ],
+        [
+          14.552521,
+          121.03192
+        ],
+        [
+          14.551214,
+          121.030148
+        ],
+        [
+          14.550316,
+          121.029189
+        ],
+        [
+          14.549978,
+          121.028675
+        ],
+        [
+          14.55064,
+          121.028081
+        ],
+        [
+          14.550368,
+          121.027757
+        ],
+        [
+          14.549708,
+          121.02835
+        ],
+        [
+          14.549603,
+          121.028282
+        ],
+        [
+          14.549077,
+          121.027659
+        ],
+        [
+          14.548749,
+          121.027427
+        ],
+        [
+          14.542993,
+          121.020635
+        ],
+        [
+          14.541549,
+          121.01861
+        ],
+        [
+          14.54081,
+          121.017322
+        ],
+        [
+          14.54002,
+          121.015588
+        ],
+        [
+          14.539338,
+          121.013597
+        ],
+        [
+          14.538879,
+          121.010825
+        ],
+        [
+          14.537976,
+          121.003188
+        ],
+        [
+          14.537605,
+          121.000722
+        ],
+        [
+          14.537809,
+          120.997402
+        ],
+        [
+          14.537738,
+          120.995161
+        ],
+        [
+          14.535525,
+          120.985042
+        ],
+        [
+          14.535534,
+          120.984879
+        ],
+        [
+          14.535816,
+          120.984437
+        ],
+        [
+          14.535775,
+          120.984026
+        ],
+        [
+          14.535837,
+          120.983877
+        ],
+        [
+          14.535728,
+          120.98369
+        ],
+        [
+          14.535238,
+          120.983505
+        ],
+        [
+          14.534865,
+          120.983598
+        ],
+        [
+          14.534638,
+          120.983862
+        ],
+        [
+          14.53464,
+          120.984333
+        ],
+        [
+          14.534812,
+          120.984726
+        ],
+        [
+          14.535279,
+          120.984991
+        ],
+        [
+          14.536155,
+          120.988876
+        ],
+        [
+          14.532462,
+          120.989406
+        ],
+        [
+          14.524076,
+          120.990382
+        ],
+        [
+          14.524046,
+          120.990121
+        ],
+        [
+          14.522719,
+          120.990267
+        ],
+        [
+          14.522493,
+          120.9906
+        ],
+        [
+          14.52093,
+          120.99077
+        ],
+        [
+          14.517386,
+          120.99062
+        ],
+        [
+          14.513695,
+          120.99016
+        ],
+        [
+          14.51304,
+          120.990045
+        ],
+        [
+          14.510993,
+          120.989432
+        ],
+        [
+          14.510586,
+          120.990996
         ]
       ]
     }
   },
-  "aliases": {
-    "EDSA-Bus": "MRT-3"
-  }
+  "aliases": {}
 }

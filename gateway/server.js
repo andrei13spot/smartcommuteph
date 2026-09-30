@@ -138,8 +138,30 @@ function pointFeature(anchor, role, mode) {
   };
 }
 
-function lineFeature(a, b, mode) {
-  const bent = bendPoints(a, b, mode);
+// bent waypoints for every leg of a route, in travel order (null = no shape,
+// draw straight). when the ride continues on the same line through a node,
+// that node's own coordinate is dropped between the two legs: an anchor can
+// sit a few hundred metres off the track (cubao is the lrt-2 station), and
+// keeping it made the line leave the track and come back at a stop the rider
+// never gets off at. real transfers and the two route ends keep the node.
+function bendRoute(segs, anchors) {
+  const legs = segs.map((s) => {
+    const a = anchors.get(s.from_id);
+    const b = anchors.get(s.to_id);
+    return a && b ? bendPoints(a, b, s.mode) : null;
+  });
+  for (let i = 0; i + 1 < legs.length; i++) {
+    if (legs[i] && legs[i + 1] && segs[i].mode === segs[i + 1].mode && segs[i].to_id === segs[i + 1].from_id) {
+      legs[i] = legs[i].slice(0, -1);
+      legs[i + 1] = legs[i + 1].slice(1);
+    }
+  }
+  return legs;
+}
+
+// pts (optional) are already-bent [lat,lng] waypoints for this leg
+function lineFeature(a, b, mode, pts) {
+  const bent = pts || bendPoints(a, b, mode);
   const coordinates = bent
     ? bent.map(([lat, lng]) => [lng, lat])
     : [[a.lng, a.lat], [b.lng, b.lat]];
@@ -172,11 +194,12 @@ async function routeToGeoJSON(route) {
       const arrivingMode = i > 0 ? segs[i - 1].mode : null;
       features.push(pointFeature(a, role, arrivingMode));
     });
-    for (const s of segs) {
+    const bent = bendRoute(segs, anchors);
+    segs.forEach((s, i) => {
       const a = anchors.get(s.from_id);
       const b = anchors.get(s.to_id);
-      if (a && b) features.push(lineFeature(a, b, s.mode));
-    }
+      if (a && b) features.push(lineFeature(a, b, s.mode, bent[i]));
+    });
   }
 
   const coords = features.flatMap((f) =>
@@ -220,14 +243,16 @@ async function routeGeometry(route) {
   const segs = route.segments || [];
   if (!segs.length) return [];
   const out = [];
-  for (const s of segs) {
+  const bent = bendRoute(segs, anchors);
+  segs.forEach((s, i) => {
     const a = anchors.get(s.from_id);
     const b = anchors.get(s.to_id);
-    if (!a || !b) continue;
-    const pts = bendPoints(a, b, s.mode) || [[a.lat, a.lng], [b.lat, b.lng]];
-    if (!out.length) out.push(pts[0]);
-    out.push(...pts.slice(1));
-  }
+    if (!a || !b) return;
+    const pts = bent[i] || [[a.lat, a.lng], [b.lat, b.lng]];
+    const last = out[out.length - 1];
+    const same = last && last[0] === pts[0][0] && last[1] === pts[0][1];
+    out.push(...(same ? pts.slice(1) : pts));
+  });
   return out;
 }
 
@@ -390,12 +415,10 @@ app.post("/api/inspect", async (req, res) => {
     if (status === 200 && data && Array.isArray(data.decomposition)) {
       try {
         const anchors = await getAnchorIndex();
-        for (const leg of data.decomposition) {
-          const a = anchors.get(leg.from_id);
-          const b = anchors.get(leg.to_id);
-          const pts = a && b ? bendPoints(a, b, leg.mode) : null;
-          if (pts) leg.points = pts;
-        }
+        const bent = bendRoute(data.decomposition, anchors);
+        data.decomposition.forEach((leg, i) => {
+          if (bent[i]) leg.points = bent[i];
+        });
       } catch {}
     }
     res.status(status).json(data);
