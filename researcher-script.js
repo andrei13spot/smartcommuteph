@@ -158,8 +158,8 @@ function initMap() {
     NETWORK_GJ = fetch('/api/map/network').then(r => r.json());
     // base layer: each jeepney route as its own coloured line (colours from
     // the route geojson), rail and busway corridors in mode colours, and the
-    // ten anchors only - the virtual stops stay hidden until the playback
-    // lights them up as expanded states
+    // ten anchors only - the virtual stops are what the router walks
+    // through, not something to draw
     fetch('/api/map/routes').then(r => r.json()).then(routes => {
         L.geoJSON(routes, {
             style: f => ({ color: f.properties.color || MODE_COLORS.Jeepney, weight: 2, opacity: 0.6 }),
@@ -365,40 +365,15 @@ async function playInspect(q, opts = {}) {
     if ($('ov-origin')) $('ov-origin').innerText = d.origin || q.origin;
     if ($('ov-dest')) $('ov-dest').innerText = d.destination || q.destination;
     renderDecomp(d);
-    // frame the whole search (every expanded node plus the route) before it
-    // plays, so nothing animates outside the view
-    const frame = (d.expanded_order || []).concat(d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
-    if (frame.length > 1) map.fitBounds(frame, { padding: [50, 50], maxZoom: 14, animate: !fast });
-    // expansion wave: every state a* popped, in order - the search spreading out.
-    // chunked so even ~700 expansions on the dense graph play in about 3s.
-    // the cloud draws on a canvas renderer in its own pane (one bitmap, not
-    // hundreds of svg nodes) and the bright wavefront settles per chunk
-    // instead of one timer per marker - both were making the playback stutter
-    const pane = map.getPane('prunePane') || map.createPane('prunePane');
-    pane.style.zIndex = 450;
-    pane.style.pointerEvents = 'none';
-    const cloud = L.canvas({ padding: 0.3, pane: 'prunePane' });
-    const settled = { radius: 2.5, fillOpacity: 0.22, weight: 0.5 };
-    const order = d.expanded_order || [];
-    const chunk = Math.max(1, Math.ceil(order.length / (fast ? 26 : 90)));
-    let wavefront = [];
-    for (let i = 0; i < order.length; i += chunk) {
-        if (token !== PLAY_TOKEN) return false;
-        const batch = [];
-        for (const id of order.slice(i, i + chunk)) {
-            const a = BY_ID[id]; if (!a) continue;
-            const m = L.circleMarker([a.lat, a.lng], { renderer: cloud, pane: 'prunePane', interactive: false,
-                radius: 6, color: '#ffcc02', fillColor: '#ff9500', fillOpacity: 0.55, weight: 1 }).addTo(map);
-            animLayers.push(m); batch.push(m);
-        }
-        wavefront.forEach(m => { try { m.setStyle(settled); } catch (e) {} });
-        wavefront = batch;
-        await sleep(fast ? 16 : 33);
-    }
-    wavefront.forEach(m => { try { m.setStyle(settled); } catch (e) {} });
-    // the winning route on top of the pruned search cloud, bent along the real
-    // track where the gateway attached shape waypoints (leg.points). the same
-    // waypoints are collected into one line for the travelling arrow.
+    // frame the route before it draws, so nothing animates outside the view
+    const frame = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
+    if (frame.length > 1) map.fitBounds(frame, { padding: [60, 60], maxZoom: 14, animate: !fast });
+    // this page draws only the winning route and its arrow. the search effort
+    // is reported as numbers in the counters (nodes expanded vs the baseline);
+    // drawing every expanded state here made the 180-observation replay lag
+    // the route is bent along the real track where the gateway attached shape
+    // waypoints (leg.points). the same waypoints are collected into one line
+    // for the travelling arrow.
     const legs = d.decomposition || [];
     const route = [];
     const lchunk = Math.max(1, Math.ceil(legs.length / (fast ? 8 : 60)));
@@ -422,11 +397,6 @@ async function playInspect(q, opts = {}) {
     const o = BY_ID[d.origin_id], de = BY_ID[d.destination_id];
     if (o) animLayers.push(L.circleMarker([o.lat, o.lng], { radius: 8, color: '#fff', fillColor: '#30d158', fillOpacity: 1, weight: 2 }).addTo(map).bindTooltip('Origin'));
     if (de) animLayers.push(L.circleMarker([de.lat, de.lng], { radius: 8, color: '#fff', fillColor: '#ff3b30', fillOpacity: 1, weight: 2 }).addTo(map).bindTooltip('Destination'));
-    // a single click then zooms in on the route; the replay keeps its framing
-    if (!fast) {
-        const pts = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
-        if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 14 });
-    }
     // real counters: nodes expanded vs the baseline run, execution ms, g at goal
     if ($('ov-nodes')) $('ov-nodes').innerText = d.expanded_nodes;
     if ($('ov-nodes-delta')) $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
