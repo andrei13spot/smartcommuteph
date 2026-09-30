@@ -220,6 +220,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cogeo-Cubao_T247",
                 "route": "Cogeo-Cubao_T247",
                 "category": "Antipolo to Cubao",
                 "type": "exact_route_path",
@@ -1587,6 +1588,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Antipolo-Cubao_via_Sumulong_Highway",
                 "route": "Antipolo-Cubao_via_Sumulong_Highway",
                 "category": "Antipolo to Cubao",
                 "type": "exact_route_path",
@@ -2934,6 +2936,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Padilla-Cubao_T248",
                 "route": "Padilla-Cubao_T248",
                 "category": "Antipolo to Cubao",
                 "type": "exact_route_path",
@@ -4293,6 +4296,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Angono-Cubao_T252",
                 "route": "Angono-Cubao_T252",
                 "category": "Antipolo to Cubao",
                 "type": "exact_route_path",
@@ -4532,6 +4536,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Cainta_T238",
                 "route": "Cubao-Cainta_T238",
                 "category": "Cubao to Antipolo",
                 "type": "exact_route_path",
@@ -5576,6 +5581,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Marikina-Bagong_Nayon_II_T230",
                 "route": "Marikina-Bagong_Nayon_II_T230",
                 "category": "Cubao to Antipolo",
                 "type": "exact_route_path",
@@ -5984,6 +5990,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "SSS_Village-Stop_N_Shop",
                 "route": "SSS_Village-Stop_N_Shop",
                 "category": "Antipolo to Doroteo",
                 "type": "exact_route_path",
@@ -7521,6 +7528,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "San_Juan-Divisoria_T3118",
                 "route": "San_Juan-Divisoria_T3118",
                 "category": "Antipolo to Doroteo",
                 "type": "exact_route_path",
@@ -8225,6 +8233,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Divisoria-San_Juan_T3118",
                 "route": "Divisoria-San_Juan_T3118",
                 "category": "Doroteo to Antipolo",
                 "type": "exact_route_path",
@@ -8901,6 +8910,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Stop_N_Shop-SSS_Village_1",
                 "route": "Stop_N_Shop-SSS_Village_1",
                 "category": "Doroteo to Antipolo",
                 "type": "exact_route_path",
@@ -10351,6 +10361,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "SM_North-Monumento_via_Balintawak",
                 "route": "SM_North-Monumento_via_Balintawak",
                 "category": "Antipolo to Monumento",
                 "type": "exact_route_path",
@@ -11363,6 +11374,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Lagro_via_Commonwealth",
                 "route": "Cubao-Lagro_via_Commonwealth",
                 "category": "Antipolo to Monumento",
                 "type": "exact_route_path",
@@ -12240,6 +12252,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Recto-Malinta_T3157",
                 "route": "Recto-Malinta_T3157",
                 "category": "Antipolo to Monumento",
                 "type": "exact_route_path",
@@ -13316,6 +13329,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Malanday-Recto_T3150",
                 "route": "Malanday-Recto_T3150",
                 "category": "Monumento to Antipolo",
                 "type": "exact_route_path",
@@ -14495,6 +14509,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Monumento-SM_North_via_Balintawak",
                 "route": "Monumento-SM_North_via_Balintawak",
                 "category": "Monumento to Antipolo",
                 "type": "exact_route_path",
@@ -16001,6 +16016,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Divisoria-Cubao",
                 "route": "Divisoria-Cubao",
                 "category": "Monumento to Antipolo",
                 "type": "exact_route_path",
@@ -18197,6 +18213,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Divisoria-Malinta_via_Jose_Abad_Santos_T3117",
                 "route": "Divisoria-Malinta_via_Jose_Abad_Santos_T3117",
                 "category": "Monumento to Antipolo",
                 "type": "exact_route_path",
@@ -19124,6 +19141,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "SM_North-UP_Campus",
                 "route": "SM_North-UP_Campus",
                 "category": "Monumento to Antipolo",
                 "type": "exact_route_path",
@@ -19671,6 +19689,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Antipolo_via_Sumulong_Highway",
                 "route": "Cubao-Antipolo_via_Sumulong_Highway",
                 "category": "Monumento to Antipolo",
                 "type": "exact_route_path",
@@ -21356,6 +21375,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Morong-EDSA_Shaw_Central_T256",
                 "route": "Morong-EDSA_Shaw_Central_T256",
                 "category": "Antipolo to Shaw",
                 "type": "exact_route_path",
@@ -22410,6 +22430,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Tanay-EDSA_Shaw_Blvd_T257",
                 "route": "Tanay-EDSA_Shaw_Blvd_T257",
                 "category": "Antipolo to Shaw",
                 "type": "exact_route_path",
@@ -23516,6 +23537,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_Shaw_Blvd-Tanay_T257",
                 "route": "EDSA_Shaw_Blvd-Tanay_T257",
                 "category": "Shaw to Antipolo",
                 "type": "exact_route_path",
@@ -24414,6 +24436,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_Shaw-Central_Morong_T256",
                 "route": "EDSA_Shaw-Central_Morong_T256",
                 "category": "Shaw to Antipolo",
                 "type": "exact_route_path",
@@ -25652,6 +25675,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Project_2_3-TM_Kalaw_T3165",
                 "route": "Project_2_3-TM_Kalaw_T3165",
                 "category": "Antipolo to SM North",
                 "type": "exact_route_path",
@@ -27304,6 +27328,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA-West_Ave_via_Panay_Ave_T358",
                 "route": "EDSA-West_Ave_via_Panay_Ave_T358",
                 "category": "Antipolo to SM North",
                 "type": "exact_route_path",
@@ -27941,6 +27966,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Aurora_Lauan-EDSA_North_Ave_T240",
                 "route": "Aurora_Lauan-EDSA_North_Ave_T240",
                 "category": "Antipolo to SM North",
                 "type": "exact_route_path",
@@ -29161,6 +29187,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "UP_Campus-SM_North",
                 "route": "UP_Campus-SM_North",
                 "category": "Antipolo to SM North",
                 "type": "exact_route_path",
@@ -29682,6 +29709,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Espana-Project_2_3_T384",
                 "route": "Espana-Project_2_3_T384",
                 "category": "SM North to Antipolo",
                 "type": "exact_route_path",
@@ -30862,6 +30890,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_North_Ave-Quezon_City_Hall_T138",
                 "route": "EDSA_North_Ave-Quezon_City_Hall_T138",
                 "category": "SM North to Antipolo",
                 "type": "exact_route_path",
@@ -31192,6 +31221,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "QMC-Anonas_T249",
                 "route": "QMC-Anonas_T249",
                 "category": "SM North to Antipolo",
                 "type": "exact_route_path",
@@ -32183,6 +32213,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Bagong_Nayon_II-Marikina_T230",
                 "route": "Bagong_Nayon_II-Marikina_T230",
                 "category": "Antipolo to SM Novaliches",
                 "type": "exact_route_path",
@@ -32805,6 +32836,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Sta_Lucia-Commonwealth_Market_T202",
                 "route": "Sta_Lucia-Commonwealth_Market_T202",
                 "category": "Antipolo to SM Novaliches",
                 "type": "exact_route_path",
@@ -34387,6 +34419,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Bigte-Novaliches_T127",
                 "route": "Bigte-Novaliches_T127",
                 "category": "Antipolo to SM Novaliches",
                 "type": "exact_route_path",
@@ -35256,6 +35289,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Bagong_Silang-Philcoa_T169",
                 "route": "Bagong_Silang-Philcoa_T169",
                 "category": "Antipolo to SM Novaliches",
                 "type": "exact_route_path",
@@ -36394,6 +36428,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Marcos_Ave-Balintawak_via_Tandang_Sora_T131",
                 "route": "Marcos_Ave-Balintawak_via_Tandang_Sora_T131",
                 "category": "SM Novaliches to Antipolo",
                 "type": "exact_route_path",
@@ -37835,6 +37870,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Tandang_Sora-Visayas_Ave_via_Quezon_City_Hall_T111",
                 "route": "Tandang_Sora-Visayas_Ave_via_Quezon_City_Hall_T111",
                 "category": "SM Novaliches to Antipolo",
                 "type": "exact_route_path",
@@ -38525,6 +38561,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "QMC-Aurora_Lauan_T251",
                 "route": "QMC-Aurora_Lauan_T251",
                 "category": "SM Novaliches to Antipolo",
                 "type": "exact_route_path",
@@ -39341,6 +39378,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Padilla_T248",
                 "route": "Cubao-Padilla_T248",
                 "category": "SM Novaliches to Antipolo",
                 "type": "exact_route_path",
@@ -40834,6 +40872,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Project_4-TM_Kalaw_via_Cubao_E_Rodriguez_T385",
                 "route": "Project_4-TM_Kalaw_via_Cubao_E_Rodriguez_T385",
                 "category": "Antipolo to Taft",
                 "type": "exact_route_path",
@@ -43122,6 +43161,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Quezon_Institute_via_L_Guinto_T3127",
                 "route": "Baclaran-Quezon_Institute_via_L_Guinto_T3127",
                 "category": "Taft to Antipolo",
                 "type": "exact_route_path",
@@ -45023,6 +45063,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Cogeo_T247",
                 "route": "Cubao-Cogeo_T247",
                 "category": "Taft to Antipolo",
                 "type": "exact_route_path",
@@ -46505,6 +46546,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Marikina-Pasig_T209",
                 "route": "Marikina-Pasig_T209",
                 "category": "Antipolo to Pasig",
                 "type": "exact_route_path",
@@ -48595,6 +48637,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Marikina-Pasig_via_Dela_Paz_T261_1",
                 "route": "Marikina-Pasig_via_Dela_Paz_T261_1",
                 "category": "Antipolo to Pasig",
                 "type": "exact_route_path",
@@ -50182,6 +50225,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Marikina-Pateros_via_Pasig_San_Antonio_T243",
                 "route": "Marikina-Pateros_via_Pasig_San_Antonio_T243",
                 "category": "Antipolo to Pasig",
                 "type": "exact_route_path",
@@ -51665,6 +51709,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pateros-Marikina_via_Pasig_Sn_Antonio_T243",
                 "route": "Pateros-Marikina_via_Pasig_Sn_Antonio_T243",
                 "category": "Pasig to Antipolo",
                 "type": "exact_route_path",
@@ -53252,6 +53297,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig-Marikina_T209",
                 "route": "Pasig-Marikina_T209",
                 "category": "Pasig to Antipolo",
                 "type": "exact_route_path",
@@ -54986,6 +55032,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Dapitan-Baclaran_via_Mabini_T3125",
                 "route": "Dapitan-Baclaran_via_Mabini_T3125",
                 "category": "Antipolo to PITX",
                 "type": "exact_route_path",
@@ -57678,6 +57725,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Remedios_via_Quiapo_L_Guinto_T3143",
                 "route": "Cubao-Remedios_via_Quiapo_L_Guinto_T3143",
                 "category": "Antipolo to PITX",
                 "type": "exact_route_path",
@@ -59858,6 +59906,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Divisoria-Baclaran_via_L_Guinto_T3123",
                 "route": "Divisoria-Baclaran_via_L_Guinto_T3123",
                 "category": "Antipolo to PITX",
                 "type": "exact_route_path",
@@ -61920,6 +61969,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Divisoria",
                 "route": "Cubao-Divisoria",
                 "category": "Cubao to Doroteo Jose",
                 "type": "exact_route_path",
@@ -63708,6 +63758,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Murphy-TM_Kalaw_via_E_Rodriguez_T3129",
                 "route": "Murphy-TM_Kalaw_via_E_Rodriguez_T3129",
                 "category": "Cubao to Doroteo Jose",
                 "type": "exact_route_path",
@@ -65648,6 +65699,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "TM_Kalaw-Project_4_via_Cubao_E_Rodriguez_T385",
                 "route": "TM_Kalaw-Project_4_via_Cubao_E_Rodriguez_T385",
                 "category": "Doroteo Jose to Cubao",
                 "type": "exact_route_path",
@@ -67217,6 +67269,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Lardizabal-Tayuman",
                 "route": "Lardizabal-Tayuman",
                 "category": "Cubao to Monumento",
                 "type": "exact_route_path",
@@ -67551,6 +67604,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Recto-Malanday_via_F_Huertas_Oroquieta_T3150",
                 "route": "Recto-Malanday_via_F_Huertas_Oroquieta_T3150",
                 "category": "Cubao to Monumento",
                 "type": "exact_route_path",
@@ -68334,6 +68388,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-QMC_via_Ybardolaza_T245",
                 "route": "Cubao-QMC_via_Ybardolaza_T245",
                 "category": "Cubao to SM North",
                 "type": "exact_route_path",
@@ -70020,6 +70075,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "TM_Kalaw-West_Ave_via_Quezon_Ave_Modified_T3192",
                 "route": "TM_Kalaw-West_Ave_via_Quezon_Ave_Modified_T3192",
                 "category": "Cubao to SM North",
                 "type": "exact_route_path",
@@ -70621,6 +70677,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "A_Bonifacio-D_Tuazon_E_Rodriguez_Ave_T302",
                 "route": "A_Bonifacio-D_Tuazon_E_Rodriguez_Ave_T302",
                 "category": "Cubao to SM Novaliches",
                 "type": "exact_route_path",
@@ -71043,6 +71100,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Lagro-Cubao_via_Commonwealth",
                 "route": "Lagro-Cubao_via_Commonwealth",
                 "category": "SM Novaliches to Cubao",
                 "type": "exact_route_path",
@@ -72818,6 +72876,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "D_Tuazon-A_Bonifacio_E_Rodriguez_Ave_T302",
                 "route": "D_Tuazon-A_Bonifacio_E_Rodriguez_Ave_T302",
                 "category": "SM Novaliches to Cubao",
                 "type": "exact_route_path",
@@ -73244,6 +73303,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Marcos_Ave-Quirino_Highway_via_Tandang_Sora_T139",
                 "route": "Marcos_Ave-Quirino_Highway_via_Tandang_Sora_T139",
                 "category": "SM Novaliches to Cubao",
                 "type": "exact_route_path",
@@ -74693,6 +74753,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Angono-Cubao_T252",
                 "route": "Angono-Cubao_T252",
                 "category": "Cubao to Pasig",
                 "type": "exact_route_path",
@@ -75749,6 +75810,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Angono_T255",
                 "route": "Cubao-Angono_T255",
                 "category": "Cubao to Pasig",
                 "type": "exact_route_path",
@@ -76777,6 +76839,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Ugong-Pasig_via_Rodriguez_T224",
                 "route": "Ugong-Pasig_via_Rodriguez_T224",
                 "category": "Cubao to Pasig",
                 "type": "exact_route_path",
@@ -77649,6 +77712,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig_Ugong_via_Rodriguez_T224",
                 "route": "Pasig_Ugong_via_Rodriguez_T224",
                 "category": "Pasig to Cubao",
                 "type": "exact_route_path",
@@ -78585,6 +78649,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Rosario_Pasig-Cubao_via_Sta_Lucia_T272",
                 "route": "Rosario_Pasig-Cubao_via_Sta_Lucia_T272",
                 "category": "Pasig to Cubao",
                 "type": "exact_route_path",
@@ -80158,6 +80223,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig-Marikina_via_Dela_Paz_T261",
                 "route": "Pasig-Marikina_via_Dela_Paz_T261",
                 "category": "Pasig to Cubao",
                 "type": "exact_route_path",
@@ -81743,6 +81809,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cainta_Rizal-Araneta_Cubao_T238",
                 "route": "Cainta_Rizal-Araneta_Cubao_T238",
                 "category": "Pasig to Cubao",
                 "type": "exact_route_path",
@@ -82725,6 +82792,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Remedios-Cubao_via_Quiapo_L_Guinto_T3143",
                 "route": "Remedios-Cubao_via_Quiapo_L_Guinto_T3143",
                 "category": "PITX to Cubao",
                 "type": "exact_route_path",
@@ -84762,6 +84830,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pier_South_15-Malanday_via_McArthur_Highway",
                 "route": "Pier_South_15-Malanday_via_McArthur_Highway",
                 "category": "Doroteo Jose to Monumento",
                 "type": "exact_route_path",
@@ -86013,6 +86082,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Malanday-Sta_Cruz_via_Huertas_Oroquieta_T3151",
                 "route": "Malanday-Sta_Cruz_via_Huertas_Oroquieta_T3151",
                 "category": "Monumento to Doroteo Jose",
                 "type": "exact_route_path",
@@ -87124,6 +87194,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Malanday-Pier_South_T3186",
                 "route": "Malanday-Pier_South_T3186",
                 "category": "Monumento to Doroteo Jose",
                 "type": "exact_route_path",
@@ -88075,6 +88146,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Stop_N_Shop-Boni_Pinatubo",
                 "route": "Stop_N_Shop-Boni_Pinatubo",
                 "category": "Doroteo Jose to Shaw",
                 "type": "exact_route_path",
@@ -89958,6 +90030,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Libertad_Mandaluyong-Kalentong_JRC_via_Nueve_de_Pebrero",
                 "route": "Libertad_Mandaluyong-Kalentong_JRC_via_Nueve_de_Pebrero",
                 "category": "Shaw to Doroteo Jose",
                 "type": "exact_route_path",
@@ -90737,6 +90810,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Punta-Divisoria_via_Sta_Mesa_T3184",
                 "route": "Punta-Divisoria_via_Sta_Mesa_T3184",
                 "category": "Shaw to Doroteo Jose",
                 "type": "exact_route_path",
@@ -91835,6 +91909,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Boni_Pinatubo-Stop_N_Shop",
                 "route": "Boni_Pinatubo-Stop_N_Shop",
                 "category": "Shaw to Doroteo Jose",
                 "type": "exact_route_path",
@@ -92454,6 +92529,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "San_Juan-Divisoria",
                 "route": "San_Juan-Divisoria",
                 "category": "Shaw to Doroteo Jose",
                 "type": "exact_route_path",
@@ -93109,6 +93185,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pier_South-Project_6_via_Espa\u00c3\u00b1a_T3190",
                 "route": "Pier_South-Project_6_via_Espa\u00c3\u00b1a_T3190",
                 "category": "Doroteo Jose to SM North",
                 "type": "exact_route_path",
@@ -94542,6 +94619,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "West_Ave-Vito_Cruz_via_Quezon_Avenue_T3193",
                 "route": "West_Ave-Vito_Cruz_via_Quezon_Avenue_T3193",
                 "category": "Doroteo Jose to SM North",
                 "type": "exact_route_path",
@@ -96058,6 +96136,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "West_Ave-TM_Kalaw_via_Quezon_Avenue_T3192",
                 "route": "West_Ave-TM_Kalaw_via_Quezon_Avenue_T3192",
                 "category": "SM North to Doroteo Jose",
                 "type": "exact_route_path",
@@ -97881,6 +97960,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Munoz-Remedios_via_Sta_Cruz,_L_Guinto_T3160",
                 "route": "Munoz-Remedios_via_Sta_Cruz,_L_Guinto_T3160",
                 "category": "SM North to Doroteo Jose",
                 "type": "exact_route_path",
@@ -99448,6 +99528,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Sta_Quiteria",
                 "route": "Blumentritt-Sta_Quiteria",
                 "category": "Doroteo Jose to SM Novaliches",
                 "type": "exact_route_path",
@@ -100615,6 +100696,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Munoz-Vito_Cruz_via_Sta_Cruz,_Mabini_T3120",
                 "route": "Munoz-Vito_Cruz_via_Sta_Cruz,_Mabini_T3120",
                 "category": "Doroteo Jose to SM Novaliches",
                 "type": "exact_route_path",
@@ -101281,6 +101363,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Remedios-Frisco_T3128",
                 "route": "Remedios-Frisco_T3128",
                 "category": "Doroteo Jose to SM Novaliches",
                 "type": "exact_route_path",
@@ -102050,6 +102133,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Sta_Quiteria-Blumentritt",
                 "route": "Sta_Quiteria-Blumentritt",
                 "category": "SM Novaliches to Doroteo Jose",
                 "type": "exact_route_path",
@@ -102946,6 +103030,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Frisco-Vito_Cruz_LRT_via_Mabini&_Sta_Cruz_T354",
                 "route": "Frisco-Vito_Cruz_LRT_via_Mabini&_Sta_Cruz_T354",
                 "category": "SM Novaliches to Doroteo Jose",
                 "type": "exact_route_path",
@@ -103390,6 +103475,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Frisco-Remedios_T3128",
                 "route": "Frisco-Remedios_T3128",
                 "category": "SM Novaliches to Doroteo Jose",
                 "type": "exact_route_path",
@@ -104055,6 +104141,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Pasay_Rotonda_via_L_Guinto_&_Sta_Cruz_T3122",
                 "route": "Blumentritt-Pasay_Rotonda_via_L_Guinto_&_Sta_Cruz_T3122",
                 "category": "Doroteo Jose to Taft",
                 "type": "exact_route_path",
@@ -105755,6 +105842,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Baclaran_via_L_Guinto_&_Sta_Cruz_T3138",
                 "route": "Blumentritt-Baclaran_via_L_Guinto_&_Sta_Cruz_T3138",
                 "category": "Doroteo Jose to Taft",
                 "type": "exact_route_path",
@@ -107499,6 +107587,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Blumentritt_via_L_Guinto_&_Sta_Cruz_T3138",
                 "route": "Baclaran-Blumentritt_via_L_Guinto_&_Sta_Cruz_T3138",
                 "category": "Taft to Doroteo Jose",
                 "type": "exact_route_path",
@@ -109195,6 +109284,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasay_Rotonda-Blumentritt_via_L_Guinto_&_Sta_Cruz_T3122",
                 "route": "Pasay_Rotonda-Blumentritt_via_L_Guinto_&_Sta_Cruz_T3122",
                 "category": "Taft to Doroteo Jose",
                 "type": "exact_route_path",
@@ -110791,6 +110881,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Kalentong_JRC-EDSA_Shaw_Central_T3147",
                 "route": "Kalentong_JRC-EDSA_Shaw_Central_T3147",
                 "category": "Doroteo Jose to Pasig",
                 "type": "exact_route_path",
@@ -111661,6 +111752,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_Shaw_Central-Pasig_Palengke",
                 "route": "EDSA_Shaw_Central-Pasig_Palengke",
                 "category": "Doroteo Jose to Pasig",
                 "type": "exact_route_path",
@@ -113196,6 +113288,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Rosario_Pasig_via_Santolan_T273",
                 "route": "Cubao-Rosario_Pasig_via_Santolan_T273",
                 "category": "Doroteo Jose to Pasig",
                 "type": "exact_route_path",
@@ -114534,6 +114627,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig_Palengke-EDSA_Shaw_Central",
                 "route": "Pasig_Palengke-EDSA_Shaw_Central",
                 "category": "Pasig to Doroteo Jose",
                 "type": "exact_route_path",
@@ -116190,6 +116284,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig_TP-Bicutan_Taguig_via_Pateros_T267",
                 "route": "Pasig_TP-Bicutan_Taguig_via_Pateros_T267",
                 "category": "Pasig to Doroteo Jose",
                 "type": "exact_route_path",
@@ -117034,6 +117129,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Guadalupe_ABC-Taguig_via_Tipas_T216",
                 "route": "Guadalupe_ABC-Taguig_via_Tipas_T216",
                 "category": "Pasig to Doroteo Jose",
                 "type": "exact_route_path",
@@ -118163,6 +118259,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Guadalupe_Market-L_Guinto_via_P_Gil_T357",
                 "route": "Guadalupe_Market-L_Guinto_via_P_Gil_T357",
                 "category": "Pasig to Doroteo Jose",
                 "type": "exact_route_path",
@@ -120037,6 +120134,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Divisoria-Punta_via_Sta_Mesa_T3184",
                 "route": "Divisoria-Punta_via_Sta_Mesa_T3184",
                 "category": "Monumento to Shaw",
                 "type": "exact_route_path",
@@ -121314,6 +121412,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Kalentong_JRC-Libertad_Mandaluyong_via_Nueve_de_Pebrero_T335",
                 "route": "Kalentong_JRC-Libertad_Mandaluyong_via_Nueve_de_Pebrero_T335",
                 "category": "Monumento to Shaw",
                 "type": "exact_route_path",
@@ -122174,6 +122273,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "MCU-Munoz_Ikot",
                 "route": "MCU-Munoz_Ikot",
                 "category": "Monumento to SM North",
                 "type": "exact_route_path",
@@ -122798,6 +122898,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Munoz-MCU_Ikot",
                 "route": "Munoz-MCU_Ikot",
                 "category": "SM North to Monumento",
                 "type": "exact_route_path",
@@ -123490,6 +123591,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Monumento-Sto_Ni\u00c3\u00b1o_T171",
                 "route": "Monumento-Sto_Ni\u00c3\u00b1o_T171",
                 "category": "Monumento to SM Novaliches",
                 "type": "exact_route_path",
@@ -123998,6 +124100,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Heritage_Homes-Monumento_T170",
                 "route": "Heritage_Homes-Monumento_T170",
                 "category": "Monumento to SM Novaliches",
                 "type": "exact_route_path",
@@ -124531,6 +124634,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Camarin-Balintawak_via_Susano_T163",
                 "route": "Camarin-Balintawak_via_Susano_T163",
                 "category": "SM Novaliches to Monumento",
                 "type": "exact_route_path",
@@ -126513,6 +126617,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Novaliches-Balintawak_via_Quirino_Highway_T165",
                 "route": "Novaliches-Balintawak_via_Quirino_Highway_T165",
                 "category": "SM Novaliches to Monumento",
                 "type": "exact_route_path",
@@ -128296,6 +128401,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "MCU-Pasay_Rotonda_via_Taft_Ave",
                 "route": "MCU-Pasay_Rotonda_via_Taft_Ave",
                 "category": "Monumento to Taft",
                 "type": "exact_route_path",
@@ -131063,6 +131169,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasay_Rotonda-MCU_via_Taft_Ave",
                 "route": "Pasay_Rotonda-MCU_via_Taft_Ave",
                 "category": "Taft to Monumento",
                 "type": "exact_route_path",
@@ -133910,6 +134017,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "MCU-Recto_via_F_Huertas_Oroquieta_T3189",
                 "route": "MCU-Recto_via_F_Huertas_Oroquieta_T3189",
                 "category": "Monumento to Pasig",
                 "type": "exact_route_path",
@@ -135044,6 +135152,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pateros-EDSA_Shaw_Central_T279",
                 "route": "Pateros-EDSA_Shaw_Central_T279",
                 "category": "Pasig to Monumento",
                 "type": "exact_route_path",
@@ -135937,6 +136046,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_Shaw_Central-Kalentong_JRC_T3147",
                 "route": "EDSA_Shaw_Central-Kalentong_JRC_T3147",
                 "category": "Pasig to Monumento",
                 "type": "exact_route_path",
@@ -136627,6 +136737,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Balintawak-Camarin_via_Susano_T163",
                 "route": "Balintawak-Camarin_via_Susano_T163",
                 "category": "Shaw to SM Novaliches",
                 "type": "exact_route_path",
@@ -138495,6 +138606,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pier_South-Sta_Ana_via_P_Faura_T342",
                 "route": "Pier_South-Sta_Ana_via_P_Faura_T342",
                 "category": "Shaw to SM Novaliches",
                 "type": "exact_route_path",
@@ -138625,6 +138737,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Remedios-Frisco_T3128",
                 "route": "Remedios-Frisco_T3128",
                 "category": "Shaw to SM Novaliches",
                 "type": "exact_route_path",
@@ -139847,6 +139960,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Guadalupe-FTI_via_J_P_Rizal_Extension",
                 "route": "Guadalupe-FTI_via_J_P_Rizal_Extension",
                 "category": "Shaw to Taft",
                 "type": "exact_route_path",
@@ -141864,6 +141978,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Alabang-Pasay_Rotonda_via_FTI",
                 "route": "Alabang-Pasay_Rotonda_via_FTI",
                 "category": "Shaw to Taft",
                 "type": "exact_route_path",
@@ -142758,6 +142873,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_Shaw_Central-Pateros_T279",
                 "route": "EDSA_Shaw_Central-Pateros_T279",
                 "category": "Shaw to Pasig",
                 "type": "exact_route_path",
@@ -143647,6 +143763,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Bicutan-Pasay_Rotonda_via_East_Service_Road",
                 "route": "Bicutan-Pasay_Rotonda_via_East_Service_Road",
                 "category": "Shaw to PITX",
                 "type": "exact_route_path",
@@ -144687,6 +144804,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Divisoria_via_L_Guinto_T3123",
                 "route": "Baclaran-Divisoria_via_L_Guinto_T3123",
                 "category": "PITX to Shaw",
                 "type": "exact_route_path",
@@ -147057,6 +147175,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Tandang_Sora-EDSA_North_Ave_via_Mindanao_Ave_T130",
                 "route": "Tandang_Sora-EDSA_North_Ave_via_Mindanao_Ave_T130",
                 "category": "SM Novaliches to SM North",
                 "type": "exact_route_path",
@@ -147767,6 +147886,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "QMC-Cubao_via_Ybardolaza_T245",
                 "route": "QMC-Cubao_via_Ybardolaza_T245",
                 "category": "SM North to Pasig",
                 "type": "exact_route_path",
@@ -149038,6 +149158,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Aurora_Lauan-QMC_T251",
                 "route": "Aurora_Lauan-QMC_T251",
                 "category": "Pasig to SM North",
                 "type": "exact_route_path",
@@ -149969,6 +150090,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Quezon_City_Hall-EDSA_North_Ave_T138",
                 "route": "Quezon_City_Hall-EDSA_North_Ave_T138",
                 "category": "Pasig to SM North",
                 "type": "exact_route_path",
@@ -150727,6 +150849,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Novaliches-Rizal_Ave_via_A_Bonifacio_T109",
                 "route": "Novaliches-Rizal_Ave_via_A_Bonifacio_T109",
                 "category": "SM Novaliches to Taft",
                 "type": "exact_route_path",
@@ -153581,6 +153704,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Novaliches-Rizal_Ave_via_Banal_T175",
                 "route": "Novaliches-Rizal_Ave_via_Banal_T175",
                 "category": "SM Novaliches to Taft",
                 "type": "exact_route_path",
@@ -156278,6 +156402,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Baclaran_via_L_Guinto_&_Quiapo_T3139",
                 "route": "Blumentritt-Baclaran_via_L_Guinto_&_Quiapo_T3139",
                 "category": "SM Novaliches to Taft",
                 "type": "exact_route_path",
@@ -158314,6 +158439,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasay_Rotonda-Blumentritt_via_L_Guinto_&_Quiapo_T3121",
                 "route": "Pasay_Rotonda-Blumentritt_via_L_Guinto_&_Quiapo_T3121",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -160431,6 +160557,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Blumentritt_via_MOA_Taft_Quiapo_T3188",
                 "route": "Baclaran-Blumentritt_via_MOA_Taft_Quiapo_T3188",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -162507,6 +162634,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Blumentritt_via_L_Guinto_&_Quiapo_T3139",
                 "route": "Baclaran-Blumentritt_via_L_Guinto_&_Quiapo_T3139",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -164587,6 +164715,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-PUC_via_Baesa_T3177",
                 "route": "Blumentritt-PUC_via_Baesa_T3177",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -165551,6 +165680,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Balintawak-Novaliches_via_Quirino_Highway_T165",
                 "route": "Balintawak-Novaliches_via_Quirino_Highway_T165",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -167248,6 +167378,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Rizal_Ave-Novaliches_via_A_Bonifacio_T109",
                 "route": "Rizal_Ave-Novaliches_via_A_Bonifacio_T109",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -169606,6 +169737,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Rizal_Ave-Novaliches_via_Banal_T175",
                 "route": "Rizal_Ave-Novaliches_via_Banal_T175",
                 "category": "Taft to SM Novaliches",
                 "type": "exact_route_path",
@@ -172392,6 +172524,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Pasay_Rotonda_via_L_Guinto_&_Quiapo_T3121",
                 "route": "Blumentritt-Pasay_Rotonda_via_L_Guinto_&_Quiapo_T3121",
                 "category": "SM Novaliches to Pasig",
                 "type": "exact_route_path",
@@ -172953,6 +173086,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cubao-Rosario_Pasig_via_Sta_Lucia_Pasig_T272",
                 "route": "Cubao-Rosario_Pasig_via_Sta_Lucia_Pasig_T272",
                 "category": "SM Novaliches to Pasig",
                 "type": "exact_route_path",
@@ -174254,6 +174388,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "EDSA_North_Ave-Tandang_Sora_via_Mindanao_Ave_T130",
                 "route": "EDSA_North_Ave-Tandang_Sora_via_Mindanao_Ave_T130",
                 "category": "Pasig to SM Novaliches",
                 "type": "exact_route_path",
@@ -175016,6 +175151,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig-Quiapo",
                 "route": "Pasig-Quiapo",
                 "category": "Pasig to SM Novaliches",
                 "type": "exact_route_path",
@@ -178878,6 +179014,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Rosario_Pasig-Cubao_via_Santolan_T273",
                 "route": "Rosario_Pasig-Cubao_via_Santolan_T273",
                 "category": "Pasig to SM Novaliches",
                 "type": "exact_route_path",
@@ -180193,6 +180330,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Balintawak-Marcos_Ave_Tandang_Sora_T131",
                 "route": "Balintawak-Marcos_Ave_Tandang_Sora_T131",
                 "category": "Pasig to SM Novaliches",
                 "type": "exact_route_path",
@@ -182256,6 +182394,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Baclaran_via_Mabini_&_Quiapo_T379",
                 "route": "Blumentritt-Baclaran_via_Mabini_&_Quiapo_T379",
                 "category": "SM Novaliches to PITX",
                 "type": "exact_route_path",
@@ -185288,6 +185427,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Retiro-Libertad_via_Mabini_&_Sta_Cruz_T373",
                 "route": "Retiro-Libertad_via_Mabini_&_Sta_Cruz_T373",
                 "category": "SM Novaliches to PITX",
                 "type": "exact_route_path",
@@ -186562,6 +186702,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Blumentritt-Baclaran_via_MOA_Taft_Quiapo_T3188",
                 "route": "Blumentritt-Baclaran_via_MOA_Taft_Quiapo_T3188",
                 "category": "SM Novaliches to PITX",
                 "type": "exact_route_path",
@@ -190059,6 +190200,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Blumentritt_via_Mabini_&_Quiapo_T379",
                 "route": "Baclaran-Blumentritt_via_Mabini_&_Quiapo_T379",
                 "category": "PITX to SM Novaliches",
                 "type": "exact_route_path",
@@ -193149,6 +193291,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Novaliches-Rizal_Ave_via_A_Bonifacio_T109",
                 "route": "Novaliches-Rizal_Ave_via_A_Bonifacio_T109",
                 "category": "PITX to SM Novaliches",
                 "type": "exact_route_path",
@@ -195507,6 +195650,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Blumentritt_via_MOA_Taft_Quiapo_T3188",
                 "route": "Baclaran-Blumentritt_via_MOA_Taft_Quiapo_T3188",
                 "category": "PITX to SM Novaliches",
                 "type": "exact_route_path",
@@ -198622,6 +198766,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Dapitan_via_Mabini_T3125",
                 "route": "Baclaran-Dapitan_via_Mabini_T3125",
                 "category": "PITX to SM Novaliches",
                 "type": "exact_route_path",
@@ -199848,6 +199993,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Libertad-Retiro_via_Mabini_&_Sta_Cruz_T373",
                 "route": "Libertad-Retiro_via_Mabini_&_Sta_Cruz_T373",
                 "category": "PITX to SM Novaliches",
                 "type": "exact_route_path",
@@ -201323,6 +201469,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Ayala-Pateros_T213",
                 "route": "Ayala-Pateros_T213",
                 "category": "Taft to Pasig",
                 "type": "exact_route_path",
@@ -202293,6 +202440,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Bagumbayan-Pasig_T288",
                 "route": "Bagumbayan-Pasig_T288",
                 "category": "Taft to Pasig",
                 "type": "exact_route_path",
@@ -202968,6 +203116,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Dapitan_via_L_Guinto_T3124",
                 "route": "Baclaran-Dapitan_via_L_Guinto_T3124",
                 "category": "Taft to Pasig",
                 "type": "exact_route_path",
@@ -204374,6 +204523,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Quiapo-Pasig",
                 "route": "Quiapo-Pasig",
                 "category": "Taft to Pasig",
                 "type": "exact_route_path",
@@ -207938,6 +208088,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pateros-Market_Market_T225",
                 "route": "Pateros-Market_Market_T225",
                 "category": "Pasig to Taft",
                 "type": "exact_route_path",
@@ -208645,6 +208796,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Divisoria-Baclaran_via_L_Guinto_T3123",
                 "route": "Divisoria-Baclaran_via_L_Guinto_T3123",
                 "category": "Taft to PITX",
                 "type": "exact_route_path",
@@ -209858,6 +210010,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Libertad-SM_MOA_via_LRT_MRT_Station_T3134",
                 "route": "Libertad-SM_MOA_via_LRT_MRT_Station_T3134",
                 "category": "Taft to PITX",
                 "type": "exact_route_path",
@@ -211111,6 +211264,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "SM_MOA-Libertad_via_LRT_MRT_Station_T3134",
                 "route": "SM_MOA-Libertad_via_LRT_MRT_Station_T3134",
                 "category": "PITX to Taft",
                 "type": "exact_route_path",
@@ -212069,6 +212223,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Baclaran-Dapitan_via_Quiapo_T3173",
                 "route": "Baclaran-Dapitan_via_Quiapo_T3173",
                 "category": "PITX to Taft",
                 "type": "exact_route_path",
@@ -213023,6 +213178,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pasig-Bagumbayan_T288",
                 "route": "Pasig-Bagumbayan_T288",
                 "category": "Pasig to PITX",
                 "type": "exact_route_path",
@@ -213839,6 +213995,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Guadalupe_ABC-Taguig_via_Tipas_T216",
                 "route": "Guadalupe_ABC-Taguig_via_Tipas_T216",
                 "category": "Pasig to PITX",
                 "type": "exact_route_path",
@@ -215080,6 +215237,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Pateros-Ayala_T213",
                 "route": "Pateros-Ayala_T213",
                 "category": "Pasig to PITX",
                 "type": "exact_route_path",
@@ -216042,6 +216200,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Cartimar-Guadalupe_via_Buendia_T3136",
                 "route": "Cartimar-Guadalupe_via_Buendia_T3136",
                 "category": "Pasig to PITX",
                 "type": "exact_route_path",
@@ -217326,6 +217485,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Taguig_TP-Pasig_TP_via_Pateros_T263",
                 "route": "Taguig_TP-Pasig_TP_via_Pateros_T263",
                 "category": "PITX to Pasig",
                 "type": "exact_route_path",
@@ -217936,6 +218096,7 @@
         {
             "type": "Feature",
             "properties": {
+                "name": "Guadalupe-Cartimar_via_Buendia_T3136",
                 "route": "Guadalupe-Cartimar_via_Buendia_T3136",
                 "category": "PITX to Pasig",
                 "type": "exact_route_path",

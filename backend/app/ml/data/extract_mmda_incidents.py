@@ -18,7 +18,6 @@ OUT = Path(__file__).with_name("mmda_flood_incidents.json")
 _ROW = re.compile(
     r"(?P<body>.+?)\s+(?P<lat>14\.\d{3,})\s+(?P<lng>1[21][01]\.\d{3,})\s*\.?\s*$"
 )
-_DEPTH = re.compile(r"\b(\d{1,2})\s*(?:\"|inch|in\b)?", re.IGNORECASE)
 
 
 def parse_pdf(path: str) -> list[dict]:

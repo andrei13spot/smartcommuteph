@@ -43,14 +43,21 @@ node was reached by, search state is `(node, arriving_mode)`.
 
 ## Profiles
 
-| Profile | Dominant criterion | Weight | Theme |
-|---|---|---|---|
-| Uncrowded  | Ridership `T` | 0.55 | blue |
-| Cheapest   | Fare `F`      | 0.55 | yellow |
-| Safest     | Flood risk `R`| 0.55 | red |
-| Convenient | Transfer `P`  | 0.55 | green |
+| Profile | Dominant criterion | Theme |
+|---|---|---|
+| Uncrowded  | Ridership `T` | blue |
+| Cheapest   | Fare `F`      | yellow |
+| Safest     | Flood risk `R`| red |
+| Convenient | Transfer `P`  | green |
 
-Non-dominant criteria get 0.15 each.
+Weights are loaded at startup from `ml/models/ahp_weights.json`, produced by
+`ml/derive_ahp_weights.py` (Saaty 1-9 pairwise survey, normalized column
+average, respondents with CR >= 0.10 rejected) and renormalized to sum to 1.
+The current file is built from SIMULATED respondents (see its `source` field);
+the dominant criterion lands around 0.56-0.58 and the other three around
+0.13-0.16. If the file is missing or malformed the engine falls back to the
+pinned 0.55 / 0.15 split. `GET /api/profiles` reports the live weights and
+`weights_source`.
 
 ## Endpoints
 
@@ -76,7 +83,8 @@ Non-dominant criteria get 0.15 each.
 ```
 
 `hour` (ridership context) and `rainfall_mm` (flood context) are optional; they
-default to the server clock and the live PAGASA value. Anchor ids match the
+default to the server clock and the live rainfall feed (see ML components
+below). Anchor ids match the
 `<select>` values in the frontend `location.html`.
 
 ## Layout
@@ -86,24 +94,47 @@ app/
   main.py              FastAPI app + CORS + lifespan
   config.py            settings (CORS origins, metadata)
   schemas.py           Pydantic request/response models
-  profiles.py          AHP profiles + weight vectors
+  profiles.py          AHP profiles, weights loaded from ml/models/ahp_weights.json
   data/
     anchors.json       10 transit anchor points
     graph.json         seed transit edges (Cubao quadrant)
+    anchors_discretized.json, graph_discretized.json
+                       300 m discretized corridors (SCPH_GEOJSON=0 tier)
+    virtual_stops.geojson
+                       LTFRB jeepney routes (Princess), default jeepney layer
+    jeepney_stops_no_300m.geojson, split_jeepneys.py
+                       discretization source + script (Princess)
+    fares.json, fare_matrices.json, stations.json, service_calibration.json,
+    line_shapes.json, carousel_distances.json
   routing/
-    graph.py           graph model + haversine + loader
+    graph.py           graph model + haversine + loader (tier selection)
     cost.py            5×5 friction matrix, Min-Max norm, edge cost
     heuristic.py       admissible time heuristic
     astar.py           constraint-aware multi-criteria A*
+    fares.py           boarding-based fare lookup
+    rail_stations.py   rail station model
+    geojson_network.py jeepney layer built from virtual_stops.geojson
   ml/
-    ridership.py       LSTM placeholder (time-of-day demand curve)
-    flood.py           RFR placeholder + PAGASA rainfall hook
+    ridership.py       trained Keras LSTM, data-curve fallback
+    flood.py           trained RFR + rainfall provider chain
+                       (PAGASA dormant -> MET Norway -> 8 mm default)
+    train_ridership.py, train_flood.py, derive_ahp_weights.py
+    data/              MMDA incidents, MRT-3 hourly CSVs, extraction scripts
+    models/            trained artefacts + ahp_weights.json
+  research/
+    benchmark.py       SOP1-SOP3 statistics
+    inspector.py       per-edge cost decomposition
+    ml_metrics.py      RMSE/MAE
   services/
     router_service.py  orchestration + result aggregation
   api/
     routes.py          endpoint handlers
 tests/
+  conftest.py          sets SCPH_RAINFALL_PROVIDER=off (suite stays offline)
   test_routing.py      engine + API tests
+  test_model_effects.py
+  test_rainfall_provider.py
+  fixtures/            recorded MET Norway response
 ```
 
 ## ML components — current status
@@ -120,13 +151,18 @@ Both models are **trained** on real data:
   real MMDA flood incidents** (`ml/data/mmda_flood_incidents.json`). The
   `.joblib` is gitignored: regenerate once with `python -m app.ml.train_flood`.
 
-Rainfall comes from the **PAGASA TenDay Forecast API** when `SCPH_PAGASA_TOKEN`
-is set (see `docs/pagasa-api-request.md`); otherwise an offline 8 mm default is
-used and `/api/status` reports the source.
+Rainfall is fetched through a provider chain: the PAGASA TenDay API when
+`SCPH_PAGASA_TOKEN` is set (dormant; the token request was declined, see
+`../docs/pagasa-api-request.md`), otherwise MET Norway Locationforecast 2.0
+(public, no key), otherwise an offline 8 mm default. A successful fetch is cached for an
+hour (the offline default is retried after about two minutes) and `/api/status`
+reports `rainfall_source`.
 
-Env vars: `SCPH_DENSE_GRAPH=0` forces the coarse 10-node graph (default is the
-264-node discretized graph when its files exist); `SCPH_PAGASA_TOKEN` enables
-the live rainfall feed; `SCPH_CORS_ORIGINS` overrides allowed origins.
+Env vars: `SCPH_GEOJSON=0` skips the jeepney geojson layer and uses the
+discretized corridors; `SCPH_GEOJSON=0` together with `SCPH_DENSE_GRAPH=0`
+forces the coarse 10-node graph (default is the densest graph whose files exist); `SCPH_RAINFALL_PROVIDER=off`
+disables all network rainfall fetches (tests set this); `SCPH_PAGASA_TOKEN`
+enables the PAGASA path; `SCPH_CORS_ORIGINS` overrides allowed origins.
 
 > Research prototype — not a deployed transit application.
 > Group 11 · BSCS · CCIS · Polytechnic University of the Philippines · 2026

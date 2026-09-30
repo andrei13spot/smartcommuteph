@@ -12,7 +12,6 @@ from app.routing.cost import CostContext, transfer_friction
 from app.routing.graph import (
     _FLOOD_BASELINE,
     _point_to_segment_km,
-    haversine_km,
     load_graph,
 )
 from app.routing.heuristic import distance_heuristic
@@ -81,15 +80,6 @@ def test_edges_far_from_incidents_stay_baseline():
     assert max(vals) <= 1.0
 
 
-def test_pagasa_fallback_is_offline_default():
-    import os
-    from app.ml import flood
-    os.environ.pop("SCPH_PAGASA_TOKEN", None)
-    flood._rain_cache.update(value=None, at=0.0)
-    assert flood.fetch_pagasa_rainfall_mm() == flood.DEFAULT_RAINFALL_MM
-    assert "default" in flood.rainfall_source()
-
-
 def test_distance_heuristic_is_admissible():
     # straight line can never exceed the real path length
     g = load_graph()
@@ -121,7 +111,6 @@ def test_api_network_closure():
 def test_fare_model_matches_published_matrices():
     # boarding-based fares: one ticket per leg, not one per edge. the old
     # per-edge sums charged 53 php for the full mrt-3 line vs the published ~28
-    from app.profiles import resolve_profile
     from app.routing.fares import path_fare
 
     g = load_graph()
@@ -146,3 +135,28 @@ def test_hour_and_line_change_crowding():
     # and lines differ from each other at the same hour (supply differs)
     from app.ml.ridership import predictor
     assert predictor.line_factor("LRT-2", 8) != predictor.line_factor("MRT-3", 8)
+
+
+def test_rail_legs_priced_by_official_matrix():
+    # the dotr-mrt3 fare matrix prices rail legs by board/alight station
+    from app.routing.fares import path_fare
+
+    g = load_graph()
+    ctx = CostContext(g, hour=8, rainfall_mm=30.0)
+    full = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
+    assert all(e.mode == "MRT-3" for e in full.edges)
+    assert path_fare(g, full.edges) == 28.0  # official north ave -> taft
+    short = shortest_route(g, "cubao", "shaw", resolve_profile("convenient"), ctx)
+    assert path_fare(g, short.edges) == 16.0  # official cubao -> shaw
+
+
+def test_rail_corridors_run_through_real_stations():
+    # corridors are threaded through stations.json: sm_north -> pasay must pass
+    # the actual mrt stations, with pass-through nodes hidden from the anchors
+    g = load_graph()
+    ctx = CostContext(g, hour=8, rainfall_mm=30.0)
+    r = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
+    names = {g.nodes[e.dst].name for e in r.edges}
+    for must in ("Quezon MRT", "Kamuning MRT", "Ortigas MRT", "Guadalupe MRT"):
+        assert must in names, f"missing station {must}"
+    assert len(g.real_nodes) == 10  # stations never leak into the od anchors

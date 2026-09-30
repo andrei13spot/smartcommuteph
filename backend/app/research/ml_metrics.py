@@ -13,20 +13,14 @@ _LSTM_METRICS = Path(__file__).parents[1] / "ml" / "models" / "ridership_metrics
 def ml_metrics() -> dict:
     fp, rp = flood.predictor, ridership.predictor
 
+    rfr = {"key": "rfr", "name": "RFR · Flood Risk", "criterion": "R - flood"}
     if fp.metrics:
-        rfr = {
-            "key": "rfr", "name": "RFR · Flood Risk", "criterion": "R - flood",
-            "rmse": fp.metrics.get("rmse"), "r2": fp.metrics["r2"], "mae": fp.metrics["mae"],
-            "detail": f"{fp.metrics['n_train']} train / {fp.metrics['n_test']} test, "
-                      "features: rainfall, mode sensitivity, base exposure",
-            "status": "trained",
-        }
+        rfr.update(rmse=fp.metrics.get("rmse"), r2=fp.metrics["r2"], mae=fp.metrics["mae"],
+                   detail=f"{fp.metrics['n_train']} train / {fp.metrics['n_test']} test, "
+                          "features: rainfall, mode sensitivity, base exposure",
+                   status="trained")
     else:
-        rfr = {
-            "key": "rfr", "name": "RFR · Flood Risk", "criterion": "R - flood",
-            "rmse": None, "mae": None, "detail": "model file missing, heuristic fallback",
-            "status": "fallback",
-        }
+        rfr.update(rmse=None, mae=None, detail="model file missing, heuristic fallback", status="fallback")
 
     lstm = {
         "key": "lstm", "name": "LSTM · Ridership", "criterion": "T - ridership",

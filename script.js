@@ -229,6 +229,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Student Mode Toggle Logic
+    const studentModeToggle = document.getElementById('studentModeToggle');
+    if (studentModeToggle) {
+        // Load initial state
+        const isStudent = localStorage.getItem('smartCommute_studentMode') === 'true';
+        studentModeToggle.checked = isStudent;
+
+        // Save state on change
+        studentModeToggle.addEventListener('change', (e) => {
+            localStorage.setItem('smartCommute_studentMode', e.target.checked);
+        });
+    }
+
     // ---------------------------------------------------------------------
     // 4. STEP 2 → STEP 3: CAPTURE CORRIDOR DATA (location.html → result.html)
     // ---------------------------------------------------------------------
@@ -363,25 +376,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (summaryElem && summarySubElem && detail1Label && detail1Value && detail2Label && detail2Value && detail3Label && detail3Value && detail4Label && detail4Value) {
             let details = {
-                title: 'Optimized',
-                subtitle: 'Balanced route',
+                title: '-',
+                subtitle: '-',
                 blocks: [
-                    { label: 'Time', value: '45 min' },
-                    { label: 'Fare', value: '₱40' },
-                    { label: 'Crowd', value: 'Moderate' },
-                    { label: 'Transfers', value: '1' }
+                    { label: 'Time', value: '-' },
+                    { label: 'Fare', value: '-' },
+                    { label: 'Crowd', value: '-' },
+                    { label: 'Transfers', value: '-' }
                 ]
             };
 
             if (lowerProfile.includes('uncrowded')) {
                 details = {
-                    title: 'Light',
-                    subtitle: 'Crowd level',
+                    title: '-',
+                    subtitle: '-',
                     blocks: [
-                        { label: 'Time', value: '52m' },
-                        { label: 'Fare', value: '₱38' },
-                        { label: 'Transfers', value: '2' },
-                        { label: 'Flood', value: 'Low' }
+                        { label: 'Time', value: '-' },
+                        { label: 'Fare', value: '-' },
+                        { label: 'Transfers', value: '-' },
+                        { label: 'Flood', value: '-' }
                     ],
                     why: {
                         label: 'Why this route',
@@ -389,17 +402,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         description: 'This route steers you through less busy options during peak travel hours, keeping your journey comfortable and clear of heavy transit crowds.',
                         color: '#3b82f6'
                     },
-                    route: 'Cubao → LRT-2 → Recto → LRT-1 → EDSA → Pasay'
+                    route: ''
                 };
             } else if (lowerProfile.includes('cheap')) {
                 details = {
-                    title: '₱28',
-                    subtitle: 'Lowest Total Fare',
+                    title: '-',
+                    subtitle: '-',
                     blocks: [
-                        { label: 'Time', value: '61m' },
-                        { label: 'Crowd', value: 'Moderate' },
-                        { label: 'Transfers', value: '2' },
-                        { label: 'Flood', value: 'Medium' }
+                        { label: 'Time', value: '-' },
+                        { label: 'Crowd', value: '-' },
+                        { label: 'Transfers', value: '-' },
+                        { label: 'Flood', value: '-' }
                     ],
                     why: {
                         label: 'Why this route',
@@ -407,17 +420,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         description: 'This path uses affordable local transit options to help you save more on your daily journey compared to direct train alternatives.',
                         color: '#f59e0b'
                     },
-                    route: 'Cubao → Jeepney → MRT-3 → Pasay'
+                    route: ''
                 };
             } else if (lowerProfile.includes('safe')) {
                 details = {
-                    title: 'Low',
-                    subtitle: 'Flood risk', // Changed from 'Flood exposure'
+                    title: '-',
+                    subtitle: '-',
                     blocks: [
-                        { label: 'Time', value: '47m' },
-                        { label: 'Fare', value: '₱38' },
-                        { label: 'Crowd', value: 'Moderate' },
-                        { label: 'Transfers', value: '1' }
+                        { label: 'Time', value: '-' },
+                        { label: 'Fare', value: '-' },
+                        { label: 'Transfers', value: '-' },
+                        { label: 'Crowd', value: '-' }
                     ],
                     why: {
                         label: 'Why this route',
@@ -425,17 +438,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         description: 'This path keeps your trip completely safe and dry by steering clear of roads that fill with water during heavy rain downpours.', // Rephrased from thresholds/decimals and removed em dash
                         color: '#dc2626'
                     },
-                    route: 'Cubao → LRT-2 → MRT-3 → Pasay'
+                    route: ''
                 };
             } else if (lowerProfile.includes('convenient') || lowerProfile.includes('fewer')) {
                 details = {
-                    title: '0',
-                    subtitle: 'Vehicle changes', // Changed from 'Number of transfers'
+                    title: '-',
+                    subtitle: '-',
                     blocks: [
-                        { label: 'Time', value: '44m' },
-                        { label: 'Fare', value: '₱42' },
-                        { label: 'Crowd', value: 'Moderate' },
-                        { label: 'Flood', value: 'High' }
+                        { label: 'Time', value: '-' },
+                        { label: 'Fare', value: '-' },
+                        { label: 'Crowd', value: '-' },
+                        { label: 'Flood Risk', value: '-' }
                     ],
                     why: {
                         label: 'Why this route',
@@ -443,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         description: 'This is a single continuous ride from start to finish. You do not need to switch vehicles, saving you up to 12 minutes of waiting in line.', // Removed em dash and 'friction' talk
                         color: '#10b981'
                     },
-                    route: 'Cubao → MRT-3 (direct) → Pasay'
+                    route: ''
                 };
             }
 
@@ -526,9 +539,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // 3. Render Station Corridor Subtitle
-        const origin = localStorage.getItem('smartCommute_routeOrigin') || "Cubao Gateway";
-        const dest = localStorage.getItem('smartCommute_routeDest') || "Pasay EDSA-Taft";
+        const origin = localStorage.getItem('smartCommute_routeOrigin') || "Origin";
+        const dest = localStorage.getItem('smartCommute_routeDest') || "Destination";
         resultRouteElem.innerHTML = `${origin} &rarr; ${dest}`;
+    }
+    
+    // Check if on compare.html and populate the title
+    const compareRouteElem = document.getElementById('dynamic-compare-route');
+    if (compareRouteElem) {
+        const origin = localStorage.getItem('smartCommute_routeOrigin') || "Origin";
+        const dest = localStorage.getItem('smartCommute_routeDest') || "Destination";
+        compareRouteElem.innerHTML = `${origin} &rarr; ${dest}`;
     }
     
     // ---------------------------------------------------------------------
@@ -832,6 +853,32 @@ function openRouteModal(routeText, profileName, routeData = null) {
         window.renderModalMap(profileName);
     }
     
+    // Populate "Why this route"
+    const whyContainer = document.getElementById('modal-why-this-route');
+    const whyHeading = document.getElementById('modal-why-heading');
+    const whyDescription = document.getElementById('modal-why-description');
+    const whyLabel = document.getElementById('modal-why-label');
+    
+    if (whyContainer && whyHeading && whyDescription) {
+        if (routeData && routeData.why) {
+            whyHeading.textContent = routeData.why.heading || routeData.why.title || '';
+            whyDescription.textContent = routeData.why.description || routeData.why.text || '';
+            
+            // Try to match the profile color
+            let labelColor = '#94a3b8';
+            if (profileName === 'uncrowded') labelColor = '#3b82f6';
+            else if (profileName === 'cheapest') labelColor = '#f59e0b';
+            else if (profileName === 'safest') labelColor = '#dc2626';
+            else if (profileName === 'convenient') labelColor = '#10b981';
+            
+            if (whyLabel) whyLabel.style.color = labelColor;
+            
+            whyContainer.style.display = 'block';
+        } else {
+            whyContainer.style.display = 'none';
+        }
+    }
+    
     // Reset scroll position to top
     const scrollContainer = breakdownContainer.closest('.custom-scrollbar') || breakdownContainer;
     if (scrollContainer) {
@@ -886,3 +933,61 @@ if (document.body.classList.contains('page-compare') || window.location.pathname
         if (e.key === 'Escape') closeRouteModal();
     });
 }
+
+window.zoomToNodeMap = function(nodeName, map, geojson) {
+    if (!map || !geojson || !geojson.features) return;
+    
+    // Clean up nodeName for searching
+    const searchName = (nodeName || '').toLowerCase().trim();
+    
+    // Find the feature by name
+    const feature = geojson.features.find(f => {
+        if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {
+            const fName = f.properties.name.toLowerCase().trim();
+            // Match the node name, considering some variations like "LRT1 Doroteo Jose" vs "Doroteo Jose"
+            return fName.includes(searchName) || searchName.includes(fName);
+        }
+        return false;
+    });
+    
+    if (feature) {
+        const coords = feature.geometry.coordinates; // [lng, lat]
+        map.flyTo([coords[1], coords[0]], 16, { duration: 1.5 });
+    } else {
+        console.warn('Node not found on map:', nodeName);
+    }
+};
+
+// Listen for clicks on route segments globally
+document.addEventListener('click', (e) => {
+    const segmentEl = e.target.closest('.route-segment');
+    if (!segmentEl) return;
+    
+    // Get the place name to search for (try details first, then main name)
+    const nameEl = segmentEl.querySelector('.route-segment-name');
+    const detailsEl = segmentEl.querySelector('.route-segment-details');
+    
+    let searchName = '';
+    if (detailsEl && detailsEl.textContent.trim()) {
+        searchName = detailsEl.textContent;
+    } else if (nameEl && nameEl.textContent.trim()) {
+        searchName = nameEl.textContent;
+    }
+    
+    // Determine which map is active based on modal visibility or page
+    let activeMap = null;
+    let activeGeoJSON = null;
+    
+    const modal = document.getElementById('route-details-modal');
+    if (modal && modal.classList.contains('open')) {
+        activeMap = window.currentModalMap;
+        activeGeoJSON = window.currentModalGeoJSON;
+    } else if (document.getElementById('result-map')) {
+        activeMap = window.currentResultMap;
+        activeGeoJSON = window.currentRouteGeoJSON;
+    }
+    
+    if (activeMap && activeGeoJSON && searchName) {
+        window.zoomToNodeMap(searchName, activeMap, activeGeoJSON);
+    }
+});

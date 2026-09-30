@@ -1,5 +1,5 @@
 {
-  "description": "ahp profile weight vectors via normalized column average, cr >= 0.10 rejected (saaty n=4, ri 0.90).",
+  "description": "ahp profile weight vectors via normalized column average, cr >= 0.10 rejected (saaty n=4, ri 0.89).",
   "source": "SIMULATED respondents (mock) - NOT the real survey. replace simulate_respondents with the real 150-respondent export and rerun derive_ahp_weights.py before the defense claims survey data.",
   "profiles": {
     "uncrowded": {

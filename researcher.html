@@ -74,7 +74,37 @@
                 </div>
                 <div class="dl-section query-log-shell">
                     <div class="dl-l">Query log <span class="dl-count">180</span></div>
-                    <div class="query-filter"><input id="query-filter" type="text" placeholder="Filter OD or profile"></div>
+                    <div class="query-filter" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+                        <select id="query-filter-origin" class="form-select custom-select" style="font-size: 0.85rem; padding: 4px 8px; background-color: var(--bg-soft); color: var(--ink); border-color: var(--rule);">
+                            <option value="">Any Starting Point</option>
+                            <option value="monumento">Monumento Circle</option>
+                            <option value="sm_novaliches">SM City Novaliches</option>
+                            <option value="sm_north">SM North EDSA</option>
+                            <option value="cubao">Cubao Gateway</option>
+                            <option value="doroteo_jose">Doroteo Jose</option>
+                            <option value="shaw">Shaw Boulevard</option>
+                            <option value="antipolo">Antipolo LRT-2</option>
+                            <option value="pasig">Pasig Mega Market</option>
+                            <option value="pasay">Pasay EDSA-Taft</option>
+                            <option value="pitx">PITX</option>
+                        </select>
+                        <select id="query-filter-dest" class="form-select custom-select" style="font-size: 0.85rem; padding: 4px 8px; background-color: var(--bg-soft); color: var(--ink); border-color: var(--rule);">
+                            <option value="">Any Destination</option>
+                            <option value="monumento">Monumento Circle</option>
+                            <option value="sm_novaliches">SM City Novaliches</option>
+                            <option value="sm_north">SM North EDSA</option>
+                            <option value="cubao">Cubao Gateway</option>
+                            <option value="doroteo_jose">Doroteo Jose</option>
+                            <option value="shaw">Shaw Boulevard</option>
+                            <option value="antipolo">Antipolo LRT-2</option>
+                            <option value="pasig">Pasig Mega Market</option>
+                            <option value="pasay">Pasay EDSA-Taft</option>
+                            <option value="pitx">PITX</option>
+                        </select>
+                        <div style="text-align: right; margin-top: -2px;">
+                            <a href="#" id="query-filter-clear" style="font-size: 0.75rem; font-weight: 600; color: var(--link); text-decoration: none;">Clear filter</a>
+                        </div>
+                    </div>
                     <div id="query-list" class="query-log"></div>
                 </div>
             </aside>

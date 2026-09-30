@@ -63,8 +63,8 @@ def status() -> dict:
                 "status": "trained" if flood.predictor.trained else "heuristic fallback",
                 "framework": "scikit-learn",
                 "predictor": flood.predictor.name,
-                "note": "rfr calibrated to the mmda incident exposure rule (101 points); "
-                        "its r2 is calibration fit, not field predictive accuracy",
+                "note": "rfr calibrated to the mmda incident exposure rule; live rainfall "
+                        "from met norway locationforecast (pagasa api was declined)",
             },
         ],
         "endpoints": [
@@ -82,6 +82,7 @@ def list_profiles() -> list[ProfileOut]:
             id=p.id, name=p.name, theme=p.theme, priority=p.priority,
             tagline=p.tagline, weights=p.weights,
             cr=p.cr, weights_source=p.weights_source,
+            n_respondents=p.n_respondents, n_accepted=p.n_accepted,
         )
         for p in PROFILES.values()
     ]
@@ -91,20 +92,14 @@ def list_profiles() -> list[ProfileOut]:
 def list_anchors() -> list[AnchorOut]:
     # only the 10 real od anchors, the dropdowns must not list virtual stops
     graph = load_graph()
-    return [
-        AnchorOut(id=n.id, name=n.name, area=n.area, lat=n.lat, lng=n.lng, lines=list(n.lines))
-        for n in graph.real_nodes.values()
-    ]
+    return [AnchorOut.from_node(n) for n in graph.real_nodes.values()]
 
 
 @router.get("/network", response_model=NetworkResponse)
 def network() -> NetworkResponse:
     # nodes + undirected edges for the overview map
     graph = load_graph()
-    nodes = [
-        AnchorOut(id=n.id, name=n.name, area=n.area, lat=n.lat, lng=n.lng, lines=list(n.lines))
-        for n in graph.nodes.values()
-    ]
+    nodes = [AnchorOut.from_node(n) for n in graph.nodes.values()]
     seen: set[tuple[str, str, str]] = set()
     edges: list[NetworkEdgeOut] = []
     for e in graph.edges.values():

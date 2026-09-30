@@ -46,11 +46,17 @@ def parse_mrt3_sheet(path: Path) -> list[tuple[str, int, float]]:
     return rows
 
 
-def build_series() -> np.ndarray:
-    # stitch every sheet into one hourly series (chronological within each file)
+def _all_rows() -> list[tuple[str, int, float]]:
+    # every sheet's rows in file order (chronological within each file)
     rows: list[tuple[str, int, float]] = []
     for path in sorted(DATA_DIR.glob("mrt3_hourly_*.csv")):
         rows += parse_mrt3_sheet(path)
+    return rows
+
+
+def build_series() -> np.ndarray:
+    # stitch every sheet into one hourly series
+    rows = _all_rows()
     if not rows:
         raise SystemExit(f"no mrt3_hourly_*.csv sheets found in {DATA_DIR}")
     return np.array([r[2] for r in rows], dtype=float)
@@ -61,9 +67,8 @@ def hourly_mean_curve() -> dict[int, float]:
     # (same scale the old hand-made curve used). this is the no-tensorflow
     # fallback and it is derived from the real data, not guessed.
     by_hour: dict[int, list[float]] = {}
-    for path in sorted(DATA_DIR.glob("mrt3_hourly_*.csv")):
-        for _, hour, total in parse_mrt3_sheet(path):
-            by_hour.setdefault(hour, []).append(total)
+    for _, hour, total in _all_rows():
+        by_hour.setdefault(hour, []).append(total)
     means = {h: float(np.mean(v)) for h, v in by_hour.items()}
     peak = max(means.values())
     return {h: round(1.5 * m / peak, 3) for h, m in sorted(means.items())}

@@ -16,6 +16,14 @@ from pathlib import Path
 from .graph import Edge, Graph
 
 _FARES_PATH = Path(__file__).resolve().parent.parent / "data" / "fares.json"
+_MATRICES_PATH = Path(__file__).resolve().parent.parent / "data" / "fare_matrices.json"
+
+# anchors sit at stations under different display names; map them onto the
+# official matrix station names per line
+_ANCHOR_STATION = {
+    "MRT-3": {"SM City North EDSA": "North Avenue MRT", "Cubao Gateway": "Cubao MRT",
+              "Shaw Boulevard": "Shaw MRT", "Pasay EDSA-Taft": "Taft Ave MRT"},
+}
 
 # safe defaults if the fares file is missing: flat legacy-ish pricing
 _FALLBACK = {"base_php": 13.0, "included_km": 4.0, "rate_php_per_km": 1.8}
@@ -30,6 +38,28 @@ def _load_params() -> dict:
 
 
 _PARAMS = _load_params()
+
+
+def _load_matrices() -> dict:
+    try:
+        data = json.loads(_MATRICES_PATH.read_text(encoding="utf-8"))
+        return {mode: m.get("matrix", {}) for mode, m in data.items()}
+    except Exception:
+        return {}
+
+
+_MATRICES = _load_matrices()
+
+
+def matrix_leg_fare(mode: str, board_name: str, alight_name: str) -> float | None:
+    # official published matrix lookup (e.g. the dotr-mrt3 fare matrix): the
+    # exact fare for boarding at one station and alighting at another
+    matrix = _MATRICES.get(mode)
+    if not matrix:
+        return None
+    a = _ANCHOR_STATION.get(mode, {}).get(board_name, board_name)
+    b = _ANCHOR_STATION.get(mode, {}).get(alight_name, alight_name)
+    return matrix.get(f"{a}|{b}")
 
 
 def mode_params(mode: str) -> dict:
@@ -59,19 +89,29 @@ def _is_boarding(prev_mode: str, mode: str, at_virtual: bool) -> bool:
 
 
 def path_fare(graph: Graph, edges: list[Edge]) -> float:
-    # split the path into boarding legs and price each one
+    # split the path into boarding legs and price each one. a leg on a line
+    # with an official published matrix is priced by its board/alight stations;
+    # anything else uses the base + per-km structure.
     if not edges:
         return 0.0
+
+    def price(mode: str, km: float, board_id: str, alight_id: str) -> float:
+        m = matrix_leg_fare(mode, graph.nodes[board_id].name, graph.nodes[alight_id].name)
+        return m if m is not None else leg_fare(mode, km)
+
     total = 0.0
     leg_mode = edges[0].mode
     leg_km = edges[0].distance_km
+    leg_board = edges[0].src
     prev_mode = edges[0].mode
+    prev_dst = edges[0].dst
     for e in edges[1:]:
         if _is_boarding(prev_mode, e.mode, graph.nodes[e.src].virtual):
-            total += leg_fare(leg_mode, leg_km)
-            leg_mode, leg_km = e.mode, e.distance_km
+            total += price(leg_mode, leg_km, leg_board, prev_dst)
+            leg_mode, leg_km, leg_board = e.mode, e.distance_km, e.src
         else:
             leg_km += e.distance_km
         prev_mode = e.mode
-    total += leg_fare(leg_mode, leg_km)
+        prev_dst = e.dst
+    total += price(leg_mode, leg_km, leg_board, prev_dst)
     return total

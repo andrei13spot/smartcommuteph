@@ -6,8 +6,10 @@ Polytechnic University of the Philippines · 2026.
 
 Four commuter profiles (Uncrowded, Cheapest, Safest, Convenient) weight four
 criteria — ridership, fare, flood risk, transfer friction — inside a
-constraint-aware A* over a 264-node transit graph (10 anchor stations + 300m
-street-snapped jeepney stops), benchmarked against a distance-based A* baseline.
+constraint-aware A* over a transit graph of 10 anchor stations plus the LTFRB
+jeepney stop network from virtual_stops.geojson (~2.7k nodes; a 264-anchor (297-node)
+street-snapped fallback ships for SCPH_GEOJSON=0), benchmarked against a
+distance-based A* baseline.
 
 - **Setup guide:** [SETUP.md](SETUP.md) — step-by-step for every teammate
 - **API contract:** [docs/api-contract.md](docs/api-contract.md)

@@ -58,6 +58,10 @@ class AnchorOut(BaseModel):
     lng: float
     lines: list[str]
 
+    @classmethod
+    def from_node(cls, n) -> "AnchorOut":
+        return cls(id=n.id, name=n.name, area=n.area, lat=n.lat, lng=n.lng, lines=list(n.lines))
+
 
 class ProfileOut(BaseModel):
     id: str
@@ -68,6 +72,8 @@ class ProfileOut(BaseModel):
     weights: dict[str, float]
     cr: float | None = None            # mean consistency ratio of accepted respondents
     weights_source: str | None = None  # ahp pipeline vs placeholder, mock vs real
+    n_respondents: int | None = None   # respondents fed to the ahp pipeline
+    n_accepted: int | None = None      # respondents that passed cr < 0.10
 
 
 class CriterionOut(BaseModel):

@@ -9,7 +9,7 @@ from datetime import datetime
 from ..ml.flood import fetch_pagasa_rainfall_mm
 from ..profiles import Profile, resolve_profile
 from ..routing.astar import shortest_route
-from ..routing.cost import CostContext, transfer_friction
+from ..routing.cost import CostContext, count_transfers, modes_in_order, path_transfer_friction
 from ..routing.fares import path_fare
 from ..routing.graph import Edge, Graph, load_graph
 from ..schemas import (
@@ -20,11 +20,6 @@ from ..schemas import (
     RouteSummary,
     SegmentOut,
 )
-
-
-def _anchor_out(graph: Graph, node_id: str) -> AnchorOut:
-    n = graph.node(node_id)
-    return AnchorOut(id=n.id, name=n.name, area=n.area, lat=n.lat, lng=n.lng, lines=list(n.lines))
 
 
 def _profile_out(p: Profile) -> ProfileOut:
@@ -44,18 +39,6 @@ def _level(value: float) -> str:
 
 def _crowd_word(value: float) -> str:
     return {"Low": "Light", "Moderate": "Moderate", "High": "Heavy"}[_level(value)]
-
-
-def _modes_in_order(edges: list[Edge]) -> list[str]:
-    modes: list[str] = []
-    for e in edges:
-        if not modes or modes[-1] != e.mode:
-            modes.append(e.mode)
-    return modes
-
-
-def _count_transfers(edges: list[Edge]) -> int:
-    return max(0, len(_modes_in_order(edges)) - 1)
 
 
 def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionOut]:
@@ -166,12 +149,7 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
 
     edges = result.edges
     # total time = in-vehicle time + the transfer friction we actually paid
-    transfer_minutes = 0.0
-    prev_mode: str | None = None
-    for e in edges:
-        transfer_minutes += transfer_friction(prev_mode, e.mode,
-                                              continuing=ctx.graph.nodes[e.src].virtual)
-        prev_mode = e.mode
+    transfer_minutes = path_transfer_friction(ctx.graph, edges)
     fare = round(path_fare(graph, edges), 1)
     # 20% discount for student or senior
     discounted = round(fare * 0.8, 1) if passenger_type in ("student", "senior") else None
@@ -180,14 +158,14 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
         distance_km=round(sum(e.distance_km for e in edges), 1),
         fare_php=fare,
         fare_discounted_php=discounted,
-        transfers=_count_transfers(edges),
-        modes=_modes_in_order(edges),
+        transfers=count_transfers(edges),
+        modes=modes_in_order(edges),
     )
     criteria = _route_criteria(ctx, edges)
 
     return RouteResponse(
-        origin=_anchor_out(graph, req_origin),
-        destination=_anchor_out(graph, req_destination),
+        origin=AnchorOut.from_node(graph.node(req_origin)),
+        destination=AnchorOut.from_node(graph.node(req_destination)),
         profile=_profile_out(profile),
         found=result.found,
         summary=summary,

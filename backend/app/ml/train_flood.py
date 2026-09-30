@@ -1,7 +1,7 @@
 # trains the rfr flood-risk model (the R criterion).
 # random forest regressor from scikit-learn, per the paper. it learns flood risk
 # per edge from three grounded features:
-#   rainfall_mm      - pagasa ten-day forecast value (0..~80)
+#   rainfall_mm      - 24h rainfall in mm: the request's value, else the live met norway total (pagasa only if a token is set), else the 8mm offline default (0..~80)
 #   mode_sensitivity - how much the mode floods (elevated rail low, street high)
 #   base_exposure    - the edge's baseline flood exposure by area
 # labels come from the mmda inundation pattern: risk climbs non-linearly with
@@ -14,13 +14,9 @@ from pathlib import Path
 
 import numpy as np
 
-MODEL_PATH = Path(__file__).with_name("models") / "flood_rfr.joblib"
-_SEED = 11  # group 11, keeps training reproducible
+from .flood import _MODE_SENSITIVITY as MODE_SENSITIVITY, _MODEL_PATH as MODEL_PATH
 
-# same mode sensitivities the network uses (rail safe, street floods)
-MODE_SENSITIVITY = {
-    "LRT-1": 0.20, "LRT-2": 0.20, "MRT-3": 0.20, "EDSA-Bus": 0.85, "Jeepney": 1.00,
-}
+_SEED = 11  # group 11, keeps training reproducible
 
 
 def _clamp01(x):
