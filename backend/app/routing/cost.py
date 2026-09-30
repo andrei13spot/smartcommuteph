@@ -14,7 +14,6 @@ from .graph import Edge, Graph
 # transfer friction adjacency matrix (table 3 in the paper). raw penalty for
 # switching from mode i to mode j. same mode is 0 except jeepney->jeepney = 0.5
 # (changing jeepney lines still costs waiting and re-paying).
-_MODES = ["LRT-1", "LRT-2", "MRT-3", "EDSA-Bus", "Jeepney"]
 _FRICTION_MATRIX = {
     "LRT-1":    {"LRT-1": 0.0, "LRT-2": 1.5, "MRT-3": 1.7, "EDSA-Bus": 1.3, "Jeepney": 2.0},
     "LRT-2":    {"LRT-1": 1.5, "LRT-2": 0.0, "MRT-3": 1.4, "EDSA-Bus": 1.2, "Jeepney": 1.9},
@@ -24,6 +23,19 @@ _FRICTION_MATRIX = {
 }
 # biggest entry, used to normalize P' into 0..1
 _MAX_FRICTION = max(v for row in _FRICTION_MATRIX.values() for v in row.values())
+
+
+def modes_in_order(edges: list[Edge]) -> list[str]:
+    # the sequence of modes ridden, collapsing consecutive legs of the same mode
+    modes: list[str] = []
+    for e in edges:
+        if not modes or modes[-1] != e.mode:
+            modes.append(e.mode)
+    return modes
+
+
+def count_transfers(edges: list[Edge]) -> int:
+    return max(0, len(modes_in_order(edges)) - 1)
 
 
 def transfer_friction(mode_a: str | None, mode_b: str, continuing: bool = False) -> float:
@@ -42,12 +54,21 @@ def transfer_friction(mode_a: str | None, mode_b: str, continuing: bool = False)
     return float(row.get(mode_b, 0.0))
 
 
-def _min_max(values: list[float]) -> tuple[float, float]:
-    return (min(values), max(values)) if values else (0.0, 0.0)
+def path_transfer_friction(graph: Graph, edges: list[Edge]) -> float:
+    # raw table-3 friction actually paid along a path; riding through a
+    # virtual stop is not a transfer
+    total = 0.0
+    prev: str | None = None
+    for e in edges:
+        total += transfer_friction(prev, e.mode, continuing=graph.nodes[e.src].virtual)
+        prev = e.mode
+    return total
 
 
-def _normalize(x: float, lo: float, hi: float) -> float:
-    return 0.0 if hi <= lo else (x - lo) / (hi - lo)
+def _min_max_scaled(raw: dict[str, float]) -> dict[str, float]:
+    # min-max normalize a dict of raw values into 0..1 (flat = all zeros)
+    lo, hi = (min(raw.values()), max(raw.values())) if raw else (0.0, 0.0)
+    return {k: (0.0 if hi <= lo else (v - lo) / (hi - lo)) for k, v in raw.items()}
 
 
 @dataclass
@@ -85,19 +106,11 @@ class CostContext:
             raw_F[eid] = fares.marginal_fare(edge.mode, edge.distance_km)
             raw_R[eid] = fv
 
-        t_lo, t_hi = _min_max(list(raw_T.values()))
-        f_lo, f_hi = _min_max(list(raw_F.values()))
-        r_lo, r_hi = _min_max(list(raw_R.values()))
-
+        T, F, R = (_min_max_scaled(r) for r in (raw_T, raw_F, raw_R))
         self.criteria: dict[str, EdgeCriteria] = {
-            eid: EdgeCriteria(
-                T=_normalize(raw_T[eid], t_lo, t_hi),
-                F=_normalize(raw_F[eid], f_lo, f_hi),
-                R=_normalize(raw_R[eid], r_lo, r_hi),
-            )
-            for eid in graph.edges
+            eid: EdgeCriteria(T=T[eid], F=F[eid], R=R[eid]) for eid in graph.edges
         }
-        self.raw_flood = raw_R  # kept for the "why this route" text
+        self.raw_flood = raw_R  # raw (un-normalized) flood values, read by the rainfall-effect test
 
     def friction_norm(self, arriving_mode: str | None, edge_mode: str,
                       src_id: str | None = None) -> float:

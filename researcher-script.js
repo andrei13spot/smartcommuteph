@@ -40,12 +40,12 @@ const DEFAULT_PROFILES = [
     { id: 'safest', name: 'Safest', priority: 'R', weights: { R: 0.52, P: 0.22, T: 0.16, F: 0.10 }, cr: 0.07 },
     { id: 'convenient', name: 'Convenient', priority: 'P', weights: { R: 0.16, P: 0.52, T: 0.10, F: 0.22 }, cr: 0.08 },
 ];
-let ANCHORS = [], PROFILES = [], BY_ID = {};
-let map = null, animLayers = [], log = [];
+let PROFILES = [], BY_ID = {};
+let map = null, animLayers = [];
+let NETWORK_GJ = null;
 
-function setConn(on, text) {
+function setConn(on) {
     const pill = $('status-pill');
-    const dot = $('status-dot');
     const label = $('status-text');
     
     // Toggle the classes
@@ -58,25 +58,6 @@ function setConn(on, text) {
 
 function renderSOP(b) {
     const rm = b.sop2.rm_anova || {};
-    const items = [
-        { tag:"SOP 1", stat:b.sop1.mean_reduction_pct + "%", ok:b.sop1.supported },
-        { tag:"SOP 2", stat:'J ' + (b.sop2.mean_jaccard ?? '—'), ok:b.sop2.supported },
-        { tag:"SOP 3", stat:(b.sop3.nodes?.mean_reduction_pct ?? b.sop3.mean_reduction_pct) + "%", ok:b.sop3.supported },
-    ];
-    // guard each target: the dashboard rework dropped some of these containers,
-    // and one missing id must not knock the whole init into the offline catch
-    const sopStatus = $('sop-status');
-    if (sopStatus) sopStatus.innerHTML = items.map(s => `<div class="sop-pill ${s.ok?'ok':'no'}">
-        <div class="sp-name">${s.tag}</div>
-        <div class="sp-stat">${s.stat}</div>
-        <div class="sp-verdict">${s.ok?'Supported':'Not yet'}</div>
-    </div>`).join('');
-    const sopDetail = $('sop-detail');
-    if (sopDetail) sopDetail.innerHTML = `
-        <div><div class="sd-l">Mean cost reduction</div><div class="sd-v">${b.sop1.mean_reduction_pct}%</div></div>
-        <div><div class="sd-l">RM-ANOVA F (GG p)</div><div class="sd-v">${rm.F ?? '—'} (${rm.p_gg_corrected ?? '—'})</div></div>
-        <div><div class="sd-l">Mean Jaccard</div><div class="sd-v">${b.sop2.mean_jaccard ?? '—'}</div></div>
-        <div><div class="sd-l">Nodes fw vs base</div><div class="sd-v">${b.sop3.fw_nodes_mean} / ${b.sop3.bl_nodes_mean}</div></div>`;
     // the four hypothesis tiles (mean cost reduction, mean jaccard, anova f, nodes delta)
     const tiles = document.querySelectorAll('.hyp-card .hc-value');
     if (tiles.length >= 4) {
@@ -87,7 +68,6 @@ function renderSOP(b) {
             + Math.round((b.sop3.fw_nodes_mean - b.sop3.bl_nodes_mean) * 10) / 10;
     }
     if ($('m-obs')) $('m-obs').innerText = b.observations;
-    if ($('m-od')) $('m-od').innerText = b.od_pairs;
 }
 
 function renderAhp(profileId, isEmpty = false) {
@@ -161,7 +141,9 @@ function initMap() {
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     // esri dark canvas: keyless (carto now watermarks keyless requests); native tiles to z16
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Esri, HERE, Garmin, &copy; OpenStreetMap contributors' }).addTo(map);
-    fetch('/api/map/network').then(r => r.json()).then(gj => {
+    // one download shared with init(), which reads the same geojson for node positions
+    NETWORK_GJ = fetch('/api/map/network').then(r => r.json());
+    NETWORK_GJ.then(gj => {
         L.geoJSON(gj, {
             style: () => ({ color:'#2b3550', weight:2, opacity:0.55 }),
             pointToLayer: (f, ll) => L.circleMarker(ll, { radius:3, color:'#475569', fillColor:'#334155', fillOpacity:0.9, weight:1 }),
@@ -171,7 +153,6 @@ function initMap() {
     }).catch(() => {});
     if (window.ResizeObserver) new ResizeObserver(() => map.invalidateSize()).observe($('research-map'));
 }
-function clearAnim() { animLayers.forEach(l => map.removeLayer(l)); animLayers = []; }
 
 function renderDecomp(d, isEmpty = false) {
     // real numbers from the a* run: each criterion's normalized value averaged
@@ -294,7 +275,6 @@ function filterQueryLog() {
     });
 }
 
-let LAST_QUERY = null;
 let PLAY_TOKEN = 0;
 
 // an arrow that rides the winning route from origin to destination. it walks
@@ -506,8 +486,8 @@ function initTimelinePlay() {
 // one entry point for a real click and for the timeline replay
 function activateQuery(item, opts = {}) {
     syncSelectionUI(item);
-    LAST_QUERY = { origin: item.dataset.oid, destination: item.dataset.did, profile: item.dataset.profile, el: item };
-    return playInspect(LAST_QUERY, opts);
+    const q = { origin: item.dataset.oid, destination: item.dataset.did, profile: item.dataset.profile, el: item };
+    return playInspect(q, opts);
 }
 
 function buildTimeline() {
@@ -666,10 +646,10 @@ async function init() {
             fetch('/api/map/anchors').then(r => r.json()),
             fetch('/api/map/profiles').then(r => r.json()),
         ]);
-        ANCHORS = anchors; PROFILES = profiles;
+        PROFILES = profiles;
         BY_ID = Object.fromEntries(anchors.map(a => [a.id, a]));
         // the playback needs every node position, virtual jeepney stops included
-        fetch('/api/map/network').then(r => r.json()).then(gj => {
+        NETWORK_GJ.then(gj => {
             (gj.features || []).forEach(f => {
                 if (f.geometry && f.geometry.type === 'Point') {
                     const p = f.properties || {};
@@ -677,7 +657,7 @@ async function init() {
                 }
             });
         }).catch(() => {});
-        setConn(true, 'API Active');
+        setConn(true);
         renderSOP(bench);
         renderModels(ml);
         
@@ -686,7 +666,7 @@ async function init() {
         
         buildQueryList(anchors.slice(0, 10), profiles.slice(0, 4));
     } catch (err) {
-        setConn(false, 'Offline');
+        setConn(false);
     }
 }
 init();

@@ -58,6 +58,10 @@ class AnchorOut(BaseModel):
     lng: float
     lines: list[str]
 
+    @classmethod
+    def from_node(cls, n) -> "AnchorOut":
+        return cls(id=n.id, name=n.name, area=n.area, lat=n.lat, lng=n.lng, lines=list(n.lines))
+
 
 class ProfileOut(BaseModel):
     id: str

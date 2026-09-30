@@ -50,20 +50,19 @@ def consistency_ratio(matrix: np.ndarray, w: np.ndarray) -> float:
 
 def derive(matrices: list[np.ndarray]) -> dict:
     # run every respondent matrix through the paper's pipeline for one profile
-    accepted, crs = [], []
+    accepted, accepted_crs = [], []
     for m in matrices:
         w = weights_normalized_column_average(m)
         cr = consistency_ratio(m, w)
-        crs.append(cr)
         if cr < 0.10:
             accepted.append(w)
+            accepted_crs.append(cr)
     if not accepted:
         raise SystemExit(
             "every respondent failed the cr < 0.10 filter - check the input "
             "matrices before deriving weights")
     mean_w = np.mean(accepted, axis=0)
     mean_w = mean_w / mean_w.sum()
-    accepted_crs = [c for c in crs if c < 0.10]
     return {
         "weights": {c: round(float(v), 4) for c, v in zip(CRITERIA, mean_w)},
         "n_respondents": len(matrices),
@@ -119,7 +118,7 @@ def main() -> None:
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps({
         "description": "ahp profile weight vectors via normalized column average, "
-                       "cr >= 0.10 rejected (saaty n=4, ri 0.90).",
+                       "cr >= 0.10 rejected (saaty n=4, ri 0.89).",
         "source": "SIMULATED respondents (mock) - NOT the real survey. replace "
                   "simulate_respondents with the real 150-respondent export and "
                   "rerun derive_ahp_weights.py before the defense claims survey data.",

@@ -24,12 +24,6 @@ try {
 }
 
 const SNAP_KM = 0.8; // an endpoint further than this off its line's shape falls back to straight
-function havKm(lat1, lng1, lat2, lng2) {
-  const rad = Math.PI / 180;
-  const a = Math.sin(((lat2 - lat1) * rad) / 2) ** 2 +
-    Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(((lng2 - lng1) * rad) / 2) ** 2;
-  return 2 * 6371 * Math.asin(Math.sqrt(a));
-}
 
 function shapeFor(mode) {
   const lines = LINE_SHAPES.lines || {};
@@ -202,16 +196,12 @@ async function routeToGeoJSON(route) {
     });
   }
 
-  const coords = features.flatMap((f) =>
-    f.geometry.type === "Point"
-      ? [f.geometry.coordinates]
-      : f.geometry.coordinates
-  );
-  const bounds = boundsOf(coords);
-  return { type: "FeatureCollection", features, bounds };
+  return { type: "FeatureCollection", features, bounds: featureBounds(features) };
 }
 
-function boundsOf(coords) {
+function featureBounds(features) {
+  const coords = features.flatMap((f) =>
+    f.geometry.type === "Point" ? [f.geometry.coordinates] : f.geometry.coordinates);
   if (coords.length === 0) return null;
   let minLat = Infinity, minLng = Infinity, maxLat = -Infinity, maxLng = -Infinity;
   for (const [lng, lat] of coords) {
@@ -236,23 +226,18 @@ function checkOd(req, res, needProfile) {
   return true;
 }
 
-// geometry = list of [lat,lng] from origin to destination, bent along the
-// real track shape wherever the segment's line has one
+// geometry = [lat,lng] from origin to destination: the route's leg LineStrings
+// (already bent along the track by routeToGeoJSON) joined end to end
 async function routeGeometry(route) {
-  const anchors = await getAnchorIndex();
-  const segs = route.segments || [];
-  if (!segs.length) return [];
+  const { features } = await routeToGeoJSON(route);
   const out = [];
-  const bent = bendRoute(segs, anchors);
-  segs.forEach((s, i) => {
-    const a = anchors.get(s.from_id);
-    const b = anchors.get(s.to_id);
-    if (!a || !b) return;
-    const pts = bent[i] || [[a.lat, a.lng], [b.lat, b.lng]];
+  for (const f of features) {
+    if (f.geometry.type !== "LineString") continue;
+    const pts = f.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
     const last = out[out.length - 1];
     const same = last && last[0] === pts[0][0] && last[1] === pts[0][1];
     out.push(...(same ? pts.slice(1) : pts));
-  });
+  }
   return out;
 }
 
@@ -286,146 +271,113 @@ async function toContractResult(route) {
   };
 }
 
+// every proxying handler answers 502 instead of crashing the process when the engine is down.
+// downBody = extra fields put in front of the 502 json (the status feed adds status: "down")
+const guard = (fn, downBody = {}) => async (req, res) => {
+  try { await fn(req, res); }
+  catch (err) { res.status(502).json({ ...downBody, error: "engine unreachable", detail: String(err) }); }
+};
+
 // isang route + kpis
-app.post("/route", async (req, res) => {
+app.post("/route", guard(async (req, res) => {
   if (!checkOd(req, res, true)) return;
-  try {
-    const { ok, status, data } = await callPython("/api/route", { method: "POST", body: req.body });
-    if (!ok) return res.status(status).json(data);
-    res.json(await toContractResult(data));
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
-  }
-});
+  const { ok, status, data } = await callPython("/api/route", { method: "POST", body: req.body });
+  if (!ok) return res.status(status).json(data);
+  res.json(await toContractResult(data));
+}));
 
 // 4 profiles + baseline = 5 results
-app.post("/compare", async (req, res) => {
+app.post("/compare", guard(async (req, res) => {
   if (!checkOd(req, res, false)) return;
-  try {
-    const { ok, status, data } = await callPython("/api/compare", { method: "POST", body: req.body });
-    if (!ok) return res.status(status).json(data);
-    const results = [];
-    for (const r of data.routes) results.push(await toContractResult(r));
-    res.json({ origin: data.origin.id, destination: data.destination.id, results });
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
-  }
-});
+  const { ok, status, data } = await callPython("/api/compare", { method: "POST", body: req.body });
+  if (!ok) return res.status(status).json(data);
+  const results = [];
+  for (const r of data.routes) results.push(await toContractResult(r));
+  res.json({ origin: data.origin.id, destination: data.destination.id, results });
+}));
 
 // ---- map api ----
-app.get("/api/map/network", async (_req, res) => {
-  try {
-    const { ok, status, data } = await callPython("/api/network");
-    if (!ok) return res.status(status).json(data);
-    const byId = new Map(data.nodes.map((n) => [n.id, n]));
-    const features = [];
-    for (const n of data.nodes) features.push(pointFeature(n, "station"));
-    for (const e of data.edges) {
-      const a = byId.get(e.from_id);
-      const b = byId.get(e.to_id);
-      if (a && b) features.push(lineFeature(a, b, e.mode));
-    }
-    res.json({
-      type: "FeatureCollection",
-      features,
-      bounds: boundsOf(features.flatMap((f) =>
-        f.geometry.type === "Point" ? [f.geometry.coordinates] : f.geometry.coordinates)),
-      colors: MODE_COLORS,
-    });
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+app.get("/api/map/network", guard(async (_req, res) => {
+  const { ok, status, data } = await callPython("/api/network");
+  if (!ok) return res.status(status).json(data);
+  const byId = new Map(data.nodes.map((n) => [n.id, n]));
+  const features = [];
+  for (const n of data.nodes) features.push(pointFeature(n, "station"));
+  for (const e of data.edges) {
+    const a = byId.get(e.from_id);
+    const b = byId.get(e.to_id);
+    if (a && b) features.push(lineFeature(a, b, e.mode));
   }
-});
+  res.json({
+    type: "FeatureCollection",
+    features,
+    bounds: featureBounds(features),
+    colors: MODE_COLORS,
+  });
+}));
 
-app.post("/api/map/route", async (req, res) => {
-  try {
-    const { ok, status, data } = await callPython("/api/route", { method: "POST", body: req.body });
-    if (!ok) return res.status(status).json(data);
-    const geojson = await routeToGeoJSON(data);
-    res.json({ route: data, geojson, colors: MODE_COLORS });
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
-  }
-});
+app.post("/api/map/route", guard(async (req, res) => {
+  const { ok, status, data } = await callPython("/api/route", { method: "POST", body: req.body });
+  if (!ok) return res.status(status).json(data);
+  const geojson = await routeToGeoJSON(data);
+  res.json({ route: data, geojson, colors: MODE_COLORS });
+}));
 
-app.post("/api/map/compare", async (req, res) => {
-  try {
-    const { ok, status, data } = await callPython("/api/compare", { method: "POST", body: req.body });
-    if (!ok) return res.status(status).json(data);
-    const routes = [];
-    for (const route of data.routes) {
-      routes.push({ route, geojson: await routeToGeoJSON(route) });
-    }
-    res.json({ origin: data.origin, destination: data.destination, routes, colors: MODE_COLORS });
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+app.post("/api/map/compare", guard(async (req, res) => {
+  const { ok, status, data } = await callPython("/api/compare", { method: "POST", body: req.body });
+  if (!ok) return res.status(status).json(data);
+  const routes = [];
+  for (const route of data.routes) {
+    routes.push({ route, geojson: await routeToGeoJSON(route) });
   }
-});
+  res.json({ origin: data.origin, destination: data.destination, routes, colors: MODE_COLORS });
+}));
 
 // thin pass-throughs so the frontend stays same-origin. each one is wrapped:
 // if the engine is down these must answer 502, not crash the gateway process
 // (an unhandled fetch rejection exits node)
-function passthrough(enginePath) {
-  return async (req, res) => {
-    try {
-      const qs = new URLSearchParams(req.query).toString();
-      const { status, data } = await callPython(enginePath + (qs ? "?" + qs : ""));
-      res.status(status).json(data);
-    } catch (err) {
-      res.status(502).json({ error: "engine unreachable", detail: String(err) });
-    }
-  };
+function passthrough(enginePath, downBody = {}) {
+  return guard(async (req, res) => {
+    const qs = new URLSearchParams(req.query).toString();
+    const { status, data } = await callPython(enginePath + (qs ? "?" + qs : ""));
+    res.status(status).json(data);
+  }, downBody);
 }
 app.get("/api/map/anchors", passthrough("/api/anchors"));
 app.get("/api/map/profiles", passthrough("/api/profiles"));
 
 // dev dashboard status feed
-app.get("/api/status", async (_req, res) => {
-  try {
-    const { status, data } = await callPython("/api/status");
-    res.status(status).json(data);
-  } catch (err) {
-    res.status(502).json({ status: "down", error: "engine unreachable", detail: String(err) });
-  }
-});
+app.get("/api/status", passthrough("/api/status", { status: "down" }));
 
 // researcher dashboard feeds
 app.get("/api/benchmark", passthrough("/api/benchmark"));
 // 360 row benchmark log, csv or json (fetched raw since it can be csv text)
-app.get("/api/benchmark/log", async (req, res) => {
+app.get("/api/benchmark/log", guard(async (req, res) => {
   const qs = new URLSearchParams(req.query).toString();
-  try {
-    const r = await fetch(`${PYTHON_API_URL}/api/benchmark/log` + (qs ? "?" + qs : ""));
-    const text = await r.text();
-    res.status(r.status);
-    res.set("Content-Type", r.headers.get("content-type") || "application/json");
-    const cd = r.headers.get("content-disposition");
-    if (cd) res.set("Content-Disposition", cd);
-    res.send(text);
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
-  }
-});
+  const r = await fetch(`${PYTHON_API_URL}/api/benchmark/log` + (qs ? "?" + qs : ""));
+  const text = await r.text();
+  res.status(r.status);
+  res.set("Content-Type", r.headers.get("content-type") || "application/json");
+  const cd = r.headers.get("content-disposition");
+  if (cd) res.set("Content-Disposition", cd);
+  res.send(text);
+}));
 app.get("/api/ml-metrics", passthrough("/api/ml-metrics"));
-app.post("/api/inspect", async (req, res) => {
-  try {
-    const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
-    // give each route leg its bent [lat,lng] waypoints so the playback overlay
-    // follows the real track like the route map does
-    if (status === 200 && data && Array.isArray(data.decomposition)) {
-      try {
-        const anchors = await getAnchorIndex();
-        const bent = bendRoute(data.decomposition, anchors);
-        data.decomposition.forEach((leg, i) => {
-          if (bent[i]) leg.points = bent[i];
-        });
-      } catch {}
-    }
-    res.status(status).json(data);
-  } catch (err) {
-    res.status(502).json({ error: "engine unreachable", detail: String(err) });
+app.post("/api/inspect", guard(async (req, res) => {
+  const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
+  // give each route leg its bent [lat,lng] waypoints so the playback overlay
+  // follows the real track like the route map does
+  if (status === 200 && data && Array.isArray(data.decomposition)) {
+    try {
+      const anchors = await getAnchorIndex();
+      const bent = bendRoute(data.decomposition, anchors);
+      data.decomposition.forEach((leg, i) => {
+        if (bent[i]) leg.points = bent[i];
+      });
+    } catch {}
   }
-});
+  res.status(status).json(data);
+}));
 
 app.get("/healthz", async (_req, res) => {
   const engine = await callPython("/api/health").catch(() => ({ ok: false }));

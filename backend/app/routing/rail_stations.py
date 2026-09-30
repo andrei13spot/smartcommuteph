@@ -8,19 +8,12 @@
 from __future__ import annotations
 
 import json
-import math
 from pathlib import Path
+
+from .graph import haversine_km
 
 _STATIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "stations.json"
 _MATCH_RADIUS_KM = 0.6  # an anchor must sit within this of a station to snap to it
-
-
-def _hav_km(lat1, lng1, lat2, lng2):
-    p1, p2 = math.radians(lat1), math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dlam = math.radians(lng2 - lng1)
-    a = math.sin(dphi / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dlam / 2) ** 2
-    return 2 * 6371.0 * math.asin(math.sqrt(a))
 
 
 def _load_lines() -> dict:
@@ -46,7 +39,7 @@ def subdivide_rail(anchors: list[dict], raw_edges: list[dict]) -> tuple[list[dic
     def nearest_station(line_stations, anchor):
         best_i, best_d = None, _MATCH_RADIUS_KM
         for i, s in enumerate(line_stations):
-            d = _hav_km(anchor["lat"], anchor["lng"], s["lat"], s["lng"])
+            d = haversine_km(anchor["lat"], anchor["lng"], s["lat"], s["lng"])
             if d < best_d:
                 best_i, best_d = i, d
         return best_i

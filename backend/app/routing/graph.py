@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import json
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from functools import lru_cache
 from pathlib import Path
 
@@ -143,11 +143,7 @@ def _flood_exposure(graph: "Graph") -> None:
             depth = min(i["depth_in"] / _FLOOD_DEPTH_REF_IN, 1.0)
             exposure += depth * (1.0 - d / _FLOOD_RADIUS_KM)
         risk = max(_FLOOD_BASELINE, min(1.0, exposure))
-        graph.edges[eid] = Edge(
-            id=e.id, src=e.src, dst=e.dst, mode=e.mode, base_time=e.base_time,
-            fare=e.fare, ridership=e.ridership, flood_risk=risk,
-            distance_km=e.distance_km,
-        )
+        graph.edges[eid] = replace(e, flood_risk=risk)
     # adjacency holds the same edge objects, rebuild it from the updated ones
     for node_id in graph.adjacency:
         graph.adjacency[node_id] = []
@@ -183,7 +179,7 @@ def load_graph() -> Graph:
         from . import geojson_network
         anchors = _load_json("anchors.json")["anchors"]
         anchor_pos = {a["id"]: {"lat": a["lat"], "lng": a["lng"]} for a in anchors}
-        stops, jeep_edges, _stats = geojson_network.build_jeepney_layer(anchor_pos)
+        stops, jeep_edges = geojson_network.build_jeepney_layer(anchor_pos)
         anchors = anchors + stops
         # rail + edsa bus corridors stay from graph.json; the jeepney layer
         # comes entirely from the geojson routes
@@ -197,7 +193,11 @@ def load_graph() -> Graph:
         raw_edges = _load_json("graph.json")["edges"]
 
     graph = Graph()
-    for a in anchors:
+    # thread rail corridors through the real stations (stations.json) so the
+    # lines follow actual station coordinates and legs are station-accurate
+    from .rail_stations import subdivide_rail
+    station_nodes, raw_edges = subdivide_rail(anchors, raw_edges)
+    for a in anchors + station_nodes:
         graph.nodes[a["id"]] = Node(
             id=a["id"], name=a["name"], area=a["area"],
             lat=a["lat"], lng=a["lng"], lines=tuple(a["lines"]),
@@ -221,17 +221,6 @@ def load_graph() -> Graph:
         )
         graph.edges[edge.id] = edge
         graph.adjacency[src].append(edge)
-
-    # thread rail corridors through the real stations (stations.json) so the
-    # lines follow actual station coordinates and legs are station-accurate
-    from .rail_stations import subdivide_rail
-    station_nodes, raw_edges = subdivide_rail(anchors, raw_edges)
-    for a in station_nodes:
-        graph.nodes[a["id"]] = Node(
-            id=a["id"], name=a["name"], area=a["area"],
-            lat=a["lat"], lng=a["lng"], lines=tuple(a["lines"]), virtual=True,
-        )
-        graph.adjacency[a["id"]] = []
 
     for e in raw_edges:
         add_edge(e["from"], e["to"], e["mode"], e)

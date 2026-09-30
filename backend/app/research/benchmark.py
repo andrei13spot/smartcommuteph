@@ -13,7 +13,7 @@ from scipy import stats
 
 from ..profiles import BASELINE, PROFILES
 from ..routing.astar import shortest_route
-from ..routing.cost import CostContext, transfer_friction
+from ..routing.cost import CostContext, count_transfers, path_transfer_friction
 from ..routing.fares import path_fare
 from ..routing.graph import load_graph
 
@@ -34,13 +34,7 @@ def _prioritized_value(ctx: CostContext, edges, priority: str) -> float:
     if priority == "T":
         return sum(ctx.criteria[e.id].T for e in edges) / len(edges)
     # P = total raw transfer friction actually paid along the path
-    prev = None
-    total = 0.0
-    for e in edges:
-        total += transfer_friction(prev, e.mode,
-                                   continuing=ctx.graph.nodes[e.src].virtual)
-        prev = e.mode
-    return total
+    return path_transfer_friction(ctx.graph, edges)
 
 
 def _paired(baseline: list[float], framework: list[float]) -> dict:
@@ -305,28 +299,15 @@ KPI_COLUMNS = [
 ]
 
 
-def _count_transfers(edges) -> int:
-    modes = []
-    for e in edges:
-        if not modes or modes[-1] != e.mode:
-            modes.append(e.mode)
-    return max(0, len(modes) - 1)
-
-
 def _kpis(ctx: CostContext, res, exec_ms: float) -> dict:
     # the 8 kpis for one run
     edges = res.edges
-    transfer_min = 0.0
-    prev = None
-    for e in edges:
-        transfer_min += transfer_friction(prev, e.mode,
-                                          continuing=ctx.graph.nodes[e.src].virtual)
-        prev = e.mode
+    transfer_min = path_transfer_friction(ctx.graph, edges)
     return {
         "travel_time_min": round(sum(e.base_time for e in edges) + transfer_min, 2),
         "distance_km": round(sum(e.distance_km for e in edges), 2),
         "fare_php": round(path_fare(ctx.graph, edges), 1),
-        "transfers": _count_transfers(edges),
+        "transfers": count_transfers(edges),
         "flood_risk_score": round(max((ctx.criteria[e.id].R for e in edges), default=0.0), 3),
         "ridership_density_score": round(
             sum(ctx.criteria[e.id].T for e in edges) / len(edges), 3) if edges else 0.0,

@@ -1,15 +1,16 @@
 # flood-risk predictor (the rfr part) plus the rainfall input.
 # uses a random forest trained on the mmda flood pattern (see train_flood.py),
-# fed rainfall from the pagasa ten-day forecast. if the trained model or sklearn
-# is missing it falls back to the rainfall-scaled heuristic so the engine still
-# runs offline. same interface either way: predict(edge, rainfall_mm) -> 0..1.
+# fed 24h rainfall from met norway locationforecast (pagasa tenday only if a
+# token is set). if the trained model or sklearn is missing it falls back to
+# the rainfall-scaled heuristic so the engine still runs offline. same
+# interface either way: predict_batch(edges, rainfall_mm) -> [0..1].
 from __future__ import annotations
 
 from pathlib import Path
 
 from ..routing.graph import Edge
 
-# default 24h rainfall used when there's no live pagasa value
+# default 24h rainfall used when there's no live rainfall value
 DEFAULT_RAINFALL_MM = 8.0
 
 # how much rainfall lifts the baseline risk per mode. rail is mostly safe,
@@ -179,13 +180,6 @@ class FloodRiskPredictor:
         rain_factor = min(rainfall_mm / 50.0, 1.0)
         risk = edge.flood_risk * (1.0 + self._sensitivity(edge.mode) * rain_factor)
         return _clamp01(risk)
-
-    def predict(self, edge: Edge, rainfall_mm: float) -> float:
-        # flood risk for this edge given the rainfall, 0..1
-        if self._model is None:
-            return self._heuristic(edge, rainfall_mm)
-        features = [[rainfall_mm, self._sensitivity(edge.mode), edge.flood_risk]]
-        return _clamp01(float(self._model.predict(features)[0]))
 
     def predict_batch(self, edges: list[Edge], rainfall_mm: float) -> list[float]:
         # one vectorized model call for the whole edge list. a per-edge

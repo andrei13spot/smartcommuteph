@@ -38,8 +38,8 @@ def available() -> bool:
     return _GEOJSON_PATH.exists()
 
 
-def build_jeepney_layer(anchors: dict[str, dict]) -> tuple[list[dict], list[dict], dict]:
-    # returns (stop_nodes, edges, stats). anchors: id -> {lat, lng} from
+def build_jeepney_layer(anchors: dict[str, dict]) -> tuple[list[dict], list[dict]]:
+    # returns (stop_nodes, edges). anchors: id -> {lat, lng} from
     # anchors.json (the lrta-sourced coords stay authoritative).
     with open(_GEOJSON_PATH, encoding="utf-8-sig") as fh:
         data = json.load(fh)
@@ -56,7 +56,6 @@ def build_jeepney_layer(anchors: dict[str, dict]) -> tuple[list[dict], list[dict
 
     stop_nodes: list[dict] = []
     edges: list[dict] = []
-    kept = dropped = links = 0
     counter = 0
     for key in sorted(chains, key=str):
         chain = sorted(chains[key], key=lambda t: t[0])
@@ -64,12 +63,11 @@ def build_jeepney_layer(anchors: dict[str, dict]) -> tuple[list[dict], list[dict
         chain_links = []
         for idx, (_, coords) in enumerate(chain):
             for aid, a in anchors.items():
-                if _hav_km(coords, [a["lng"], a["lat"]]) <= LINK_RADIUS_KM:
-                    chain_links.append((idx, aid))
+                d = _hav_km(coords, [a["lng"], a["lat"]])
+                if d <= LINK_RADIUS_KM:
+                    chain_links.append((idx, aid, d))
         if not chain_links:
-            dropped += 1
             continue  # unreachable from every station: cannot serve any od
-        kept += 1
         route, category = key
         ids = []
         for dist_m, coords in chain:
@@ -92,17 +90,12 @@ def build_jeepney_layer(anchors: dict[str, dict]) -> tuple[list[dict], list[dict
                 "flood_risk": FLOOD_PLACEHOLDER, "distance_km": spacing_km,
             })
         # boarding links to nearby stations
-        for idx, aid in chain_links:
-            links += 1
+        for idx, aid, d in chain_links:
             edges.append({
                 "from": aid, "to": ids[idx], "mode": "Jeepney",
                 "fare": 0.0, "ridership": JEEPNEY_RIDERSHIP_BASELINE,
                 "flood_risk": FLOOD_PLACEHOLDER,
-                "distance_km": max(_hav_km(
-                    [anchors[aid]["lng"], anchors[aid]["lat"]],
-                    [stop_nodes[-len(chain) + idx]["lng"], stop_nodes[-len(chain) + idx]["lat"]]), 0.02),
+                "distance_km": max(d, 0.02),
             })
 
-    stats = {"chains_kept": kept, "chains_dropped_unreachable": dropped,
-             "stops": len(stop_nodes), "boarding_links": links}
-    return stop_nodes, edges, stats
+    return stop_nodes, edges

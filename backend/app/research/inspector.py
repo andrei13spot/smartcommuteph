@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import time
 
-from ..profiles import resolve_profile
+from ..profiles import BASELINE, resolve_profile
 from ..routing.astar import shortest_route
 from ..routing.cost import CostContext
 from ..routing.graph import load_graph
-from .benchmark import BASELINE
 
 
 def inspect(origin: str, destination: str, profile_name: str,

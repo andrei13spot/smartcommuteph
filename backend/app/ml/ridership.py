@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from ..routing.graph import Edge
+from .flood import _clamp01
 
 _MODEL_DIR = Path(__file__).with_name("models")
 _LSTM_PATH = _MODEL_DIR / "ridership_lstm.keras"
@@ -42,10 +43,6 @@ def _load_calibration() -> tuple[dict[str, list[float]], float] | None:
         return lines, float(data["reference_headway_min"])
     except Exception:
         return None
-
-
-def _clamp01(x: float) -> float:
-    return max(0.0, min(1.0, x))
 
 
 # last-resort demand factor per hour (the original hand-made twin-peak curve)
