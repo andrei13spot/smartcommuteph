@@ -346,6 +346,37 @@ function passthrough(enginePath, downBody = {}) {
 app.get("/api/map/anchors", passthrough("/api/anchors"));
 app.get("/api/map/profiles", passthrough("/api/profiles"));
 
+// the jeepney routes as drawn lines, one colour per route, straight from the
+// virtual stops geojson (read-only; the stroke colours are the file's own).
+// the network maps draw these instead of the 2,700 stop dots.
+const ROUTES_PATH = path.resolve(__dirname, "../backend/app/data/virtual_stops.geojson");
+let routeLines = null;
+app.get("/api/map/routes", (_req, res) => {
+  try {
+    if (!routeLines) {
+      const gj = JSON.parse(fs.readFileSync(ROUTES_PATH, "utf-8"));
+      routeLines = {
+        type: "FeatureCollection",
+        features: gj.features
+          .filter((f) => f.geometry && f.geometry.type === "LineString")
+          .map((f) => ({
+            type: "Feature",
+            geometry: f.geometry,
+            properties: {
+              route: f.properties.route || f.properties.name || null,
+              category: f.properties.category || null,
+              mode: "Jeepney",
+              color: f.properties.stroke || MODE_COLORS.Jeepney,
+            },
+          })),
+      };
+    }
+    res.json(routeLines);
+  } catch (err) {
+    res.status(500).json({ error: "route lines unavailable", detail: String(err) });
+  }
+});
+
 // dev dashboard status feed
 app.get("/api/status", passthrough("/api/status", { status: "down" }));
 

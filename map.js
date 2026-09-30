@@ -102,15 +102,38 @@
         .join("");
   }
 
+  // the network view: each jeepney route as its own coloured line (the
+  // colours come with the route geojson), the rail and busway corridors in
+  // their mode colours, and only the ten anchors as markers - the ~2,700
+  // virtual stops are what the router walks through, not something to show
+  function drawNetworkView(map, network, routes) {
+    const anchors = (network.features || []).filter((f) =>
+      f.geometry.type === "Point" && f.properties.id && !String(f.properties.id).startsWith("v_"));
+    const corridors = (network.features || []).filter((f) =>
+      f.geometry.type === "LineString" && f.properties.mode !== "Jeepney");
+    if (routes && routes.features && routes.features.length) {
+      L.geoJSON(routes, {
+        style: (f) => ({ color: f.properties.color || "#f59e0b", weight: 2.5, opacity: 0.8 }),
+        onEachFeature: (f, layer) => { if (f.properties.route) layer.bindTooltip(f.properties.route, { sticky: true }); },
+      }).addTo(map);
+    }
+    L.geoJSON({ type: "FeatureCollection", features: corridors }, { style: styleLine }).addTo(map);
+    L.geoJSON({ type: "FeatureCollection", features: anchors }, { pointToLayer }).addTo(map);
+  }
+
   // index.html: the whole network
   async function initNetworkMap() {
     const { map, el } = baseMap("network-map", "dark", { minZoom: 10 });
     let bounds = null;
     keepSized(map, el, () => { if (bounds) map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 }); });
     try {
-      const geojson = await getJSON("/api/map/network");
-      drawCollection(map, geojson);
-      bounds = geojson.bounds;
+      const [network, routes] = await Promise.all([
+        getJSON("/api/map/network"),
+        getJSON("/api/map/routes").catch(() => null),
+      ]);
+      drawNetworkView(map, network, routes);
+      bounds = network.bounds;
+      if (bounds) map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
     } catch (err) {
       console.warn("network map unavailable:", err);
     }

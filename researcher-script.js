@@ -68,6 +68,19 @@ function renderSOP(b) {
             + Math.round((b.sop3.fw_nodes_mean - b.sop3.bl_nodes_mean) * 10) / 10;
     }
     if ($('m-obs')) $('m-obs').innerText = b.observations;
+    // the verdict box follows the live results instead of a fixed label: h1
+    // is two-sided, so each sop counts as supported when its test rejects,
+    // and the direction is spelled out where it matters
+    const box = document.querySelector('.hypothesis-box');
+    const status = document.querySelector('.hypothesis-box .hb-status');
+    if (box && status) {
+        const held = [['SOP1', b.sop1.supported], ['SOP2', b.sop2.supported], ['SOP3', b.sop3.supported]].filter(x => x[1]);
+        const all = held.length === 3;
+        box.classList.toggle('supported', all);
+        status.innerText = all ? '✓ Supported' : held.length
+            ? `Partly supported · ${held.map(x => x[0]).join(', ')}` : 'Not supported';
+        if (b.sop3.direction === 'framework_expands_more') status.title = 'SOP3 differs significantly, but the framework expands more nodes than the baseline';
+    }
 }
 
 function renderAhp(profileId, isEmpty = false) {
@@ -143,10 +156,25 @@ function initMap() {
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Esri, HERE, Garmin, &copy; OpenStreetMap contributors' }).addTo(map);
     // one download shared with init(), which reads the same geojson for node positions
     NETWORK_GJ = fetch('/api/map/network').then(r => r.json());
+    // base layer: each jeepney route as its own coloured line (colours from
+    // the route geojson), rail and busway corridors in mode colours, and the
+    // ten anchors only - the virtual stops stay hidden until the playback
+    // lights them up as expanded states
+    fetch('/api/map/routes').then(r => r.json()).then(routes => {
+        L.geoJSON(routes, {
+            style: f => ({ color: f.properties.color || MODE_COLORS.Jeepney, weight: 2, opacity: 0.6 }),
+            onEachFeature: (f, layer) => { if (f.properties.route) layer.bindTooltip(f.properties.route, { sticky: true }); },
+        }).addTo(map);
+    }).catch(() => {});
     NETWORK_GJ.then(gj => {
-        L.geoJSON(gj, {
-            style: () => ({ color:'#2b3550', weight:2, opacity:0.55 }),
-            pointToLayer: (f, ll) => L.circleMarker(ll, { radius:3, color:'#475569', fillColor:'#334155', fillOpacity:0.9, weight:1 }),
+        const corridors = (gj.features || []).filter(f => f.geometry.type === 'LineString' && f.properties.mode !== 'Jeepney');
+        const anchors = (gj.features || []).filter(f => f.geometry.type === 'Point' && f.properties.id && !String(f.properties.id).startsWith('v_'));
+        L.geoJSON({ type: 'FeatureCollection', features: corridors }, {
+            style: f => ({ color: MODE_COLORS[f.properties.mode] || '#2b3550', weight: 3, opacity: 0.7 }),
+        }).addTo(map);
+        L.geoJSON({ type: 'FeatureCollection', features: anchors }, {
+            pointToLayer: (f, ll) => L.circleMarker(ll, { radius: 5, color: '#fff', fillColor: '#0b1220', fillOpacity: 1, weight: 2 })
+                .bindTooltip(f.properties.name, { direction: 'top' }),
         }).addTo(map);
         if (gj.bounds) map.fitBounds(gj.bounds, { padding:[40,40], maxZoom:13 });
         setTimeout(() => map.invalidateSize(), 250);
