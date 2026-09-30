@@ -159,8 +159,8 @@ hour (the offline default is retried after about two minutes) and `/api/status`
 reports `rainfall_source`.
 
 Env vars: `SCPH_GEOJSON=0` skips the jeepney geojson layer and uses the
-discretized corridors; `SCPH_DENSE_GRAPH=0` forces the coarse 10-node graph
-(default is the densest graph whose files exist); `SCPH_RAINFALL_PROVIDER=off`
+discretized corridors; `SCPH_GEOJSON=0` together with `SCPH_DENSE_GRAPH=0`
+forces the coarse 10-node graph (default is the densest graph whose files exist); `SCPH_RAINFALL_PROVIDER=off`
 disables all network rainfall fetches (tests set this); `SCPH_PAGASA_TOKEN`
 enables the PAGASA path; `SCPH_CORS_ORIGINS` overrides allowed origins.
 

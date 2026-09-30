@@ -3,14 +3,16 @@
 **STATUS (sep 2026): pagasa DECLINED the token request - the tenday api is
 restricted to government use. the engine now uses the met norway
 locationforecast 2.0 api (api.met.no, norwegian meteorological institute:
-public, no key, 10-day horizon) as the live rainfall source, pending the
-panel's approval of the formal amendment letter. the pagasa client below
-stays dormant and reactivates automatically if a token is ever granted.**
+public, no key, 10-day horizon) as the live rainfall source. the panel
+approved this change (oct 2026). the pagasa client below stays dormant and
+only runs if a token is ever granted.**
 
-the engine reads live rainfall from the pagasa tenday forecast api once a token
-is configured. access is granted by pagasa through a formal request (their api
-doc: tenday.pagasa.dost.gov.ph). until then the engine uses an offline default
-of 8mm and the dev dashboard shows the source as "default (no token / offline)".
+the rest of this file is kept as a record of the original request. the engine
+would read the pagasa tenday forecast api only if a token is configured (access
+is granted by pagasa through a formal request, their api doc:
+tenday.pagasa.dost.gov.ph). with no token it reads met norway, and if that
+cannot be reached it uses an offline default of 8mm. `/api/status` reports the
+source in `rainfall_source`.
 
 ## how to enable once the token arrives
 

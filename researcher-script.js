@@ -448,7 +448,10 @@ async function runTimeline() {
         // keep the running query in view inside the log without scrolling the page
         const box = $('query-list');
         if (box) box.scrollTop += item.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 2 + item.clientHeight / 2;
-        const ok = await activateQuery(item, { fast: true });
+        // a throw inside one observation must end the run cleanly, not leave
+        // the button stuck on playing
+        let ok = false;
+        try { ok = await activateQuery(item, { fast: true }); } catch (err) { ok = false; }
         if (run !== TL.run) return;        // a manual selection took over the timeline
         if (!ok) { failed = true; break; }   // engine unreachable: stop, do not spin through 180 failures
         TL.index = i + 1;
@@ -644,6 +647,9 @@ async function init() {
             fetch('/api/map/anchors').then(r => r.json()),
             fetch('/api/map/profiles').then(r => r.json()),
         ]);
+        // with the engine down the gateway answers 502 with an error object, not
+        // a list. stop here so the page keeps its offline defaults
+        if (!Array.isArray(anchors) || !Array.isArray(profiles)) throw new Error('engine unreachable');
         PROFILES = profiles;
         BY_ID = Object.fromEntries(anchors.map(a => [a.id, a]));
         // the playback needs every node position, virtual jeepney stops included

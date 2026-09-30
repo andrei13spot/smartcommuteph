@@ -90,7 +90,13 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```powershell
 python -m app.ml.train_flood
 ```
-It should print `trained rfr flood model` with the metrics. Without this the engine still runs, it just uses the fallback heuristic for flood risk. (TensorFlow is optional — the ridership model ships trained; install `tensorflow-cpu` only if you want to retrain it.)
+It should print `trained rfr flood model` with the metrics. Without this the engine still runs, it just uses the fallback heuristic for flood risk.
+
+**Then install TensorFlow** so the trained ridership model can load (it ships in the repo, but it needs TensorFlow to run):
+```powershell
+pip install tensorflow-cpu
+```
+Without it the engine still runs, but ridership falls back to the mean hourly curve and the dashboard shows the LSTM as not trained, so your numbers will not match the rest of the group.
 
 ## Step 6 — Set up the Node gateway (one time)
 
