@@ -204,7 +204,7 @@
     label.style.cssText = "position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;" +
       "background:rgba(15,23,42,.85);color:#ffcc02;padding:6px 14px;border-radius:999px;" +
       "font-size:.78rem;font-weight:600;letter-spacing:.03em;pointer-events:none;";
-    label.innerText = "Running A* · pruning the search space…";
+    label.innerText = "Running A* · searching the network…";
     el.style.position = el.style.position || "relative";
     el.appendChild(label);
     try {
@@ -242,7 +242,7 @@
         }
         await new Promise((r) => setTimeout(r, 28));
       }
-      label.innerText = `Pruned: ${inspect.expanded_nodes} nodes explored vs ${inspect.baseline_nodes} baseline`;
+      label.innerText = `A* explored ${inspect.expanded_nodes} states · distance baseline ${inspect.baseline_nodes}`;
       // graceful fade: dim the pane, then clean up once it is invisible
       return () => {
         pane.style.opacity = "0";
