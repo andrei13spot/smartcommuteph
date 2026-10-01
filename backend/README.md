@@ -98,16 +98,12 @@ app/
   data/
     anchors.json       10 transit anchor points
     graph.json         seed transit edges (Cubao quadrant)
-    anchors_discretized.json, graph_discretized.json
-                       300 m discretized corridors (SCPH_GEOJSON=0 tier)
     virtual_stops.geojson
                        LTFRB jeepney routes (Princess), default jeepney layer
-    jeepney_stops_no_300m.geojson, split_jeepneys.py
-                       discretization source + script (Princess)
     fares.json, fare_matrices.json, stations.json, service_calibration.json,
     line_shapes.json, carousel_distances.json
   routing/
-    graph.py           graph model + haversine + loader (tier selection)
+    graph.py           graph model + haversine + loader
     cost.py            5×5 friction matrix, Min-Max norm, edge cost
     heuristic.py       admissible time heuristic
     astar.py           constraint-aware multi-criteria A*
@@ -117,7 +113,7 @@ app/
   ml/
     ridership.py       trained Keras LSTM, data-curve fallback
     flood.py           trained RFR + rainfall provider chain
-                       (PAGASA dormant -> MET Norway -> 8 mm default)
+                       (MET Norway -> 8 mm default)
     train_ridership.py, train_flood.py, derive_ahp_weights.py
     data/              MMDA incidents, MRT-3 hourly CSVs, extraction scripts
     models/            trained artefacts + ahp_weights.json
@@ -151,18 +147,17 @@ Both models are **trained** on real data:
   real MMDA flood incidents** (`ml/data/mmda_flood_incidents.json`). The
   `.joblib` is gitignored: regenerate once with `python -m app.ml.train_flood`.
 
-Rainfall is fetched through a provider chain: the PAGASA TenDay API when
-`SCPH_PAGASA_TOKEN` is set (dormant; the token request was declined, see
-`../docs/pagasa-api-request.md`), otherwise MET Norway Locationforecast 2.0
-(public, no key), otherwise an offline 8 mm default. A successful fetch is cached for an
-hour (the offline default is retried after about two minutes) and `/api/status`
-reports `rainfall_source`.
+Rainfall comes from MET Norway Locationforecast 2.0 (public, no key; the
+source the panel approved, see `../docs/rainfall-source.md`). If it cannot be
+reached the engine uses an offline 8 mm default. A successful fetch is cached
+for an hour (the offline default is retried after about two minutes) and
+`/api/status` reports `rainfall_source`.
 
-Env vars: `SCPH_GEOJSON=0` skips the jeepney geojson layer and uses the
-discretized corridors; `SCPH_GEOJSON=0` together with `SCPH_DENSE_GRAPH=0`
-forces the coarse 10-node graph (default is the densest graph whose files exist); `SCPH_RAINFALL_PROVIDER=off`
-disables all network rainfall fetches (tests set this); `SCPH_PAGASA_TOKEN`
-enables the PAGASA path; `SCPH_CORS_ORIGINS` overrides allowed origins.
+Env vars: `SCPH_GEOJSON=0` skips the jeepney geojson layer and loads only
+the coarse 10-anchor graph (for quick debugging; the test suite expects the
+default graph, so run the tests without it); `SCPH_RAINFALL_PROVIDER=off`
+disables all network rainfall fetches (tests set this); `SCPH_CORS_ORIGINS`
+overrides allowed origins.
 
 > Research prototype — not a deployed transit application.
 > Group 11 · BSCS · CCIS · Polytechnic University of the Philippines · 2026

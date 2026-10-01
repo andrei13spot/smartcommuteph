@@ -50,7 +50,7 @@ Owns everything the user sees. Finalize the Figma from mockup v4, then build in 
 - Result view — selected-route map, "why this route", criteria rings, four headline stats (time, distance, fare, transfers).
 - Comparison view — four profile cards, active-card highlight, transparency frame with the cost equation + metrics. **This is the money shot — polish it.**
 - Design system — locked color tokens in one palette, all interactive states (default/hover/active/disabled/loading/empty/error), responsive mobile + desktop.
-- **Copy fixes:** drop "reimagined" and "live PAGASA" → use **"PAGASA TenDay Forecast"** (feed is ten-day, not live). Framework voice, not app voice.
+- **Copy fixes:** drop "reimagined" and the "live weather" wording → use **"MET Norway rainfall forecast"** (a 24-hour forecast total, not a live reading). Framework voice, not app voice.
 - **Handoff:** agree the API request/response shape with Andrei **before** wiring anything.
 
 ### Andrei — Backend Lead (Node + Express + A* core)
@@ -58,7 +58,7 @@ Owns the routing service and the algorithm contribution, **and the API contract*
 - Routing service — `POST /route` returns one route + KPIs; `POST /compare` runs all four profiles **plus baseline** → five results.
 - Graph layer — load static attributes (fare, base travel time, distance, transfer flags) at startup; refresh dynamic edges (ridership, flood) at the start of each benchmark run.
 - LSTM ridership model (TensorFlow + Keras) — 24-month window, eFOI contingency; input query timestamp → crowding per edge.
-- RFR flood-risk model (scikit-learn) — input PAGASA TenDay Forecast → flood-risk score per edge.
+- RFR flood-risk model (scikit-learn) — input MET Norway Locationforecast 24-hour rainfall → flood-risk score per edge.
 - Multi-criteria A* — weighted cost from Equation 3; heuristic v_max = 60 km/h; mode speeds 40/60/30/20; penalty multiplier bounded **1.0–2.0**.
 - Node-expansion counter inside the loop — **the pruning evidence**.
 - Distance-based A* baseline — the locked comparison target (not the HAZMAT study).
@@ -84,15 +84,15 @@ Final sign-off before anything merges.
 ## Timeline (revised Aug 15 — extended to end of August)
 
 **Done as of Aug 15 (weeks 1–4):** full engine (multi-criteria A*, distance baseline,
-node counter, transfer friction), `/route` + `/compare`, 264-node street-snapped graph,
+node counter, transfer friction), `/route` + `/compare`, 264-node street-snapped graph (later replaced by the `virtual_stops.geojson` jeepney layer),
 official LRTA anchor coords, real MMDA flood labels, trained LSTM + RFR, 360-row
 benchmark with the full Chapter-4 statistics (paired t-tests, Jaccard, RM-ANOVA),
 UI screens + researcher/dev dashboards, QA round 1 report delivered.
 
 | Sprint | Dates (2026) | Focus | Saturday gate |
 |---|---|---|---|
-| Week 5 | Aug 17 – 22 | **Luis:** QA-round-1 fixes (require origin+destination, no silent defaults, stuck loader on back-nav, dead "Learn more" links) + wire result view to live `/route`. **Princess:** AHP survey weights (150 respondents, reject CR ≥ 0.10) → hand 4 vectors to Andrei. **Andrei:** send PAGASA API letter; drop real weights into `profiles.py`; regenerate benchmark. **Dave:** re-test round-1 fixes as they land | **Aug 22 — validation fixed; result view live; real weights in the engine** |
-| Week 6 | Aug 24 – 29 | **Luis:** wire compare view to live `/compare`; finish About page; copy fixes ("PAGASA TenDay Forecast"); error states. **Princess:** documentation (methodology, model cards, data sources). **Dave:** full QA — all screens, comparison check, 360-row/8-KPI pipeline check, pruning check → **sign-off**. **All:** freeze **Wed Aug 26**, then `dev → main`; defense deck + first dry run | **Aug 29 — ★ QA sign-off; frozen; defense-ready** |
+| Week 5 | Aug 17 – 22 | **Luis:** QA-round-1 fixes (require origin+destination, no silent defaults, stuck loader on back-nav, dead "Learn more" links) + wire result view to live `/route`. **Princess:** AHP survey weights (150 respondents, reject CR ≥ 0.10) → hand 4 vectors to Andrei. **Andrei:** settle the rainfall source (MET Norway, no key needed); drop real weights into `profiles.py`; regenerate benchmark. **Dave:** re-test round-1 fixes as they land | **Aug 22 — validation fixed; result view live; real weights in the engine** |
+| Week 6 | Aug 24 – 29 | **Luis:** wire compare view to live `/compare`; finish About page; copy fixes ("MET Norway rainfall forecast"); error states. **Princess:** documentation (methodology, model cards, data sources). **Dave:** full QA — all screens, comparison check, 360-row/8-KPI pipeline check, pruning check → **sign-off**. **All:** freeze **Wed Aug 26**, then `dev → main`; defense deck + first dry run | **Aug 29 — ★ QA sign-off; frozen; defense-ready** |
 | Buffer | Aug 31 | Final rehearsal + dry run, last fixes only — no new features | **Mon Aug 31 — ★ Hard deadline (end of month)** |
 
 ---

@@ -20,7 +20,7 @@ def _ctx(hour: int = 8, rainfall: float = 30.0) -> CostContext:
 
 def test_graph_is_bidirectional_and_connected():
     g = load_graph()
-    # 10 real od anchors always; the dense graph adds the virtual jeepney stops
+    # 10 real od anchors always; the geojson layer adds the virtual jeepney stops
     assert len(g.real_nodes) == 10
     assert len(g.nodes) >= 10
     # every forward edge has a reverse
@@ -30,8 +30,9 @@ def test_graph_is_bidirectional_and_connected():
 
 def test_dense_graph_virtual_stops_are_wired():
     g = load_graph()
-    virtual = [n for n in g.nodes.values() if n.virtual]
-    if not virtual:  # coarse graph fallback, nothing to check
+    # jeepney stops only: the threaded rail stations (v_st_) are virtual too
+    virtual = [n for n in g.nodes.values() if n.virtual and not n.id.startswith("v_st_")]
+    if not virtual:  # coarse graph (SCPH_GEOJSON=0), nothing to check
         return
     # every virtual stop is a pass-through: exactly on a jeepney chain
     for n in virtual[:20]:
@@ -65,11 +66,10 @@ def test_heuristic_is_admissible():
 
 def test_framework_can_produce_distinct_routes():
     # route variance is tradeoff-dependent: it only shows up for od pairs that
-    # have a time-competitive alternative within the 2x cost cap. on the coarse
-    # 10-anchor graph with real mode speeds, fast rail wins most corridors, so
-    # variance is sparse (mostly from avoiding transfers). it should get much
-    # wider on the dense 300-500 node graph with 300m jeepney nodes. here we just
-    # check the mechanism works: at least one od pair gives >= 2 distinct routes.
+    # have a time-competitive alternative within the 2x cost cap. with real mode
+    # speeds fast rail wins most corridors, so variance is sparse (mostly from
+    # avoiding transfers). here we just check the mechanism works on the default
+    # graph: at least one od pair gives >= 2 distinct routes.
     from itertools import combinations
 
     g = load_graph()

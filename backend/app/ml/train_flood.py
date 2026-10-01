@@ -1,7 +1,7 @@
 # trains the rfr flood-risk model (the R criterion).
 # random forest regressor from scikit-learn, per the paper. it learns flood risk
 # per edge from three grounded features:
-#   rainfall_mm      - 24h rainfall in mm: the request's value, else the live met norway total (pagasa only if a token is set), else the 8mm offline default (0..~80)
+#   rainfall_mm      - 24h rainfall in mm: the request's value, else the live met norway total, else the 8mm offline default (0..~80)
 #   mode_sensitivity - how much the mode floods (elevated rail low, street high)
 #   base_exposure    - the edge's baseline flood exposure by area
 # labels come from the mmda inundation pattern: risk climbs non-linearly with

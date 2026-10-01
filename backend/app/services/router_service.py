@@ -6,7 +6,7 @@ from __future__ import annotations
 import time
 from datetime import datetime
 
-from ..ml.flood import fetch_pagasa_rainfall_mm
+from ..ml.flood import fetch_rainfall_mm
 from ..profiles import Profile, resolve_profile
 from ..routing.astar import shortest_route
 from ..routing.cost import CostContext, count_transfers, modes_in_order, path_transfer_friction
@@ -139,7 +139,7 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
     graph = load_graph()
     profile = resolve_profile(req_profile)
     h = hour if hour is not None else datetime.now().hour
-    rain = rainfall_mm if rainfall_mm is not None else fetch_pagasa_rainfall_mm()
+    rain = rainfall_mm if rainfall_mm is not None else fetch_rainfall_mm()
 
     ctx = _shared_ctx(h, round(rain, 1))
     # time the actual a* run, this is kpi #8

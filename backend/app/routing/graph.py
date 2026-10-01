@@ -151,20 +151,10 @@ def _flood_exposure(graph: "Graph") -> None:
         graph.adjacency[e.src].append(e)
 
 
-def _use_dense() -> bool:
-    # the discretized graph (300m jeepney stops from split_jeepneys.py) is the
-    # default when its files exist. set SCPH_DENSE_GRAPH=0 to force the coarse
-    # 10-node graph, e.g. for quick debugging.
-    import os
-    if os.getenv("SCPH_DENSE_GRAPH", "1") == "0":
-        return False
-    return (_DATA / "anchors_discretized.json").exists() and (_DATA / "graph_discretized.json").exists()
-
-
 def _use_geojson() -> bool:
     # princess's virtual_stops.geojson (155 real ltfrb jeepney routes) is the
-    # top tier when present. SCPH_GEOJSON=0 falls back to the discretized
-    # corridors, SCPH_DENSE_GRAPH=0 all the way down to the coarse 10-node graph.
+    # jeepney layer when present. SCPH_GEOJSON=0 skips it and loads only the
+    # coarse 10-anchor graph from graph.json, e.g. for quick debugging.
     import os
     if os.getenv("SCPH_GEOJSON", "1") == "0":
         return False
@@ -185,9 +175,6 @@ def load_graph() -> Graph:
         # comes entirely from the geojson routes
         raw_edges = [e for e in _load_json("graph.json")["edges"]
                      if e["mode"] != "Jeepney"] + jeep_edges
-    elif _use_dense():
-        anchors = _load_json("anchors_discretized.json")["anchors"]
-        raw_edges = _load_json("graph_discretized.json")["edges"]
     else:
         anchors = _load_json("anchors.json")["anchors"]
         raw_edges = _load_json("graph.json")["edges"]

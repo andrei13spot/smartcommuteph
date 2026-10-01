@@ -44,7 +44,7 @@ def status() -> dict:
         "graph": {"nodes": len(graph.nodes), "edges": undirected,
                   "anchors": len(graph.real_nodes), "virtual_stops": virtual},
         "profiles": len(PROFILES),
-        "rainfall_mm": flood.fetch_pagasa_rainfall_mm(),
+        "rainfall_mm": flood.fetch_rainfall_mm(),
         "rainfall_source": flood.rainfall_source(),
         "ml_models": [
             {
@@ -64,7 +64,7 @@ def status() -> dict:
                 "framework": "scikit-learn",
                 "predictor": flood.predictor.name,
                 "note": "rfr calibrated to the mmda incident exposure rule; live rainfall "
-                        "from met norway locationforecast (pagasa api was declined)",
+                        "from met norway locationforecast 2.0",
             },
         ],
         "endpoints": [

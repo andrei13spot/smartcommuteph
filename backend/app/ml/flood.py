@@ -1,9 +1,9 @@
 # flood-risk predictor (the rfr part) plus the rainfall input.
 # uses a random forest trained on the mmda flood pattern (see train_flood.py),
-# fed 24h rainfall from met norway locationforecast (pagasa tenday only if a
-# token is set). if the trained model or sklearn is missing it falls back to
-# the rainfall-scaled heuristic so the engine still runs offline. same
-# interface either way: predict_batch(edges, rainfall_mm) -> [0..1].
+# fed 24h rainfall from met norway locationforecast. if the trained model or
+# sklearn is missing it falls back to the rainfall-scaled heuristic so the
+# engine still runs offline. same interface either way:
+# predict_batch(edges, rainfall_mm) -> [0..1].
 from __future__ import annotations
 
 from pathlib import Path
@@ -30,17 +30,12 @@ def _clamp01(x: float) -> float:
     return max(0.0, min(1.0, x))
 
 
-# live rainfall providers, tried in order:
-#   1. pagasa tenday api - kept dormant: pagasa declined the token request
-#      (government use only, see docs/pagasa-api-request.md), but if a token
-#      ever lands in SCPH_PAGASA_TOKEN this path comes back to life unchanged
-#   2. met norway locationforecast 2.0 (api.met.no) - the panel-requested
-#      replacement: the norwegian meteorological institute's public api, no
-#      key, 10-day horizon, per-block precipitation in mm for any coordinates
-#   3. the offline default, so the engine always runs without internet
+# live rainfall, tried in order (see docs/rainfall-source.md):
+#   1. met norway locationforecast 2.0 (api.met.no) - the panel-approved
+#      source: the norwegian meteorological institute's public api, no key,
+#      9-day horizon, per-block precipitation in mm for any coordinates
+#   2. the offline default, so the engine always runs without internet
 # SCPH_RAINFALL_PROVIDER=off disables all network fetches (tests use this).
-_PAGASA_URL = "https://tenday.pagasa.dost.gov.ph/api/v1/tenday/current"
-_PAGASA_PARAMS = {"province": "Metro Manila"}
 _METNO_URL = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
 _METNO_PARAMS = {"lat": 14.62, "lon": 121.05}  # cubao quadrant, metro manila
 # met.no requires an identifying user-agent (their terms of service)
@@ -48,29 +43,6 @@ _METNO_UA = "smartcommuteph-thesis/1.0 github.com/andrei13spot/smartcommuteph"
 _CACHE_TTL_S = 3600.0  # forecast is issued daily, refetching hourly is plenty
 
 _rain_cache: dict = {"value": None, "at": 0.0, "source": "default"}
-
-
-def _extract_rainfall_mm(payload: dict) -> float | None:
-    # pull the nearest-day rainfall amount out of the tenday response. the api
-    # nests per-day entries under 'forecast'; we look for the first numeric
-    # rainfall-ish field so a minor schema change doesn't kill the whole app.
-    days = payload.get("forecast") or []
-    if isinstance(days, dict):
-        days = list(days.values())
-    for day in days:
-        if not isinstance(day, dict):
-            continue
-        for key in ("rainfall_mm", "rainfall", "rain_mm", "rain", "total_rainfall"):
-            val = day.get(key)
-            if isinstance(val, dict):
-                val = val.get("total") or val.get("amount") or val.get("mm")
-            if val is None:
-                continue
-            try:
-                return float(str(val).replace("mm", "").strip())
-            except ValueError:
-                continue
-    return None
 
 
 def _metno_rainfall_24h(payload: dict) -> float | None:
@@ -100,9 +72,9 @@ def _metno_rainfall_24h(payload: dict) -> float | None:
     return round(total, 1) if hours > 0 else None
 
 
-def fetch_pagasa_rainfall_mm() -> float:
+def fetch_rainfall_mm() -> float:
     # live 24h rainfall for metro manila, cached for an hour. provider chain:
-    # pagasa (dormant, token only) -> met norway (default) -> offline default.
+    # met norway (default) -> offline default.
     import os
     import time
 
@@ -111,23 +83,6 @@ def fetch_pagasa_rainfall_mm() -> float:
         return _rain_cache["value"]
 
     provider = os.getenv("SCPH_RAINFALL_PROVIDER", "metno").strip().lower()
-    token = os.getenv("SCPH_PAGASA_TOKEN", "").strip()
-    if provider != "off" and token:
-        try:
-            import httpx
-            resp = httpx.get(
-                _PAGASA_URL, params=_PAGASA_PARAMS,
-                headers={"token": token, "User-Agent": "smartcommuteph-thesis/1.0"},
-                timeout=10,
-            )
-            if resp.status_code == 200:
-                mm = _extract_rainfall_mm(resp.json())
-                if mm is not None:
-                    _rain_cache.update(value=mm, at=now, source="pagasa tenday")
-                    return mm
-        except Exception:
-            pass  # declined/unreachable: fall through to met norway
-
     if provider == "metno":
         try:
             import httpx

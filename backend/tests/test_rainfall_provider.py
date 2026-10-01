@@ -43,5 +43,5 @@ def test_metno_parser_rejects_garbage():
 
 def test_provider_off_uses_offline_default():
     flood._rain_cache.update(value=None, at=0.0)
-    assert flood.fetch_pagasa_rainfall_mm() == flood.DEFAULT_RAINFALL_MM
+    assert flood.fetch_rainfall_mm() == flood.DEFAULT_RAINFALL_MM
     assert "default" in flood.rainfall_source()
