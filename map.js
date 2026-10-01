@@ -102,10 +102,11 @@
         .join("");
   }
 
-  // the network view: each jeepney route as its own coloured line (the
-  // colours come with the route geojson), the rail and busway corridors in
-  // their mode colours, and only the ten anchors as markers - the ~2,700
-  // virtual stops are what the router walks through, not something to show
+  // the network view: every jeepney route as an orange line (the jeepney mode
+  // colour), the rail and busway corridors in their mode colours, and only the
+  // ten anchors as markers - the ~2,700 virtual stops are what the router walks
+  // through, not something to show
+  const JEEPNEY_COLOR = "#f59e0b";
   function drawNetworkView(map, network, routes) {
     const anchors = (network.features || []).filter((f) =>
       f.geometry.type === "Point" && f.properties.id && !String(f.properties.id).startsWith("v_"));
@@ -113,7 +114,7 @@
       f.geometry.type === "LineString" && f.properties.mode !== "Jeepney");
     if (routes && routes.features && routes.features.length) {
       L.geoJSON(routes, {
-        style: (f) => ({ color: f.properties.color || "#f59e0b", weight: 2.5, opacity: 0.8 }),
+        style: () => ({ color: JEEPNEY_COLOR, weight: 2.5, opacity: 0.8 }),
         onEachFeature: (f, layer) => { if (f.properties.route) layer.bindTooltip(f.properties.route, { sticky: true }); },
       }).addTo(map);
     }

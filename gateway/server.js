@@ -346,8 +346,9 @@ function passthrough(enginePath, downBody = {}) {
 app.get("/api/map/anchors", passthrough("/api/anchors"));
 app.get("/api/map/profiles", passthrough("/api/profiles"));
 
-// the jeepney routes as drawn lines, one colour per route, straight from the
-// virtual stops geojson (read-only; the stroke colours are the file's own).
+// the jeepney routes as drawn lines, straight from the virtual stops geojson
+// (read-only). every route uses the one jeepney colour, like the rest of the
+// app; the file's own per-route stroke colours are ignored on purpose.
 // the network maps draw these instead of the 2,700 stop dots.
 const ROUTES_PATH = path.resolve(__dirname, "../backend/app/data/virtual_stops.geojson");
 let routeLines = null;
@@ -366,7 +367,7 @@ app.get("/api/map/routes", (_req, res) => {
               route: f.properties.route || f.properties.name || null,
               category: f.properties.category || null,
               mode: "Jeepney",
-              color: f.properties.stroke || MODE_COLORS.Jeepney,
+              color: MODE_COLORS.Jeepney,
             },
           })),
       };

@@ -156,13 +156,13 @@ function initMap() {
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Esri, HERE, Garmin, &copy; OpenStreetMap contributors' }).addTo(map);
     // one download shared with init(), which reads the same geojson for node positions
     NETWORK_GJ = fetch('/api/map/network').then(r => r.json());
-    // base layer: each jeepney route as its own coloured line (colours from
-    // the route geojson), rail and busway corridors in mode colours, and the
-    // ten anchors only - the virtual stops are what the router walks
-    // through, not something to draw
+    // base layer: every jeepney route as an orange line (the jeepney mode
+    // colour), rail and busway corridors in mode colours, and the ten anchors
+    // only - the virtual stops are what the router walks through, not
+    // something to draw
     fetch('/api/map/routes').then(r => r.json()).then(routes => {
         L.geoJSON(routes, {
-            style: f => ({ color: f.properties.color || MODE_COLORS.Jeepney, weight: 2, opacity: 0.6 }),
+            style: () => ({ color: MODE_COLORS.Jeepney, weight: 2, opacity: 0.6 }),
             onEachFeature: (f, layer) => { if (f.properties.route) layer.bindTooltip(f.properties.route, { sticky: true }); },
         }).addTo(map);
     }).catch(() => {});
