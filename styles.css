@@ -46,9 +46,10 @@ body {
     padding-bottom: 15px !important;
 }
 
-/* brand icon hidden for now, text-only branding */
+/* brand icon: images/logo.svg, a transit-map line bent into an s */
 .brand-logo {
-    display: none;
+    width: 28px; height: 28px; flex-shrink: 0;
+    background: url("images/logo.svg") center / contain no-repeat;
 }
 .brand-text { font-weight: 700; font-size: 1.05rem; color: #111; letter-spacing: -0.5px; }
 .nav-link { color: #555 !important; font-size: 0.85rem; font-weight: 500; }

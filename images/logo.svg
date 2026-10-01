@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SmartCommute PH">
+  <!-- smartcommute ph mark: one transit-map line bent into an s, from an
+       origin stop (green) through a transfer station (white) to the
+       destination (jeepney orange) -->
+  <defs>
+    <linearGradient id="scph-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#scph-bg)"/>
+  <path d="M14 49 H37 a9 9 0 0 0 0 -18 H27 a9 9 0 0 1 0 -18 H50"
+        fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="14" cy="49" r="5.5" fill="#34d399" stroke="#ffffff" stroke-width="2.5"/>
+  <circle cx="32" cy="31" r="4.5" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  <circle cx="50" cy="13" r="5.5" fill="#f59e0b" stroke="#ffffff" stroke-width="2.5"/>
+</svg>

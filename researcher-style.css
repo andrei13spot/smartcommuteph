@@ -36,7 +36,10 @@
     transition: all 0.3s ease-in-out;
 }
 
-.brand-logo { display: none; }
+.brand-logo {
+    width: 26px; height: 26px; flex-shrink: 0;
+    background: url("images/logo.svg") center / contain no-repeat;
+}
 
 .brand-text { 
     font-weight: 700; 
