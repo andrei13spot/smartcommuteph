@@ -11,6 +11,7 @@ from ..research.benchmark import benchmark_log_csv, run_benchmark, run_benchmark
 from ..research.inspector import inspect
 from ..research.ml_metrics import ml_metrics
 from ..research import report
+from ..routing.fares import MATRIX_INFO
 from ..routing.graph import load_graph
 from ..schemas import (
     AnchorOut,
@@ -48,6 +49,7 @@ def status() -> dict:
         "profiles": len(PROFILES),
         "rainfall_mm": flood.fetch_rainfall_mm(),
         "rainfall_source": flood.rainfall_source(),
+        "fare_matrices": MATRIX_INFO,
         "ml_models": [
             {
                 "key": "lstm",

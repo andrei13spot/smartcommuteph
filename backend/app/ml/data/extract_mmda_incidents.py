@@ -1,18 +1,12 @@
-# one-off extractor: pulls flood incident rows out of the two mmda flood report
-# pdfs from the group data drive and writes mmda_flood_incidents.json.
-# each row in the reports ends with latitude then longitude, with the flood
-# depth in inches somewhere after the location name.
-# usage: python extract_mmda_incidents.py <report1.pdf> <report2.pdf> ...
+# pdf parser for the mmda flood reports: pulls the incident rows out of one
+# report. each row ends with latitude then longitude, with the flood depth in
+# inches somewhere after the location name. process_govt_datasets.py calls
+# parse_pdf for every report and writes mmda_flood_incidents.json.
 from __future__ import annotations
 
-import json
 import re
-import sys
-from pathlib import Path
 
 from pypdf import PdfReader
-
-OUT = Path(__file__).with_name("mmda_flood_incidents.json")
 
 # a data row ends with "<lat> <lng>" where lat is 14.x and lng is 120.x/121.x
 _ROW = re.compile(
@@ -49,30 +43,3 @@ def parse_pdf(path: str) -> list[dict]:
                 "lng": float(m.group("lng").rstrip(".")),
             })
     return incidents
-
-
-def main(paths: list[str]) -> None:
-    all_inc = []
-    for p in paths:
-        rows = parse_pdf(p)
-        print(f"{p}: {len(rows)} incidents")
-        all_inc.extend(rows)
-    # drop exact duplicates (same spot reported in both files)
-    seen, unique = set(), []
-    for i in all_inc:
-        key = (round(i["lat"], 5), round(i["lng"], 5))
-        if key in seen:
-            continue
-        seen.add(key)
-        unique.append(i)
-    OUT.write_text(json.dumps({
-        "description": "flood incident points from the mmda flood reports in the "
-                       "group data drive (location, flood depth in inches, lat/lng). "
-                       "used to derive the per-edge flood risk baseline.",
-        "incidents": unique,
-    }, indent=2), encoding="utf-8")
-    print(f"wrote {len(unique)} unique incidents -> {OUT}")
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])

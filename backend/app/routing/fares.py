@@ -66,15 +66,55 @@ def _load_discounted_matrices() -> dict:
         return {}
 
 
+def _load_stored_value_matrices() -> dict:
+    # the stored value (beep card) matrices where the operator publishes a
+    # separate one; today lrt-1 (lrmc) and lrt-2 (lrta). mrt-3 charges the
+    # same fare on a card, so it has no second matrix and keeps its regular one
+    try:
+        data = json.loads(_MATRICES_PATH.read_text(encoding="utf-8"))
+        return {mode: m["stored_value_matrix"] for mode, m in data.items() if m.get("stored_value_matrix")}
+    except Exception:
+        return {}
+
+
+def _load_matrix_info() -> dict:
+    # where each matrix comes from, shown by /api/status so the fares can be
+    # traced back to the published sheet
+    try:
+        data = json.loads(_MATRICES_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    info = {}
+    for mode, m in data.items():
+        stations = m.get("stations_in_order") or sorted({k.split("|")[0] for k in m.get("matrix", {})})
+        info[mode] = {
+            "stations": len(stations),
+            "effective": m.get("effective"),
+            "source": m.get("source"),
+            "note": m.get("note"),
+            "matrices": [k for k in ("matrix", "discounted_matrix", "stored_value_matrix") if m.get(k)],
+        }
+    return info
+
+
 _MATRICES = _load_matrices()
 _DISCOUNTED_MATRICES = _load_discounted_matrices()
+_STORED_VALUE_MATRICES = _load_stored_value_matrices()
+MATRIX_INFO = _load_matrix_info()
 
 
-def matrix_leg_fare(mode: str, board_name: str, alight_name: str, discounted: bool = False) -> float | None:
+def matrix_leg_fare(mode: str, board_name: str, alight_name: str, discounted: bool = False,
+                    card: bool = False) -> float | None:
     # official published matrix lookup (e.g. the dotr-mrt3 fare matrix): the
     # exact fare for boarding at one station and alighting at another. with
-    # discounted=True the operator's discounted matrix is used when there is one
-    matrix = (_DISCOUNTED_MATRICES if discounted else _MATRICES).get(mode)
+    # discounted=True the operator's discounted matrix is used when there is
+    # one; with card=True the stored value (beep) matrix, else the regular one
+    if discounted:
+        matrix = _DISCOUNTED_MATRICES.get(mode)
+    elif card:
+        matrix = _STORED_VALUE_MATRICES.get(mode) or _MATRICES.get(mode)
+    else:
+        matrix = _MATRICES.get(mode)
     if not matrix:
         return None
     a = _ANCHOR_STATION.get(mode, {}).get(board_name, board_name)
@@ -108,12 +148,14 @@ def _is_boarding(prev_mode: str, mode: str, at_virtual: bool) -> bool:
     return mode == "Jeepney" and not at_virtual
 
 
-def path_fare(graph: Graph, edges: list[Edge], discounted: bool = False) -> float:
+def path_fare(graph: Graph, edges: list[Edge], discounted: bool = False, card: bool = False) -> float:
     # split the path into boarding legs and price each one. a leg on a line
     # with an official published matrix is priced by its board/alight stations;
     # anything else uses the base + per-km structure. for a student or senior
     # (discounted=True) a leg takes the operator's discounted matrix when one
     # is published, otherwise the paper's 20 percent off the regular leg fare.
+    # card=True prices rail legs with the stored value (beep) matrix instead of
+    # the single journey ticket; bus and jeepney legs do not change.
     if not edges:
         return 0.0
 
@@ -123,7 +165,7 @@ def path_fare(graph: Graph, edges: list[Edge], discounted: bool = False) -> floa
             m = matrix_leg_fare(mode, a, b, discounted=True)
             if m is not None:
                 return m
-        m = matrix_leg_fare(mode, a, b)
+        m = matrix_leg_fare(mode, a, b, card=card)
         regular = m if m is not None else leg_fare(mode, km)
         return regular * 0.8 if discounted else regular
 

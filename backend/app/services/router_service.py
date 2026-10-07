@@ -153,11 +153,14 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
     fare = round(path_fare(graph, edges), 1)
     # student or senior: official discounted matrix where published, else 20% off
     discounted = round(path_fare(graph, edges, discounted=True), 1) if passenger_type in ("student", "senior") else None
+    # the same trip paying the rail legs with a beep card (lrt-1 and lrt-2 stored value matrices)
+    card = round(path_fare(graph, edges, card=True), 1)
     summary = RouteSummary(
         time_min=round(sum(e.base_time for e in edges) + transfer_minutes, 1),
         distance_km=round(sum(e.distance_km for e in edges), 1),
         fare_php=fare,
         fare_discounted_php=discounted,
+        fare_card_php=card,
         transfers=count_transfers(edges),
         modes=modes_in_order(edges),
     )

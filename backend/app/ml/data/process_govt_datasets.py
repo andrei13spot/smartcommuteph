@@ -3,7 +3,8 @@
 # its provenance. sources (obtained by the group through formal data requests):
 #   dotr-mrt3 letter + headway table (13 apr 2026, gm capati)
 #   dotr edsa busway ridership workbook (daily since jun 2020, hourly station
-#     counts, dispatch monitoring)
+#     counts, dispatch monitoring). the busway hourly curve is no longer made
+#     here: train_busway.py writes it from the 21 digitized stations.
 #   mmda flood reports + summary reports 2024/2025 (incident lat/lng + depth)
 #   mmda travel time survey along edsa by bus (6 jan 2025: 17.69 kph average)
 #   lrta line 2 coordinates + train intervals
@@ -16,7 +17,6 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 INCIDENTS_OUT = HERE / "mmda_flood_incidents.json"
-BUSWAY_CURVE_OUT = HERE.parent / "models" / "busway_hourly_curve.json"
 
 # metro manila bounding box, drops any mis-parsed coordinate
 _BBOX = (14.3, 14.9, 120.8, 121.3)
@@ -55,54 +55,11 @@ def merge_flood_incidents(datasets: Path) -> dict:
     return {"incidents": len(unique)}
 
 
-def busway_hourly_curve(datasets: Path) -> dict:
-    # mean boardings per hour of day at kamuning station (may 2025 sheet of the
-    # dotr busway workbook), normalized so the peak hour = 1.5 to match the
-    # scale of the mrt-3 demand curve the lstm uses
-    import openpyxl
-
-    wb = openpyxl.load_workbook(
-        datasets / "DOTr" / "EDSA BUSWAY RIDERSHIP_For requests.xlsx",
-        read_only=True, data_only=True)
-    ws = wb["MAY 2025_KAMUNING STATION"]
-    by_hour: dict[int, list[float]] = {}
-    for row in ws.iter_rows(values_only=True):
-        time_s, val = row[1] if len(row) > 1 else None, row[3] if len(row) > 3 else None
-        if not isinstance(time_s, str) or "-" not in time_s or val is None:
-            continue
-        try:
-            start = time_s.split("-")[0].strip()
-            hh = int(start.split(":")[0]) % 12
-            if "PM" in start.upper():
-                hh += 12
-            by_hour.setdefault(hh, []).append(float(val))
-        except (ValueError, IndexError):
-            continue
-    means = {h: sum(v) / len(v) for h, v in by_hour.items()}
-    if not means:
-        raise SystemExit("no hourly rows parsed from the kamuning sheet")
-    peak = max(means.values())
-    curve = {h: round(1.5 * m / peak, 3) for h, m in sorted(means.items())}
-    BUSWAY_CURVE_OUT.parent.mkdir(parents=True, exist_ok=True)
-    BUSWAY_CURVE_OUT.write_text(json.dumps({
-        "description": "edsa busway mean hourly boardings, kamuning station, may "
-                       "2025 (dotr busway ridership workbook, formal data request). "
-                       "normalized peak = 1.5, same scale as the mrt-3 demand curve.",
-        "line": "EDSA-Bus",
-        "curve": curve,
-    }, indent=2), encoding="utf-8")
-    print(f"  -> busway curve, {len(curve)} hours, peak hour "
-          f"{max(means, key=means.get)}:00 ({int(peak)} boardings)")
-    return {"hours": len(curve)}
-
-
 def main() -> None:
     datasets = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(
         r"C:\Users\ASUS TUF\Documents\3rd Year\2nd Sem\Thesis and SE\Datasets")
     print("merging mmda flood incidents...")
     merge_flood_incidents(datasets)
-    print("extracting busway hourly curve...")
-    busway_hourly_curve(datasets)
     print("done. retrain the rfr next: python -m app.ml.train_flood")
 
 

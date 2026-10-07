@@ -101,7 +101,7 @@ app/
     virtual_stops.geojson
                        LTFRB jeepney routes (Princess), default jeepney layer
     fares.json, fare_matrices.json, stations.json, service_calibration.json,
-    line_shapes.json, carousel_distances.json
+    line_shapes.json
   routing/
     graph.py           graph model + haversine + loader
     cost.py            5×5 friction matrix, Min-Max norm, edge cost

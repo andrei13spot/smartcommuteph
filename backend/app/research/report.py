@@ -366,8 +366,13 @@ def live_context() -> dict:
     m = {x["key"]: x for x in ml_metrics().get("models", [])}
     model_rows = []
     if "lstm" in m:
-        model_rows.append(["LSTM (crowding)", "MRT-3 hourly ridership, January 2024 and January 2025 (1,175 hours)",
+        model_rows.append(["LSTM (crowding)", "MRT-3 hourly ridership, January 2024 to December 2025 (14,024 hours)",
                            f"RMSE {m['lstm'].get('rmse')}"])
+    for key, label, data in (("busway", "LSTM (EDSA busway)", "DOTr tally sheets, 21 stations, digitized"),
+                             ("lrt2", "LSTM (LRT-2)", "LRTA entries by time band, 2024 to March 2026"),
+                             ("lrt1", "LSTM (LRT-1)", "reconstructed: PSA monthly totals x MRT-3 hourly share")):
+        if key in m:
+            model_rows.append([label, data, f"RMSE {m[key].get('rmse')}"])
     if "rfr" in m:
         model_rows.append(["Random Forest (flood)", "flood rule with exposure from 764 MMDA incident points",
                            f"RMSE {m['rfr'].get('rmse')}, R2 {m['rfr'].get('r2')}"])

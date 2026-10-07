@@ -1,12 +1,5 @@
 {
-  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h, the paper's values). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php. lrt-1 and lrt-2 ridership baselines are set from the psa table 13-2 average daily load factor (2024 mean: lrt-1 59.92%, lrt-2 70.71%, mrt-3 93.96%) relative to the mrt-3 baseline mean, by ml/data/calibrate_lrt_baselines.py. edsa-bus corridor distances where mapped come from the dotr busway distances sheet (monumento-north ave 5.28km, north ave-nepa q mart 2.91km, pitx-taft 4.87km); unmapped segments stay straight-line.",
-  "modes": [
-    "LRT-1",
-    "LRT-2",
-    "MRT-3",
-    "EDSA-Bus",
-    "Jeepney"
-  ],
+  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h, the paper's values). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php. lrt-1 and lrt-2 ridership baselines are set from the psa table 13-2 average daily load factor (2024 mean: lrt-1 59.92%, lrt-2 70.71%, mrt-3 93.96%) relative to the mrt-3 baseline mean, by ml/data/calibrate_lrt_baselines.py. edsa-bus edges are threaded through the busway stops in stations.json, so each hop is the straight-line distance between consecutive stops.",
   "edges": [
     {
       "from": "doroteo_jose",
@@ -71,7 +64,7 @@
       "fare": 15,
       "ridership": 0.5,
       "flood_risk": 0.45,
-      "distance_km": 5.28
+      "distance_km": null
     },
     {
       "from": "sm_north",
@@ -80,7 +73,7 @@
       "fare": 13,
       "ridership": 0.4,
       "flood_risk": 0.5,
-      "distance_km": 2.91
+      "distance_km": null
     },
     {
       "from": "cubao",
@@ -88,7 +81,8 @@
       "mode": "EDSA-Bus",
       "fare": 13,
       "ridership": 0.4,
-      "flood_risk": 0.55
+      "flood_risk": 0.55,
+      "distance_km": null
     },
     {
       "from": "shaw",
@@ -96,7 +90,8 @@
       "mode": "EDSA-Bus",
       "fare": 15,
       "ridership": 0.38,
-      "flood_risk": 0.5
+      "flood_risk": 0.5,
+      "distance_km": null
     },
     {
       "from": "pasay",
@@ -105,7 +100,7 @@
       "fare": 20,
       "ridership": 0.4,
       "flood_risk": 0.35,
-      "distance_km": 4.87
+      "distance_km": null
     },
     {
       "from": "pasay",

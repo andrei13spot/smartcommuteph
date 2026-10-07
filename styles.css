@@ -83,16 +83,6 @@ body {
 }
 .hero-subtext { font-size: 1.05rem; line-height: 1.6; color: #555; max-width: 600px; font-weight: 500; }
 
-/* --- RESULT PAGE STYLES --- */
-.route-hero-subtitle {
-    color: #495057;
-    font-size: 1.35rem;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    max-width: 680px;
-    margin: 0 auto;
-}
-
 .route-results-container {
     max-width: 1200px;
     min-height: 550px;
@@ -119,13 +109,6 @@ body {
 }
 
 .map-preview-tag { color: #10b981; }
-
-.map-caption {
-    color: #94a3b8;
-    font-size: 0.9rem;
-    max-width: 300px;
-    line-height: 1.5;
-}
 
 .prioritized-label {
     color: #94a3b8;
@@ -240,8 +223,6 @@ body {
 /* --- GLOBAL UTILITIES --- */
 .footer-mini-logo { width: 16px; height: 16px; }
 
-.footer-small { font-size: 0.75rem; }
-
 .navbar-spacer { width: 150px; }
 
 .max-width-1200 { max-width: 1200px; margin: 0 auto; }
@@ -321,33 +302,6 @@ body {
     border: none;
 }
 
-/* --- BUTTONS (RESIN & NEUMORPHIC GLASS) --- */
-.glass-btn {
-    position: relative; color: #333; border-radius: 50px; padding: 12px 32px;
-    font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.15); 
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), inset 0 3px 4px rgba(255, 255, 255, 0.9), 
-                inset 0 -3px 5px rgba(0, 0, 0, 0.05), inset 0 10px 20px rgba(255, 255, 255, 0.2);
-}
-.glass-btn:hover {
-    color: #000; transform: translateY(-2px); background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), inset 0 4px 6px rgba(255, 255, 255, 1),
-                inset 0 -3px 5px rgba(0, 0, 0, 0.05), inset 0 10px 20px rgba(255, 255, 255, 0.3);
-}
-
-.btn-hero-primary {
-    background: rgba(13, 110, 253, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    color: #fff; border-radius: 50px; padding: 12px 32px; font-size: 0.95rem; font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.4); transition: all 0.3s ease; text-decoration: none;
-    box-shadow: 0 8px 24px rgba(13, 110, 253, 0.3), inset 0 3px 4px rgba(255, 255, 255, 0.6), inset 0 -3px 5px rgba(0, 0, 0, 0.15);
-}
-.btn-hero-primary:hover {
-    transform: translateY(-2px); color: #fff; background: rgba(13, 110, 253, 0.85); 
-    box-shadow: 0 12px 32px rgba(13, 110, 253, 0.4), inset 0 4px 6px rgba(255, 255, 255, 0.8), inset 0 -3px 5px rgba(0, 0, 0, 0.15);
-}
-.arrow-icon { margin-left: 4px; }
-
 /* --- MAP SECTION WRAPPER --- */
 .map-section { min-height: 100vh; padding-top: 20px; padding-bottom: 20px; scroll-margin-top: 80px; }
 
@@ -373,7 +327,6 @@ body {
 .bg-mrt3 { background-color: #3b82f6; color: #3b82f6; }      /* Blue */
 .bg-carousel { background-color: #10b981; color: #10b981; }  /* Green */
 .bg-jeep { background-color: #f59e0b; color: #f59e0b; }      /* Orange */
-
 
 /* =========================================
    PROFILES SECTION (EDGE-TO-EDGE DARK BLOCK)
@@ -480,13 +433,6 @@ body.page-compare .compare-card.active .compare-metric {
 /* Dark Section Typography */
 .profiles-overline { font-size: 1rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px;}
 .profiles-headline { font-size: 5.5rem; font-weight: 900; letter-spacing: -2.5px; line-height: 1.1; }
-.profiles-gradient {
-    background: linear-gradient(100deg, #70b3ff 0%, #0d6efd 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-style: italic;
-    padding-right: 5px;
-}
 
 .compare-gradient {
     font-style: italic;
@@ -659,14 +605,6 @@ body.page-compare .compare-card.active .compare-metric {
     line-height: 1;
 }
 
-.profile-modal-footer {
-    display: none;
-}
-
-.profile-modal-action {
-    display: none;
-}
-
 body.modal-open {
     overflow: hidden;
 }
@@ -711,10 +649,6 @@ body.modal-open {
     color: #f8fafc;
     max-height: 80vh;
     overflow-y: auto;
-}
-
-.route-modal-content {
-    position: relative;
 }
 
 .route-modal-header {
@@ -1068,7 +1002,6 @@ body.modal-open {
    ========================================= */
 .steps-overline { font-weight: 700; color: #666; font-size: 0.85rem; margin-bottom: 15px; text-transform: uppercase; }
 .steps-title { font-weight: 900; font-size: 4.5rem; line-height: 1.05; letter-spacing: -2.5px; color: #111; }
-.steps-italic { font-style: italic; font-weight: 800; }
 .steps-subtitle { color: #555; font-size: 1.05rem; }
 
 .light-glass {
@@ -1222,9 +1155,6 @@ body.modal-open {
         padding-bottom: 4px; 
     }
 }
-
-/* --- HERO TYPOGRAPHY --- */
-.plan-hero-overline { font-weight: 700; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; color: #0d6efd; }
 .plan-hero-title { font-weight: 900; font-style: italic; font-size: 5rem; line-height: 1.05; letter-spacing: -2.5px; }
 .plan-hero-subtitle { color: #555; font-size: 1.15rem; max-width: 700px; line-height: 1.6; }
 
@@ -1364,7 +1294,6 @@ body.modal-open {
 .profile-card-light.active-green .profile-subtitle { color: #6ee7b7; }
 .profile-card-light.active-green .profile-radio { background-color: #10b981; border-color: #10b981; color: #ffffff; }
 
-
 /* =========================================
    NEW BLUE ACTION BUTTON
    ========================================= */
@@ -1468,14 +1397,6 @@ body.modal-open {
     align-items: center;
     justify-content: center;
     border: 2px dashed rgba(0, 0, 0, 0.1);
-}
-
-.map-placeholder-text {
-    color: #888888;
-    font-weight: 700;
-    font-size: 1.2rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
 }
 
 /* --- Floating Input Panel --- */
@@ -1601,10 +1522,6 @@ body.modal-open {
     color: #94a3b8 !important;
 }
 
-.footer .footer-small {
-    font-size: 0.8rem !important;
-}
-
 .footer .text-secondary {
     color: #cbd5e1 !important; 
 }
@@ -1672,13 +1589,6 @@ body.modal-open {
     cursor: default; /* Signals to the cursor that it's text, not a link */
 }
 
-/* Giving the arrow a clean brand accent color */
-.badge-arrow {
-    color: #1a1a1a;
-    margin: 0 12px;
-    font-weight: 700;
-}
-
 .compare-section .btn-white-pill:hover {
     background-color: #f59e0b !important; /* Radiant Amber/Orange */
     color: #ffffff !important;            /* Clean White Text */
@@ -1743,30 +1653,6 @@ body.modal-open {
 
 .leaflet-control-zoom a:hover {
     background: rgba(255, 255, 255, 0.12) !important;
-}
-
-/* mode legend under the result map */
-.route-legend {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
-    margin-top: 14px;
-}
-.route-legend:empty { display: none; }
-.route-legend-item {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
-    display: inline-flex;
-    align-items: center;
-    font-weight: 500;
-}
-.route-legend-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 7px;
-    box-shadow: 0 0 6px currentColor;
 }
 
 /* compare cards: real leaflet preview replaces the placeholder graphic */
@@ -1870,10 +1756,6 @@ body.dev-console {
     color: var(--uncrowded); background: rgba(0,113,227,0.10); border: 1px solid rgba(0,113,227,0.2);
     padding: 3px 8px; border-radius: 100px; margin-left: 8px; vertical-align: middle;
 }
-.dev-console .nav-links { display: flex; gap: 4px; flex: 1; }
-.dev-console .nav-links a { font-size: 13px; padding: 0 12px; line-height: 52px; color: var(--ink-soft); }
-.dev-console .nav-links a:hover { color: var(--ink); }
-.dev-console .nav-links a.active { color: var(--ink); font-weight: 600; }
 .dev-console .nav .right {
     font-size: 12px; display: inline-flex; align-items: center; gap: 8px;
     padding: 6px 12px; background: rgba(0,0,0,.05); border-radius: 100px; font-weight: 600;
@@ -1891,17 +1773,12 @@ body.dev-console {
     padding: 16px 28px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
 }
 .dev-console .dt-title { font-size: 22px; font-weight: 700; letter-spacing: -0.022em; }
-.dev-console .dt-sub { color: var(--ink-soft); font-size: 12px; margin-top: 2px; }
 .dev-console .dt-runchip {
     display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px;
     background: var(--bg-soft); border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--ink-soft);
 }
 .dev-console .dt-runchip .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(48,209,88,.2); animation: devpulse 2s infinite; }
 .dev-console .dt-runchip strong { color: var(--ink); font-weight: 700; }
-.dev-console .dt-spacer { flex: 1; }
-.dev-console .dt-meta { display: flex; gap: 22px; }
-.dev-console .dt-meta-item .dmi-l { color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; font-size: 10px; font-weight: 700; }
-.dev-console .dt-meta-item .dmi-v { font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
 .dev-console .dt-btn {
     background: var(--ink); color: #fff; padding: 9px 18px; border-radius: 100px;
     font-size: 12px; font-weight: 700; border: none; cursor: pointer; font-family: inherit;
@@ -1922,20 +1799,11 @@ body.dev-console {
 .dev-console .dash-left { background: #fff; border-right: 1px solid var(--rule); display: flex; flex-direction: column; overflow-y: auto; }
 .dev-console .dl-section { padding: 18px 20px; border-bottom: 1px solid var(--rule); }
 .dev-console .dl-l { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-.dev-console .field { margin-bottom: 10px; }
-.dev-console .field-l { font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 5px; }
 .dev-console select {
     width: 100%; background: var(--bg-soft); color: var(--ink); border: 1px solid rgba(0,0,0,.08);
     border-radius: 10px; padding: 9px 12px; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
 }
 .dev-console select:focus { outline: none; border-color: var(--uncrowded); }
-.dev-console .run-btn {
-    width: 100%; margin-top: 4px; background: var(--ink); color: #fff; border: none; border-radius: 10px;
-    padding: 11px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .15s;
-}
-.dev-console .run-btn:hover { opacity: 0.9; }
-.dev-console .run-btn:disabled { opacity: 0.5; cursor: default; }
 
 /* AHP weight rows */
 .dev-console .ahp-row { margin-bottom: 12px; }
@@ -1962,7 +1830,6 @@ body.dev-console {
 /* ----- center map stage ----- */
 .dev-console .dash-center { position: relative; background: #0a0e1a; overflow: hidden; }
 .dev-console #research-map { position: absolute; inset: 0; width: 100%; height: 100%; }
-.dev-console .console-map { position: absolute; inset: 0; }
 .dev-console .map-overlay { position: absolute; z-index: 500; pointer-events: none; }
 .dev-console .glass-panel {
     background: rgba(10,14,26,.74); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -1983,36 +1850,15 @@ body.dev-console {
 .dev-console .ov-layers-l { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,.55); font-weight: 600; padding-right: 9px; border-right: 1px solid rgba(255,255,255,.1); }
 .dev-console .ovl-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,.75); padding: 4px 10px; border-radius: 100px; background: rgba(255,255,255,.06); font-weight: 500; }
 .dev-console .ovl-chip .ovl-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
-.dev-console .ov-status { bottom: 20px; right: 20px; padding: 9px 15px; pointer-events: auto; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.8); }
-.dev-console .ov-status .s-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cheapest-glow); margin-right: 7px; }
 
 /* ----- right rail ----- */
 .dev-console .dash-right { background: #fff; border-left: 1px solid var(--rule); overflow-y: auto; }
 .dev-console .dr-section { padding: 20px 22px; border-bottom: 1px solid var(--rule); }
 .dev-console .dr-l { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 
-/* SOP pills */
-.dev-console .sop-status { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.dev-console .sop-pill { border-radius: 12px; padding: 12px 8px; text-align: center; border: 1px solid; }
-.dev-console .sop-pill.ok { background: linear-gradient(135deg, rgba(48,209,88,.10), rgba(102,255,161,.04)); border-color: rgba(48,209,88,.25); }
-.dev-console .sop-pill.no { background: var(--bg-soft); border-color: var(--rule); }
-.dev-console .sp-name { font-size: 10px; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-.dev-console .sp-stat { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.dev-console .sp-verdict { font-size: 10px; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
-.dev-console .sop-pill.ok .sp-verdict { color: var(--success); }
-.dev-console .sop-pill.no .sp-verdict { color: var(--ink-tertiary); }
-.dev-console .sop-detail { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.dev-console .sd-l { font-size: 10px; color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; font-weight: 600; }
-.dev-console .sd-v { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
-
 /* cost decomposition */
 .dev-console .cd-eq { background: var(--bg-soft); border-radius: 8px; padding: 9px 11px; font-family: var(--mono); font-size: 11px; line-height: 1.4; color: var(--ink); margin-bottom: 12px; }
 .dev-console .cd-legs { font-size: 12px; }
-.dev-console .cd-leg { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--rule); }
-.dev-console .cd-leg:last-child { border-bottom: none; }
-.dev-console .cd-leg .cl-od { font-weight: 600; }
-.dev-console .cd-leg .cl-mode { font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.04em; }
-.dev-console .cd-leg .cl-cost { font-weight: 700; font-variant-numeric: tabular-nums; }
 .dev-console .cd-result { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; }
 .dev-console .cdr-l { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
 .dev-console .cdr-v { font-size: 18px; font-weight: 700; letter-spacing: -0.018em; font-variant-numeric: tabular-nums; }
@@ -2027,9 +1873,6 @@ body.dev-console {
 .dev-console .mc-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
 .dev-console .mc-meta { font-size: 11px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .dev-console .mc-status { font-size: 10px; font-weight: 700; color: var(--cheapest); text-transform: uppercase; letter-spacing: 0.06em; }
-
-/* footer */
-.dev-console .dash-foot { background: var(--bg-soft); border-top: 1px solid var(--rule); padding: 16px 28px; font-size: 11px; color: var(--ink-soft); }
 
 /* ----- click-to-explain help ----- */
 .dev-console .help-wrap { position: relative; display: inline-flex; vertical-align: middle; margin-left: auto; }
@@ -2059,17 +1902,12 @@ body.dev-console {
 .dev-console .card.intro b { color: var(--ink); }
 .dev-console .card.intro kbd { font-family: var(--mono); font-size: 0.78rem; background: var(--bg-soft); border: 1px solid var(--rule); border-radius: 6px; padding: 1px 6px; }
 .dev-console .row-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.dev-console .eyebrow { color: var(--ink-soft); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
-.dev-console .muted { color: var(--ink-soft); }
 .dev-console .stat .label { color: var(--ink-tertiary); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
 .dev-console .stat .value { font-size: 1.9rem; font-weight: 700; margin-top: 5px; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; color: var(--ink); }
 .dev-console .stat .value.mono { font-family: var(--mono); font-size: 1.4rem; }
 .dev-console .badge { display: inline-block; padding: 4px 10px; border-radius: 100px; font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
 .dev-console .badge.ok { background: rgba(48,209,88,.12); color: #1a7f3c; border: 1px solid rgba(48,209,88,.3); }
 .dev-console .badge.stub { background: rgba(255,149,0,.13); color: #a85d00; border: 1px solid rgba(255,149,0,.3); }
-.dev-console .badge.muted { background: rgba(0,0,0,.05); color: var(--ink-soft); border: 1px solid var(--rule); }
-.dev-console .ml-row { padding: 11px 0; border-bottom: 1px solid var(--rule); }
-.dev-console .ml-row:last-child { border-bottom: none; }
 .dev-console .ml-name { font-weight: 700; font-size: 1rem; }
 .dev-console .ml-meta { color: var(--ink-soft); font-size: 0.84rem; margin-top: 6px; }
 .dev-console .ml-meta b { color: var(--ink); font-family: var(--mono); }
@@ -2094,8 +1932,7 @@ body.dev-console {
 .dev-console .offline-note { display: none; color: var(--safest); font-weight: 600; margin-top: 10px; }
 .dev-console.is-offline .offline-note { display: block; }
 
-/* leaflet on the dark map stage */
-.dev-console #research-map.leaflet-container, .dev-console .console-map .leaflet-container { background: #0a0e1a; font-family: inherit; }
+.dev-console #research-map.leaflet-container { background: #0a0e1a; font-family: inherit; }
 
 /* status page small additions */
 .dev-console .faint { color: var(--ink-tertiary); }
@@ -2117,10 +1954,6 @@ body.dev-console {
 }
 .member-photo svg { width: 62px; height: 62px; color: #a4b4cd; }
 .member-photo img { width: 100%; height: 100%; object-fit: cover; }
-.member-photo .photo-hint {
-    position: absolute; bottom: 8px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #8a99b8; font-weight: 700;
-}
 .member-name { font-weight: 700; font-size: 1.12rem; color: #131a2b; margin-bottom: 4px; letter-spacing: -0.01em; }
 .member-role { font-size: 0.85rem; color: #6b7a93; font-weight: 600; }
 .member-role.lead { color: #2563eb; }

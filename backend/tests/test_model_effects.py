@@ -197,3 +197,22 @@ def test_pdf_reports_are_pdfs():
     r2 = client.post("/api/benchmark/import/report",
                      json={"csv": benchmark_log_csv(hour=8, rainfall_mm=30.0), "filename": "log.csv"})
     assert r2.status_code == 200 and r2.content[:4] == b"%PDF"
+
+
+def test_card_fares_use_the_stored_value_matrices():
+    # lrt-1 and lrt-2 publish a stored value (beep) matrix next to the single
+    # journey one; card=True must price from it. mrt-3 has one matrix only
+    from app.routing.fares import MATRIX_INFO, matrix_leg_fare
+
+    assert matrix_leg_fare("LRT-2", "Recto LRT", "Antipolo LRT") == 35.0
+    assert matrix_leg_fare("LRT-2", "Recto LRT", "Antipolo LRT", card=True) == 33.0
+    assert matrix_leg_fare("LRT-2", "Cubao Gateway", "Antipolo LRT-2", card=True) == 23.0
+    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Roosevelt LRT") == 35.0
+    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Roosevelt LRT", card=True) == 35.0
+    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Monumento LRT", card=True) == 30.0
+    assert matrix_leg_fare("MRT-3", "North Avenue MRT", "Taft Ave MRT", card=True) == 28.0
+    assert "stored_value_matrix" in MATRIX_INFO["LRT-1"]["matrices"]
+    assert MATRIX_INFO["MRT-3"]["stations"] == 13
+    r = client.post("/api/route", json={"origin": "antipolo", "destination": "cubao", "profile": "cheapest"}).json()
+    assert r["summary"]["fare_card_php"] <= r["summary"]["fare_php"]
+    assert "fare_matrices" in client.get("/api/status").json()

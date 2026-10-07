@@ -53,4 +53,4 @@ for f in sorted(glob.glob(os.path.join(sys.argv[1], "*.pdf"))) + [sys.argv[2]]:
 for r in sorted(report): print(r)
 keys = {(r["date"], r["band"]) for r in allrows}
 print("rows", len(allrows), "unique day-bands", len(keys))
-json.dump(allrows, open("lrt2_all_bands.json", "w"))
+json.dump(allrows, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lrt2_entry_exit_bands.json"), "w"))

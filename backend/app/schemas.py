@@ -99,6 +99,9 @@ class RouteSummary(BaseModel):
     fare_discounted_php: float | None = Field(
         None, description="fare after 20% discount, set when student/senior"
     )
+    fare_card_php: float | None = Field(
+        None, description="regular fare paying rail legs with a beep card (stored value matrix)"
+    )
     transfers: int
     modes: list[str]
 
