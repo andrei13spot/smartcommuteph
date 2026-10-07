@@ -902,9 +902,12 @@ if (document.body.classList.contains('page-compare') || window.location.pathname
         if (!routeTarget) return;
 
         e.preventDefault();
-        const routeText = routeTarget.textContent.trim();
-        const card = routeTarget.closest('.compare-card');
+        const card = routeTarget.closest('.compare-card') || routeTarget;
         const profileName = card ? card.dataset.profile : 'uncrowded';
+        
+        // If they click the text directly it might be just the text, but if they click the card it's all text.
+        // We really just rely on routeData now anyway.
+        const routeText = routeTarget.textContent.trim();
 
         let routeData = null;
         if (card && card.dataset.routeData) {

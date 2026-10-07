@@ -60,7 +60,10 @@ def test_fare_discounts_by_passenger_type():
     assert regular["summary"]["fare_discounted_php"] is None
     for pt in ("senior", "  Student "):  # case/space insensitive
         r = client.post("/api/route", json={**body, "passenger_type": pt}).json()
-        assert abs(r["summary"]["fare_discounted_php"] - r["summary"]["fare_php"] * 0.8) < 0.11
+        # official discounted matrix on mrt-3 legs, 20% off elsewhere: always
+        # below the regular fare and close to 80 percent of it
+        disc, full = r["summary"]["fare_discounted_php"], r["summary"]["fare_php"]
+        assert 0.7 * full <= disc < full
     bad = client.post("/api/route", json={**body, "passenger_type": "child"})
     assert bad.status_code == 422
 
@@ -131,7 +134,12 @@ def test_hour_and_line_change_crowding():
     c8 = CostContext(g, hour=8, rainfall_mm=30.0)
     c3 = CostContext(g, hour=3, rainfall_mm=30.0)
     mrt = next(e for e in g.edges.values() if e.mode == "MRT-3")
-    assert abs(c8.criteria[mrt.id].T - c3.criteria[mrt.id].T) > 0.01
+    # the raw crowding of a rail edge must move with the hour (rush hour vs
+    # 3 am), and after min-max scaling the hour must still show somewhere in
+    # the network: a uniform scale across every edge would cancel out
+    from app.ml.ridership import predictor as rp
+    assert abs(rp.predict(mrt, 8) - rp.predict(mrt, 3)) > 0.01
+    assert max(abs(c8.criteria[e].T - c3.criteria[e].T) for e in g.edges) > 0.01
     # and lines differ from each other at the same hour (supply differs)
     from app.ml.ridership import predictor
     assert predictor.line_factor("LRT-2", 8) != predictor.line_factor("MRT-3", 8)
@@ -146,8 +154,10 @@ def test_rail_legs_priced_by_official_matrix():
     full = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
     assert all(e.mode == "MRT-3" for e in full.edges)
     assert path_fare(g, full.edges) == 28.0  # official north ave -> taft
+    assert path_fare(g, full.edges, discounted=True) == 22.0  # brochure's discounted matrix
     short = shortest_route(g, "cubao", "shaw", resolve_profile("convenient"), ctx)
     assert path_fare(g, short.edges) == 16.0  # official cubao -> shaw
+    assert path_fare(g, short.edges, discounted=True) == 13.0
 
 
 def test_rail_corridors_run_through_real_stations():

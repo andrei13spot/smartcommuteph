@@ -151,8 +151,8 @@ def build_route(req_origin: str, req_destination: str, req_profile: str,
     # total time = in-vehicle time + the transfer friction we actually paid
     transfer_minutes = path_transfer_friction(ctx.graph, edges)
     fare = round(path_fare(graph, edges), 1)
-    # 20% discount for student or senior
-    discounted = round(fare * 0.8, 1) if passenger_type in ("student", "senior") else None
+    # student or senior: official discounted matrix where published, else 20% off
+    discounted = round(path_fare(graph, edges, discounted=True), 1) if passenger_type in ("student", "senior") else None
     summary = RouteSummary(
         time_min=round(sum(e.base_time for e in edges) + transfer_minutes, 1),
         distance_km=round(sum(e.distance_km for e in edges), 1),

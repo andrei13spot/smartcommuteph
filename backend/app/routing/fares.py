@@ -23,6 +23,14 @@ _MATRICES_PATH = Path(__file__).resolve().parent.parent / "data" / "fare_matrice
 _ANCHOR_STATION = {
     "MRT-3": {"SM City North EDSA": "North Avenue MRT", "Cubao Gateway": "Cubao MRT",
               "Shaw Boulevard": "Shaw MRT", "Pasay EDSA-Taft": "Taft Ave MRT"},
+    # lrt-1: sm north sits at roosevelt (fernando poe jr.), pasay edsa-taft at
+    # edsa station. pitx is past the 2023 matrix (cavite extension), so legs
+    # that start or end there fall back to the base + per-km structure
+    "LRT-1": {"Doroteo Jose": "Doroteo Jose LRT", "Monumento Circle": "Monumento LRT",
+              "SM City North EDSA": "Roosevelt LRT", "Pasay EDSA-Taft": "EDSA LRT"},
+    # lrt-2: the doroteo jose anchor boards lrt-2 at recto
+    "LRT-2": {"Antipolo LRT-2": "Antipolo LRT", "Cubao Gateway": "Araneta Center-Cubao LRT",
+              "Doroteo Jose": "Recto LRT"},
 }
 
 # safe defaults if the fares file is missing: flat legacy-ish pricing
@@ -48,13 +56,25 @@ def _load_matrices() -> dict:
         return {}
 
 
+def _load_discounted_matrices() -> dict:
+    # the official discounted (student / senior / pwd) matrices where the
+    # operator publishes one; today that is the dotr mrt-3 brochure
+    try:
+        data = json.loads(_MATRICES_PATH.read_text(encoding="utf-8"))
+        return {mode: m["discounted_matrix"] for mode, m in data.items() if m.get("discounted_matrix")}
+    except Exception:
+        return {}
+
+
 _MATRICES = _load_matrices()
+_DISCOUNTED_MATRICES = _load_discounted_matrices()
 
 
-def matrix_leg_fare(mode: str, board_name: str, alight_name: str) -> float | None:
+def matrix_leg_fare(mode: str, board_name: str, alight_name: str, discounted: bool = False) -> float | None:
     # official published matrix lookup (e.g. the dotr-mrt3 fare matrix): the
-    # exact fare for boarding at one station and alighting at another
-    matrix = _MATRICES.get(mode)
+    # exact fare for boarding at one station and alighting at another. with
+    # discounted=True the operator's discounted matrix is used when there is one
+    matrix = (_DISCOUNTED_MATRICES if discounted else _MATRICES).get(mode)
     if not matrix:
         return None
     a = _ANCHOR_STATION.get(mode, {}).get(board_name, board_name)
@@ -88,16 +108,24 @@ def _is_boarding(prev_mode: str, mode: str, at_virtual: bool) -> bool:
     return mode == "Jeepney" and not at_virtual
 
 
-def path_fare(graph: Graph, edges: list[Edge]) -> float:
+def path_fare(graph: Graph, edges: list[Edge], discounted: bool = False) -> float:
     # split the path into boarding legs and price each one. a leg on a line
     # with an official published matrix is priced by its board/alight stations;
-    # anything else uses the base + per-km structure.
+    # anything else uses the base + per-km structure. for a student or senior
+    # (discounted=True) a leg takes the operator's discounted matrix when one
+    # is published, otherwise the paper's 20 percent off the regular leg fare.
     if not edges:
         return 0.0
 
     def price(mode: str, km: float, board_id: str, alight_id: str) -> float:
-        m = matrix_leg_fare(mode, graph.nodes[board_id].name, graph.nodes[alight_id].name)
-        return m if m is not None else leg_fare(mode, km)
+        a, b = graph.nodes[board_id].name, graph.nodes[alight_id].name
+        if discounted:
+            m = matrix_leg_fare(mode, a, b, discounted=True)
+            if m is not None:
+                return m
+        m = matrix_leg_fare(mode, a, b)
+        regular = m if m is not None else leg_fare(mode, km)
+        return regular * 0.8 if discounted else regular
 
     total = 0.0
     leg_mode = edges[0].mode
