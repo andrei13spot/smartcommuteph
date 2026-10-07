@@ -1,11 +1,11 @@
 {
-  "test_rmse": 0.04755,
-  "test_mse": 0.00226,
-  "test_mae": 0.0274,
-  "epochs_ran": 60,
+  "test_rmse": 0.04881,
+  "test_mse": 0.00238,
+  "test_mae": 0.02855,
+  "epochs_ran": 37,
   "split": "chronological 70-15-15 (train/val/holdout) per station",
-  "n_hours": 107040,
-  "n_days": 4432,
+  "n_hours": 114816,
+  "n_days": 4748,
   "window": 24,
   "peak_boardings": 10554,
   "first_day": "2024-06-01",
@@ -27,7 +27,8 @@
     "Quezon Ave",
     "Roosevelt",
     "Santolan",
-    "Sm North"
+    "Sm North",
+    "Tramo"
   ],
   "source": "dotr edsa busway security detachment hourly tally sheets, digitized"
 }
