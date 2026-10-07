@@ -378,23 +378,71 @@ function travel(route, ms, token, color) {
 // a dashed white line and the states that baseline search expanded, so the
 // two a* runs can be compared on the same trip.
 let SHOW_BASELINE = false, LAST_INSPECT = null, searchLayers = [], searchCanvas = null;
-function clearSearch() { searchLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} }); searchLayers = []; }
-function drawSearch(d) {
+function clearSearch() { SEARCH_TOKEN++; searchLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} }); searchLayers = []; }
+// baseline playback: the distance baseline's own a* run, animated the same way
+// as the profile route. its expanded states appear in the order the search
+// popped them, the dashed route is laid leg by leg, then a white arrow rides it.
+let SEARCH_TOKEN = 0;
+async function drawSearch(d) {
     clearSearch();
+    const token = ++SEARCH_TOKEN;
     const note = $('search-note');
     if (note) note.innerText = '';
     if (!d || !SHOW_BASELINE || !map) return;
     searchCanvas = searchCanvas || L.canvas({ padding: 0.3 });
-    (d.baseline_expanded_order || []).forEach(id => {
-        const a = BY_ID[id];
-        if (a) searchLayers.push(L.circleMarker([a.lat, a.lng], { renderer: searchCanvas, radius: 2.5, stroke: false, fillColor: '#ffffff', fillOpacity: 0.45, interactive: false }).addTo(map));
-    });
-    (d.baseline_legs || []).forEach(leg => {
-        const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
-        const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
-        if (pts) searchLayers.push(L.polyline(pts, { color: '#ffffff', weight: 3, opacity: 0.9, dashArray: '6 6', interactive: false }).addTo(map));
-    });
+    const live = () => token === SEARCH_TOKEN && SHOW_BASELINE;
     if (note) note.innerText = `baseline expanded ${d.baseline_nodes} states · profile ${d.expanded_nodes}`;
+    // 1. the search: dots in expansion order, in about 40 chunks
+    const order = d.baseline_expanded_order || [];
+    const chunk = Math.max(1, Math.ceil(order.length / 40));
+    for (let i = 0; i < order.length; i += chunk) {
+        if (!live()) return;
+        for (const id of order.slice(i, i + chunk)) {
+            const a = BY_ID[id];
+            if (a) searchLayers.push(L.circleMarker([a.lat, a.lng], { renderer: searchCanvas, radius: 2.5, stroke: false, fillColor: '#ffffff', fillOpacity: 0.45, interactive: false }).addTo(map));
+        }
+        await sleep(25);
+    }
+    // 2. the route, leg by leg, collecting the waypoints for the arrow
+    const route = [];
+    const legs = d.baseline_legs || [];
+    const lchunk = Math.max(1, Math.ceil(legs.length / 30));
+    for (let i = 0; i < legs.length; i += lchunk) {
+        if (!live()) return;
+        for (const leg of legs.slice(i, i + lchunk)) {
+            const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
+            const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
+            if (!pts) continue;
+            searchLayers.push(L.polyline(pts, { color: '#ffffff', weight: 3, opacity: 0.9, dashArray: '6 6', interactive: false }).addTo(map));
+            pts.forEach(p => { const last = route[route.length - 1]; if (!last || last[0] !== p[0] || last[1] !== p[1]) route.push(p); });
+        }
+        await sleep(25);
+    }
+    // 3. the arrow rides the baseline route
+    if (!live() || route.length < 2) return;
+    const cum = [0];
+    for (let i = 1; i < route.length; i++) {
+        const a = route[i - 1], b = route[i], kx = Math.cos(((a[0] + b[0]) / 2) * Math.PI / 180);
+        cum.push(cum[i - 1] + Math.hypot((b[1] - a[1]) * kx, b[0] - a[0]));
+    }
+    const total = cum[cum.length - 1];
+    const icon = L.divIcon({ className: 'route-traveler', iconSize: [22, 22], iconAnchor: [11, 11],
+        html: '<div class="rt-arrow"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 4 L22 12 L3 20 L8 12 Z" fill="#0b1220" stroke="#ffffff" stroke-width="2.4" stroke-linejoin="round"/></svg></div>' });
+    const marker = L.marker(route[0], { icon, interactive: false, keyboard: false, zIndexOffset: 1100 }).addTo(map);
+    searchLayers.push(marker);
+    const steps = 60;
+    for (let s = 1; s <= steps; s++) {
+        if (!live()) return;
+        const target = total * s / steps;
+        let k = 1; while (k < cum.length - 1 && cum[k] < target) k++;
+        const a = route[k - 1], b = route[k], seg = (cum[k] - cum[k - 1]) || 1, f = Math.min(1, (target - cum[k - 1]) / seg);
+        marker.setLatLng([a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1])]);
+        const el = marker.getElement && marker.getElement();
+        const svg = el && el.querySelector('.rt-arrow');
+        const pa = map.latLngToLayerPoint(a), pb = map.latLngToLayerPoint(b);
+        if (svg && (pa.x !== pb.x || pa.y !== pb.y)) svg.style.transform = `rotate(${Math.atan2(pb.y - pa.y, pb.x - pa.x)}rad)`;
+        await sleep(30);
+    }
 }
 function initSearchToggle() {
     const sw = $('show-baseline');
