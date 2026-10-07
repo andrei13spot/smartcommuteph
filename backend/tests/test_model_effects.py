@@ -60,7 +60,10 @@ def test_fare_discounts_by_passenger_type():
     assert regular["summary"]["fare_discounted_php"] is None
     for pt in ("senior", "  Student "):  # case/space insensitive
         r = client.post("/api/route", json={**body, "passenger_type": pt}).json()
-        assert abs(r["summary"]["fare_discounted_php"] - r["summary"]["fare_php"] * 0.8) < 0.11
+        # official discounted matrix on mrt-3 legs, 20% off elsewhere: always
+        # below the regular fare and close to 80 percent of it
+        disc, full = r["summary"]["fare_discounted_php"], r["summary"]["fare_php"]
+        assert 0.7 * full <= disc < full
     bad = client.post("/api/route", json={**body, "passenger_type": "child"})
     assert bad.status_code == 422
 
@@ -151,8 +154,10 @@ def test_rail_legs_priced_by_official_matrix():
     full = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
     assert all(e.mode == "MRT-3" for e in full.edges)
     assert path_fare(g, full.edges) == 28.0  # official north ave -> taft
+    assert path_fare(g, full.edges, discounted=True) == 22.0  # brochure's discounted matrix
     short = shortest_route(g, "cubao", "shaw", resolve_profile("convenient"), ctx)
     assert path_fare(g, short.edges) == 16.0  # official cubao -> shaw
+    assert path_fare(g, short.edges, discounted=True) == 13.0
 
 
 def test_rail_corridors_run_through_real_stations():

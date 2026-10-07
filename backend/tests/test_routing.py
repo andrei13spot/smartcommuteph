@@ -150,8 +150,9 @@ def test_api_route_has_exec_ms_and_discount():
     assert r.status_code == 200
     body = r.json()
     assert body["exec_ms"] >= 0
-    # should be 20% off
-    assert abs(body["summary"]["fare_discounted_php"] - body["summary"]["fare_php"] * 0.8) < 0.11
+    # discounted fare: official matrix on mrt-3, 20% off elsewhere
+    disc, full = body["summary"]["fare_discounted_php"], body["summary"]["fare_php"]
+    assert 0.7 * full <= disc < full
 
 
 def test_api_unknown_profile_is_422():
