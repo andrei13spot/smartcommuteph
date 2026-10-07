@@ -530,14 +530,19 @@ function initProfileLegend() {
     const items = document.querySelectorAll('.ov-legend .leg-item');
     items.forEach((item) => {
         item.addEventListener('click', () => {
-            // Check if this button is locked by the active query log item
-            if (item.getAttribute('data-locked') === 'true') {
-                return; // Exit the function, preventing it from being unclicked
-            }
-            
-            // Otherwise, toggle normally for comparison
-            const isSelected = item.classList.toggle('selected');
-            item.setAttribute('aria-pressed', String(isSelected));
+            // the locked button is the profile already on screen
+            if (item.getAttribute('data-locked') === 'true') return;
+            // switch to the same trip under the clicked profile. it goes through
+            // the query log click, so it stops a running replay, runs the real
+            // a* and moves the highlight (only one profile is ever selected)
+            const current = document.querySelector('.query-log-item.active');
+            if (!current) return;
+            const target = document.querySelector(
+                `.query-log-item[data-oid="${current.dataset.oid}"][data-did="${current.dataset.did}"][data-profile="${item.dataset.profile}"]`);
+            if (!target) return;
+            target.click();
+            const box = $('query-list');
+            if (box) box.scrollTop += target.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 2 + target.clientHeight / 2;
         });
     });
 }
