@@ -1,5 +1,5 @@
 {
-  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 17.7, jeepney 20 km/h). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php. lrt-2 ridership baselines (0.73) derived from the lrta entry/exit statistics march 2026: lrt-2 weekday 7-9am entries (57,851) vs mrt-3 (55,098, 2024-25 reports), ratio 1.05 x the mrt-3 baseline mean 0.70. edsa-bus corridor distances where mapped come from the dotr busway distances sheet (monumento-north ave 5.28km, north ave-nepa q mart 2.91km, pitx-taft 4.87km); unmapped segments stay straight-line.",
+  "description": "seed transit graph for the cubao quadrant. edges are stored one way, the loader adds the reverse. base time is not stored here, the loader works it out as distance / mode speed (lrt 40, mrt-3 60, edsa bus 30, jeepney 20 km/h, the paper's values). ridership/flood are raw 0..1 baselines the predictors adjust at query time, fare is in php. lrt-1 and lrt-2 ridership baselines are set from the psa table 13-2 average daily load factor (2024 mean: lrt-1 59.92%, lrt-2 70.71%, mrt-3 93.96%) relative to the mrt-3 baseline mean, by ml/data/calibrate_lrt_baselines.py. edsa-bus corridor distances where mapped come from the dotr busway distances sheet (monumento-north ave 5.28km, north ave-nepa q mart 2.91km, pitx-taft 4.87km); unmapped segments stay straight-line.",
   "modes": [
     "LRT-1",
     "LRT-2",
@@ -13,7 +13,7 @@
       "to": "cubao",
       "mode": "LRT-2",
       "fare": 25,
-      "ridership": 0.73,
+      "ridership": 0.527,
       "flood_risk": 0.15
     },
     {
@@ -21,7 +21,7 @@
       "to": "antipolo",
       "mode": "LRT-2",
       "fare": 25,
-      "ridership": 0.73,
+      "ridership": 0.527,
       "flood_risk": 0.12
     },
     {
@@ -53,7 +53,7 @@
       "to": "doroteo_jose",
       "mode": "LRT-1",
       "fare": 20,
-      "ridership": 0.6,
+      "ridership": 0.467,
       "flood_risk": 0.18
     },
     {
@@ -61,7 +61,7 @@
       "to": "pasay",
       "mode": "LRT-1",
       "fare": 30,
-      "ridership": 0.62,
+      "ridership": 0.482,
       "flood_risk": 0.2
     },
     {
@@ -112,7 +112,7 @@
       "to": "pitx",
       "mode": "LRT-1",
       "fare": 15,
-      "ridership": 0.5,
+      "ridership": 0.389,
       "flood_risk": 0.15
     },
     {
