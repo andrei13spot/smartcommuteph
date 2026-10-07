@@ -18,6 +18,7 @@ _MATCH_RADIUS_KM = 0.6  # an anchor must sit within this of a station to snap to
 # the carousel has no stop at cubao or shaw; those anchors board at main ave
 # (0.9 km) and ortigas (0.8 km), so the busway snaps within a wider radius
 _MATCH_RADIUS_BY_MODE = {"EDSA-Bus": 1.0}
+_OWN_NODE_KM = 0.15  # a station further than this from its hub gets its own node
 
 
 def _load_lines() -> dict:
@@ -61,6 +62,16 @@ def subdivide_rail(anchors: list[dict], raw_edges: list[dict]) -> tuple[list[dic
             continue
         step = 1 if ib > ia else -1
         between = line["stations"][ia + step:ib:step]  # strictly between the ends
+        # an anchor is one hub point shared by several lines (cubao gateway sits
+        # on the lrt-2 araneta center-cubao station; the mrt-3 cubao station is
+        # 435 m away on edsa). when the line's own station is further than
+        # _OWN_NODE_KM from the hub it gets its own node at its real position,
+        # so the line is drawn and measured from the real station and the hub
+        # is reached by that short link
+        if haversine_km(a["lat"], a["lng"], line["stations"][ia]["lat"], line["stations"][ia]["lng"]) > _OWN_NODE_KM:
+            between = [line["stations"][ia], *between]
+        if haversine_km(b["lat"], b["lng"], line["stations"][ib]["lat"], line["stations"][ib]["lng"]) > _OWN_NODE_KM:
+            between = [*between, line["stations"][ib]]
         if not between:
             new_edges.append(e)
             continue
