@@ -1,4 +1,5 @@
-# threads the rail corridor edges through the real stations (stations.json).
+# threads the rail and edsa carousel corridor edges through their real
+# stations (stations.json).
 # a corridor like sm_north -> cubao on mrt-3 was one straight edge; with the
 # station list it becomes north ave -> quezon -> kamuning -> cubao with real
 # coordinates, so the map follows the actual line, leg km is station-accurate,
@@ -14,6 +15,9 @@ from .graph import haversine_km
 
 _STATIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "stations.json"
 _MATCH_RADIUS_KM = 0.6  # an anchor must sit within this of a station to snap to it
+# the carousel has no stop at cubao or shaw; those anchors board at main ave
+# (0.9 km) and ortigas (0.8 km), so the busway snaps within a wider radius
+_MATCH_RADIUS_BY_MODE = {"EDSA-Bus": 1.0}
 
 
 def _load_lines() -> dict:
@@ -36,8 +40,8 @@ def subdivide_rail(anchors: list[dict], raw_edges: list[dict]) -> tuple[list[dic
     station_nodes: dict[str, dict] = {}
     counter = 0
 
-    def nearest_station(line_stations, anchor):
-        best_i, best_d = None, _MATCH_RADIUS_KM
+    def nearest_station(line_stations, anchor, mode):
+        best_i, best_d = None, _MATCH_RADIUS_BY_MODE.get(mode, _MATCH_RADIUS_KM)
         for i, s in enumerate(line_stations):
             d = haversine_km(anchor["lat"], anchor["lng"], s["lat"], s["lng"])
             if d < best_d:
@@ -50,8 +54,8 @@ def subdivide_rail(anchors: list[dict], raw_edges: list[dict]) -> tuple[list[dic
         if not line or a is None or b is None:
             new_edges.append(e)
             continue
-        ia = nearest_station(line["stations"], a)
-        ib = nearest_station(line["stations"], b)
+        ia = nearest_station(line["stations"], a, e["mode"])
+        ib = nearest_station(line["stations"], b, e["mode"])
         if ia is None or ib is None or ia == ib:
             new_edges.append(e)  # an end is off this line: keep the direct edge
             continue
