@@ -1,11 +1,11 @@
 {
-  "test_rmse": 0.04784,
-  "test_mse": 0.00229,
-  "test_mae": 0.02849,
-  "epochs_ran": 60,
+  "test_rmse": 0.04977,
+  "test_mse": 0.00248,
+  "test_mae": 0.03007,
+  "epochs_ran": 18,
   "split": "chronological 70-15-15 (train/val/holdout) per station",
-  "n_hours": 89304,
-  "n_days": 3696,
+  "n_hours": 94632,
+  "n_days": 3915,
   "window": 24,
   "peak_boardings": 10554,
   "first_day": "2024-06-01",
@@ -24,6 +24,7 @@
     "Philam",
     "Quezon Ave",
     "Roosevelt",
+    "Santolan",
     "Sm North"
   ],
   "source": "dotr edsa busway security detachment hourly tally sheets, digitized"
