@@ -1,11 +1,11 @@
 {
-  "test_rmse": 0.05051,
-  "test_mse": 0.00255,
-  "test_mae": 0.0353,
-  "epochs_ran": 60,
+  "test_rmse": 0.04487,
+  "test_mse": 0.00201,
+  "test_mae": 0.0295,
+  "epochs_ran": 46,
   "split": "chronological 70-15-15 (train/val/holdout)",
-  "n_hours": 1175,
+  "n_hours": 14024,
   "window": 24,
-  "peak_entries": 41418,
+  "peak_entries": 65103,
   "source": "dotc-mrt3 hourly ridership reports (2024, 2025)"
 }
