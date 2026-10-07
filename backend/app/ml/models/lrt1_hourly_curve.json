@@ -1,0 +1,29 @@
+{
+  "description": "lrt-1 mean hourly entries, 2024-01-01 to 2024-12-31 (362 days), reconstructed: psa monthly lrt-1 passenger totals spread over the hours with the real mrt-3 hourly share for the same dates. normalized peak = 1.5.",
+  "line": "LRT-1",
+  "source": "psa table 13-2 (lrt-1 monthly passengers, 2024) x dotr mrt-3 hourly ridership 2024",
+  "reconstructed": true,
+  "curve": {
+    "0": 0.0,
+    "4": 0.132,
+    "5": 0.78,
+    "6": 1.242,
+    "7": 1.381,
+    "8": 1.165,
+    "9": 0.956,
+    "10": 0.79,
+    "11": 0.803,
+    "12": 0.823,
+    "13": 0.756,
+    "14": 0.786,
+    "15": 0.934,
+    "16": 1.221,
+    "17": 1.5,
+    "18": 1.465,
+    "19": 1.219,
+    "20": 0.944,
+    "21": 0.623,
+    "22": 0.106,
+    "23": 0.002
+  }
+}

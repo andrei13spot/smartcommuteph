@@ -10,6 +10,7 @@ from ..ml import flood, ridership
 _LSTM_METRICS = Path(__file__).parents[1] / "ml" / "models" / "ridership_metrics.json"
 _BUSWAY_METRICS = Path(__file__).parents[1] / "ml" / "models" / "busway_metrics.json"
 _LRT2_METRICS = Path(__file__).parents[1] / "ml" / "models" / "lrt2_metrics.json"
+_LRT1_METRICS = Path(__file__).parents[1] / "ml" / "models" / "lrt1_metrics.json"
 
 
 def ml_metrics() -> dict:
@@ -60,6 +61,20 @@ def ml_metrics() -> dict:
             "detail": f"{m2.get('n_hours')} hourly obs over {m2.get('n_days')} days, "
                       "lrta entry/exit by time band (2024-2026)",
             "status": "trained" if "LRT-2" in getattr(rp, "_line_lstms", {}) else "data-derived curve",
+        })
+    except Exception:
+        pass
+
+    # lrt-1 card: the series is reconstructed (psa monthly totals x mrt-3 hourly
+    # share), so the card says so instead of passing it off as observed counts
+    try:
+        m1 = json.loads(_LRT1_METRICS.read_text())
+        models.append({
+            "key": "lrt1", "name": "LSTM · LRT-1 Ridership", "criterion": "T - ridership (LRT-1)",
+            "rmse": m1.get("test_rmse"), "mse": m1.get("test_mse"), "mae": m1.get("test_mae"),
+            "detail": f"{m1.get('n_hours')} hourly obs over {m1.get('n_days')} days, reconstructed: "
+                      "psa monthly lrt-1 totals x mrt-3 hourly share (2024)",
+            "status": "trained" if "LRT-1" in getattr(rp, "_line_lstms", {}) else "data-derived curve",
         })
     except Exception:
         pass

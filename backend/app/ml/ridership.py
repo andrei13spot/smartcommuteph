@@ -78,9 +78,12 @@ def _load_line_lstms() -> dict[str, object]:
     # edsa busway (models/busway_lstm.keras, trained by train_busway.py on the
     # digitized dotr tally sheets). None entries fall back to the line curve.
     # lrt-2 (models/lrt2_lstm.keras, trained by train_lrt2.py on the lrta
-    # entry/exit statistics by time band, 2024-2026).
+    # entry/exit statistics by time band, 2024-2026). lrt-1 (models/lrt1_lstm.keras,
+    # train_lrt1.py) is reconstructed from aggregate data: psa monthly lrt-1
+    # totals spread per hour with the mrt-3 hourly share, since lrmc released
+    # no hourly counts.
     models: dict[str, object] = {}
-    for mode, name in (("EDSA-Bus", "busway_lstm.keras"), ("LRT-2", "lrt2_lstm.keras")):
+    for mode, name in (("EDSA-Bus", "busway_lstm.keras"), ("LRT-2", "lrt2_lstm.keras"), ("LRT-1", "lrt1_lstm.keras")):
         path = _MODEL_DIR / name
         if path.exists():
             try:
@@ -94,10 +97,11 @@ def _load_line_lstms() -> dict[str, object]:
 def _load_line_curves() -> dict[str, dict[int, float]]:
     # per-line hourly demand curves from real counts, when a line has its own
     # data. today: edsa busway (digitized dotr tally sheets) and lrt-2 (lrta
-    # entry/exit statistics by time band, march 2026). lines without a curve
-    # (lrt-1) fall back to the mrt-3 shape scaled by headway.
+    # entry/exit statistics by time band, 2024-2026), plus lrt-1 reconstructed
+    # from psa monthly totals x the mrt-3 hourly share. lines without a curve
+    # fall back to the mrt-3 shape scaled by headway.
     curves: dict[str, dict[int, float]] = {}
-    for name in ("busway_hourly_curve.json", "lrt2_hourly_curve.json"):
+    for name in ("busway_hourly_curve.json", "lrt2_hourly_curve.json", "lrt1_hourly_curve.json"):
         try:
             data = json.loads((_MODEL_DIR / name).read_text(encoding="utf-8"))
             curves[data["line"]] = {int(h): float(v) for h, v in data["curve"].items()}

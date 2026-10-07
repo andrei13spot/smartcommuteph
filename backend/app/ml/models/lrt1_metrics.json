@@ -1,0 +1,15 @@
+{
+  "test_rmse": 0.03351,
+  "test_mse": 0.00112,
+  "test_mae": 0.02273,
+  "epochs_ran": 60,
+  "split": "chronological 70-15-15 (train/val/holdout)",
+  "n_hours": 8688,
+  "n_days": 362,
+  "window": 24,
+  "peak_entries_per_hour": 55319,
+  "first_day": "2024-01-01",
+  "last_day": "2024-12-31",
+  "reconstructed": true,
+  "source": "reconstructed from aggregate data: psa monthly lrt-1 passenger totals spread per hour with the real mrt-3 hourly share for the same dates (no lrt-1 hourly data released)"
+}
