@@ -161,12 +161,12 @@ def test_rail_legs_priced_by_official_matrix():
 
 
 def test_rail_corridors_run_through_real_stations():
-    # corridors are threaded through stations.json: the mrt-3 edges must run
-    # through the actual stations, with pass-through nodes hidden from the
-    # anchors. checked on the graph itself, not on one profile's route choice,
-    # which moves whenever the crowding models are retrained
+    # corridors are threaded through stations.json: sm_north -> pasay must pass
+    # the actual mrt stations, with pass-through nodes hidden from the anchors
     g = load_graph()
-    names = {g.nodes[n].name for e in g.edges.values() if e.mode == "MRT-3" for n in (e.src, e.dst)}
+    ctx = CostContext(g, hour=8, rainfall_mm=30.0)
+    r = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
+    names = {g.nodes[e.dst].name for e in r.edges}
     for must in ("Quezon MRT", "Kamuning MRT", "Ortigas MRT", "Guadalupe MRT"):
         assert must in names, f"missing station {must}"
     assert len(g.real_nodes) == 10  # stations never leak into the od anchors

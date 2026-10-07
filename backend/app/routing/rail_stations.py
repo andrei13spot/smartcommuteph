@@ -13,7 +13,7 @@ from pathlib import Path
 from .graph import haversine_km
 
 _STATIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "stations.json"
-_MATCH_RADIUS_KM = 0.7  # an anchor must sit within this of a station to snap to it (sm north mall is 0.64 km from north ave mrt)
+_MATCH_RADIUS_KM = 0.6  # an anchor must sit within this of a station to snap to it
 
 
 def _load_lines() -> dict:
