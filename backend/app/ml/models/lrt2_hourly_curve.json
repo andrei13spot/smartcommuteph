@@ -1,0 +1,38 @@
+{
+  "description": "lrt-2 mean hourly entries by time band, lrta afc system administration division operational statistics, march 2026 (official), all 31 days, 13 stations. each band's mean daily entries are spread evenly over its hours (05-07, 07-09, 09-17, 17-19, 19-22); no service outside 05:00-22:00. normalized peak = 1.5, same scale as the mrt-3 demand curve.",
+  "line": "LRT-2",
+  "source": "lrta foi response (tracking LRTA-315199311699), [3] daily entry and exit (peak hours).pdf",
+  "band_mean_daily_entries": {
+    "05-07": 18540,
+    "07-09": 24492,
+    "09-17": 83650,
+    "17-19": 31610,
+    "19-22": 22253
+  },
+  "weekday_band_mean_daily_entries": {
+    "05-07": 22274,
+    "07-09": 28925,
+    "09-17": 88138,
+    "17-19": 36127,
+    "19-22": 24542
+  },
+  "curve": {
+    "5": 0.88,
+    "6": 0.88,
+    "7": 1.162,
+    "8": 1.162,
+    "9": 0.992,
+    "10": 0.992,
+    "11": 0.992,
+    "12": 0.992,
+    "13": 0.992,
+    "14": 0.992,
+    "15": 0.992,
+    "16": 0.992,
+    "17": 1.5,
+    "18": 1.5,
+    "19": 0.704,
+    "20": 0.704,
+    "21": 0.704
+  }
+}
