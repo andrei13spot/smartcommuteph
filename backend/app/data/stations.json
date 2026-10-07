@@ -61,6 +61,132 @@
         { "name": "Quezon MRT", "lat": 14.6426, "lng": 121.039 },
         { "name": "North Avenue MRT", "lat": 14.65177, "lng": 121.03234 }
       ]
+    },
+    "EDSA-Bus": {
+      "source": "dotr edsa busway ridership workbook interpolated along shape",
+      "stations": [
+        {
+          "name": "Monumento",
+          "lat": 14.65714,
+          "lng": 120.98641
+        },
+        {
+          "name": "Bagong Barrio",
+          "lat": 14.65731,
+          "lng": 120.99821
+        },
+        {
+          "name": "Balintawak",
+          "lat": 14.6574,
+          "lng": 121.00481
+        },
+        {
+          "name": "Kaingin",
+          "lat": 14.65749,
+          "lng": 121.01159
+        },
+        {
+          "name": "Roosevelt",
+          "lat": 14.6576,
+          "lng": 121.01977
+        },
+        {
+          "name": "SM North EDSA",
+          "lat": 14.6548,  
+          "lng": 121.0340 
+        },
+        {
+          "name": "North Avenue",
+          "lat": 14.65128,
+          "lng": 121.03286
+        },
+        {
+          "name": "Philam Q.C.",
+          "lat": 14.64755,
+          "lng": 121.03528
+        },
+        {
+          "name": "Quezon Avenue",
+          "lat": 14.64145,
+          "lng": 121.03924
+        },
+        {
+          "name": "Kamuning",
+          "lat": 14.63567,
+          "lng": 121.043
+        },
+        {
+          "name": "Nepa Q. Mart",
+          "lat": 14.62884,
+          "lng": 121.0467
+        },
+        {
+          "name": "Main Avenue",
+          "lat": 14.61397,
+          "lng": 121.05354
+        },
+        {
+          "name": "Santolan",
+          "lat": 14.60838,
+          "lng": 121.05611
+        },
+        {
+          "name": "Ortigas",
+          "lat": 14.58687,
+          "lng": 121.05631
+        },
+        {
+          "name": "Guadalupe",
+          "lat": 14.56792,
+          "lng": 121.04573
+        },
+        {
+          "name": "Buendia",
+          "lat": 14.55459,
+          "lng": 121.03444
+        },
+        {
+          "name": "Ayala",
+          "lat": 14.55034,
+          "lng": 121.02835
+        },
+        {
+          "name": "Tramo",
+          "lat": 14.53814,
+          "lng": 121.00459
+        },
+        {
+          "name": "Taft Avenue",
+          "lat": 14.5377,
+          "lng": 121.00137
+        },
+        {
+          "name": "Roxas Boulevard",
+          "lat": 14.53734,
+          "lng": 120.99335
+        },
+        {
+          "name": "MOA",
+          "lat": 14.53553,
+          "lng": 120.98501
+        },
+        {
+          "name": "DFA/Shell/Starbucks",
+          "lat": 14.531,
+          "lng": 120.987
+        },
+        {
+          "name": "Ayala Malls/Aseana",
+          "lat": 14.525,
+          "lng": 120.988
+        },
+        {
+          "name": "PITX",
+          "lat": 14.51201,
+          "lng": 120.98974
+        }
+      ]
     }
-  }
+  } 
 }
+  
