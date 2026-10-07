@@ -740,13 +740,8 @@ function parseRouteSegments(routeString) {
             });
             return;
         }
-
-        parsed.push({
-            type: 'stop',
-            name: segment,
-            modeClass: '',
-            label: 'Stop'
-        });
+        
+        // We do not push intermediate stops to only show the start, transit modes, and destination
     });
 
     return parsed;
@@ -766,23 +761,43 @@ function buildRouteSegmentsFromRouteData(routeData) {
         label: 'Starting Point'
     }];
 
-    const seenPlaces = new Set([originName, destinationName]);
     const transitLegs = Array.isArray(routeData.segments) ? routeData.segments : [];
 
+    // Collapse adjacent segments that share the same mode
+    const collapsedLegs = [];
     transitLegs.forEach((leg) => {
-        const modeName = leg.mode || 'Transit';
-        const placeName = leg.to_name || leg.from_name || '';
-        if (!placeName || seenPlaces.has(placeName)) {
-            return;
+        if (collapsedLegs.length > 0 && collapsedLegs[collapsedLegs.length - 1].mode === leg.mode) {
+            collapsedLegs[collapsedLegs.length - 1].to_name = leg.to_name;
+            collapsedLegs[collapsedLegs.length - 1].to_id = leg.to_id;
+        } else {
+            collapsedLegs.push({ ...leg });
         }
-        seenPlaces.add(placeName);
-        segments.push({
-            type: 'transit',
-            name: modeName,
-            modeClass: getTransitModeClass(modeName),
-            label: 'Transit Mode',
-            place: placeName
-        });
+    });
+
+    collapsedLegs.forEach((leg, index) => {
+        const modeName = leg.mode || 'Transit';
+        const fromName = leg.from_name || '';
+        const toName = leg.to_name || '';
+        
+        if (fromName) {
+            segments.push({
+                type: 'transit',
+                name: modeName,
+                modeClass: getTransitModeClass(modeName),
+                label: 'Board at',
+                place: fromName
+            });
+        }
+
+        if (toName) {
+            segments.push({
+                type: 'transit',
+                name: modeName,
+                modeClass: getTransitModeClass(modeName),
+                label: 'Alight at',
+                place: toName
+            });
+        }
     });
 
     segments.push({

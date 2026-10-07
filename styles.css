@@ -815,23 +815,23 @@ body.modal-open {
 }
 
 .route-segment.mode-bus {
-    background: rgba(34, 197, 94, 0.1);
-    border-color: rgba(34, 197, 94, 0.2);
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.2);
 }
 
 .route-segment.mode-bus:hover {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.3);
 }
 
 .route-segment.mode-jeepney {
-    background: rgba(202, 138, 4, 0.1);
-    border-color: rgba(202, 138, 4, 0.2);
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
 }
 
 .route-segment.mode-jeepney:hover {
-    background: rgba(202, 138, 4, 0.15);
-    border-color: rgba(202, 138, 4, 0.3);
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
 }
 
 .route-segment-icon {
@@ -872,13 +872,13 @@ body.modal-open {
 }
 
 .route-segment.mode-bus .route-segment-icon {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    box-shadow: 0 3px 10px rgba(34, 197, 94, 0.25);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
 }
 
 .route-segment.mode-jeepney .route-segment-icon {
-    background: linear-gradient(135deg, #ca8a04 0%, #b45309 100%);
-    box-shadow: 0 3px 10px rgba(202, 138, 4, 0.25);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.25);
 }
 
 .route-segment-stop .route-segment-icon {

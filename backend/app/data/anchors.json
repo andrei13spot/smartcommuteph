@@ -6,7 +6,7 @@
     { "id": "doroteo_jose", "name": "Doroteo Jose",       "area": "Santa Cruz, Manila",       "lat": 14.6053, "lng": 120.9820, "lines": ["LRT-1", "LRT-2"], "source": "sakay: Doroteo Jose LRT" },
     { "id": "monumento",    "name": "Monumento Circle",   "area": "Caloocan / Quezon City",   "lat": 14.6561, "lng": 120.9840, "lines": ["LRT-1", "EDSA-Bus", "Jeepney"], "source": "sakay: Monumento LRT" },
     { "id": "shaw",         "name": "Shaw Boulevard",     "area": "Mandaluyong City",         "lat": 14.5810, "lng": 121.0540, "lines": ["MRT-3", "EDSA-Bus", "Jeepney"], "source": "sakay: Shaw MRT" },
-    { "id": "sm_north",     "name": "SM City North EDSA", "area": "North Avenue, Quezon City", "lat": 14.6548, "lng": 121.0340, "lines": ["LRT-1", "MRT-3", "Jeepney"], "source": "sakay: SM Hypermarket / North Avenue" },
+    { "id": "sm_north",     "name": "SM City North EDSA", "area": "North Avenue, Quezon City", "lat": 14.6565, "lng": 121.0284, "lines": ["LRT-1", "MRT-3", "Jeepney"], "source": "sakay: SM Hypermarket / North Avenue" },
     { "id": "sm_novaliches","name": "SM City Novaliches", "area": "Novaliches, Quezon City",  "lat": 14.7080, "lng": 121.0373, "lines": ["Jeepney"], "source": "osm: SM City Novaliches" },
     { "id": "pasay",        "name": "Pasay EDSA-Taft",    "area": "EDSA-Taft Avenue, Pasay",  "lat": 14.5381, "lng": 121.0010, "lines": ["LRT-1", "MRT-3", "EDSA-Bus", "Jeepney"], "source": "sakay: EDSA LRT (LRT-1 EDSA)" },
     { "id": "pasig",        "name": "Pasig Mega Market",  "area": "Caruncho Avenue, Pasig",   "lat": 14.5598, "lng": 121.0840, "lines": ["Jeepney"], "source": "sakay: Caruncho Ave / Market Ave" },

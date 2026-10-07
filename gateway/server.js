@@ -185,9 +185,24 @@ async function routeToGeoJSON(route) {
     nodeIds.forEach((id, i) => {
       const a = anchors.get(id);
       if (!a) return;
-      const role = i === 0 ? "origin" : i === nodeIds.length - 1 ? "destination" : "stop";
-      const arrivingMode = i > 0 ? segs[i - 1].mode : null;
-      features.push(pointFeature(a, role, arrivingMode));
+      
+      let role = "stop";
+      if (i === 0) {
+          role = "origin";
+      } else if (i === nodeIds.length - 1) {
+          role = "destination";
+      } else {
+          const arrivingMode = segs[i - 1].mode;
+          const departingMode = segs[i].mode;
+          if (arrivingMode !== departingMode) {
+              role = "transfer";
+          }
+      }
+      
+      if (role !== "stop") {
+          const arrivingMode = i > 0 ? segs[i - 1].mode : null;
+          features.push(pointFeature(a, role, arrivingMode));
+      }
     });
     const bent = bendRoute(segs, anchors);
     segs.forEach((s, i) => {
