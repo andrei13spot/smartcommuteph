@@ -23,7 +23,7 @@ MODE_SPEED_KMH = {
     "LRT-1": 40.0,
     "LRT-2": 40.0,
     "MRT-3": 60.0,
-    "EDSA-Bus": 17.7,  # mmda travel time survey along edsa by bus, 6 jan 2025 (17.69 kph avg)
+    "EDSA-Bus": 30.0,  # the paper's value (page 59). the mmda edsa bus travel time survey of 6 jan 2025 measured 17.69 kph; kept in the notes as a limitation
     "Jeepney": 20.0,
 }
 
