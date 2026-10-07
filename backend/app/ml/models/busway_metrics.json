@@ -1,11 +1,11 @@
 {
-  "test_rmse": 0.04881,
-  "test_mse": 0.00238,
-  "test_mae": 0.02855,
-  "epochs_ran": 37,
+  "test_rmse": 0.04885,
+  "test_mse": 0.00239,
+  "test_mae": 0.02858,
+  "epochs_ran": 33,
   "split": "chronological 70-15-15 (train/val/holdout) per station",
-  "n_hours": 114816,
-  "n_days": 4748,
+  "n_hours": 121224,
+  "n_days": 5015,
   "window": 24,
   "peak_boardings": 10554,
   "first_day": "2024-06-01",
@@ -28,6 +28,7 @@
     "Roosevelt",
     "Santolan",
     "Sm North",
+    "Taft",
     "Tramo"
   ],
   "source": "dotr edsa busway security detachment hourly tally sheets, digitized"
