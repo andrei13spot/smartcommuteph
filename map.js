@@ -204,14 +204,8 @@
     // the search cloud runs on a CANVAS renderer: one bitmap layer instead of
     // thousands of svg nodes, so it stays smooth even at ~2,400 expansions.
     // when the route is ready the cloud fades out gradually - no hard cut.
-    const label = document.createElement("div");
-    label.className = "astar-loading";
-    label.style.cssText = "position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:1000;" +
-      "background:rgba(15,23,42,.85);color:#ffcc02;padding:6px 14px;border-radius:999px;" +
-      "font-size:.78rem;font-weight:600;letter-spacing:.03em;pointer-events:none;";
-    label.innerText = "Running A* · searching the network…";
-    el.style.position = el.style.position || "relative";
-    el.appendChild(label);
+    // no text overlay on the commuter map: the search cloud alone shows the
+    // pruning; the node counts live on the researcher dashboard
     try {
       const studentMode = localStorage.getItem("smartCommute_studentMode") === "true";
       const passenger_type = studentMode ? "student" : "regular";
@@ -247,18 +241,15 @@
         }
         await new Promise((r) => setTimeout(r, 28));
       }
-      label.innerText = `A* explored ${inspect.expanded_nodes} states · distance baseline ${inspect.baseline_nodes}`;
       // graceful fade: dim the pane, then clean up once it is invisible
       return () => {
         pane.style.opacity = "0";
         setTimeout(() => {
           layers.forEach((m) => { try { map.removeLayer(m); } catch (e) {} });
-          try { label.remove(); } catch (e) {}
           pane.style.opacity = "1";
         }, 850);
       };
     } catch (err) {
-      try { label.remove(); } catch (e) {}
       return () => {};
     }
   }
