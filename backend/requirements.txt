@@ -9,6 +9,7 @@ scikit-learn>=1.5
 joblib>=1.4
 pypdf>=5.0
 openpyxl>=3.1
+fpdf2>=2.7
 # tensorflow is needed both to RUN the shipped lstm and to retrain it; without
 # it the engine still works but ridership falls back to the data-derived mean
 # hourly curve (dashboard will say so). install: pip install tensorflow-cpu

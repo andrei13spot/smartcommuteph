@@ -85,7 +85,8 @@ process.on("unhandledRejection", (err) => {
 });
 
 const app = express();
-app.use(express.json());
+// the import endpoint receives a whole benchmark log csv as text
+app.use(express.json({ limit: "3mb" }));
 
 // ---- helpers ----
 async function callPython(pathname, { method = "GET", body } = {}) {
@@ -395,6 +396,31 @@ app.get("/api/benchmark/log", guard(async (req, res) => {
   res.send(text);
 }));
 app.get("/api/ml-metrics", passthrough("/api/ml-metrics"));
+
+// import and export: the pdf reports are passed through as files, the import
+// summary as json
+async function sendEngineFile(res, enginePath, init = {}) {
+  const r = await fetch(`${PYTHON_API_URL}${enginePath}`, init);
+  const buf = Buffer.from(await r.arrayBuffer());
+  res.status(r.status);
+  res.set("Content-Type", r.headers.get("content-type") || "application/octet-stream");
+  const cd = r.headers.get("content-disposition");
+  if (cd) res.set("Content-Disposition", cd);
+  res.send(buf);
+}
+app.get("/api/benchmark/report", guard(async (req, res) => {
+  const qs = new URLSearchParams(req.query).toString();
+  await sendEngineFile(res, "/api/benchmark/report" + (qs ? "?" + qs : ""));
+}));
+app.post("/api/benchmark/import", guard(async (req, res) => {
+  const { status, data } = await callPython("/api/benchmark/import", { method: "POST", body: req.body });
+  res.status(status).json(data);
+}));
+app.post("/api/benchmark/import/report", guard(async (req, res) => {
+  await sendEngineFile(res, "/api/benchmark/import/report", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req.body),
+  });
+}));
 app.post("/api/inspect", guard(async (req, res) => {
   const { status, data } = await callPython("/api/inspect", { method: "POST", body: req.body });
   // give each route leg its bent [lat,lng] waypoints so the playback overlay

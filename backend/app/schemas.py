@@ -137,3 +137,9 @@ class NetworkResponse(BaseModel):
     # whole graph for the overview map
     nodes: list[AnchorOut]
     edges: list[NetworkEdgeOut]
+
+
+class LogImportRequest(BaseModel):
+    # a benchmark log csv as text, in the format the researcher dashboard exports
+    csv: str = Field(..., min_length=1, max_length=2_000_000)
+    filename: str | None = Field(None, max_length=200)
