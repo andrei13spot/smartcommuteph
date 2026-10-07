@@ -56,6 +56,33 @@ function setConn(on) {
     label.innerText = on ? 'Online' : 'Offline';
 }
 
+// active run: a real record of what the dashboard is showing. the live run is
+// stamped when /api/benchmark answers (with its hour and rainfall); each csv
+// imported in this session is added as its own run.
+const RUNS = [];
+function runStamp(d) {
+    const p = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
+}
+function addRun(run) {
+    RUNS.unshift(run);
+    const section = $('run-select-section');
+    if (section) section.innerHTML = RUNS.map((r, i) => `
+        <div class="rs-item${i === 0 ? ' active' : ''}" data-run="${esc(r.id)}">
+            <div class="rs-title">${esc(r.title)}</div>
+            <div class="rs-sub">${esc(r.sub)}</div>
+        </div>`).join('');
+    selectRun(run.id);
+}
+function selectRun(id) {
+    const r = RUNS.find(x => x.id === id);
+    if (!r) return;
+    document.querySelectorAll('#run-select-section .rs-item').forEach(x => x.classList.toggle('active', x.dataset.run === id));
+    const t = document.querySelector('.active-run-title'), s = document.querySelector('.active-run-sub');
+    if (t) t.innerText = r.title;
+    if (s) s.innerText = r.sub;
+}
+
 function renderSOP(b) {
     const rm = b.sop2.rm_anova || {};
     // the four hypothesis tiles (mean cost reduction, mean jaccard, anova f, nodes delta)
@@ -548,15 +575,14 @@ function initRunToggle() {
         button.setAttribute('aria-expanded', String(!expanded));
         section.classList.toggle('open', !expanded);
     });
-    items.forEach((item) => {
-        item.addEventListener('click', () => {
-            items.forEach((row) => row.classList.remove('active'));
-            item.classList.add('active');
-            document.querySelector('.active-run-title').innerText = item.dataset.run;
-            document.querySelector('.active-run-sub').innerText = item.querySelector('.rs-sub').innerText;
-            section.classList.remove('open');
-            button.setAttribute('aria-expanded', 'false');
-        });
+    // the list is filled at run time by addRun(): the live benchmark first,
+    // then any csv imported in this session
+    section.addEventListener('click', (ev) => {
+        const item = ev.target.closest('.rs-item');
+        if (!item) return;
+        selectRun(item.dataset.run);
+        section.classList.remove('open');
+        button.setAttribute('aria-expanded', 'false');
     });
 }
 
@@ -704,6 +730,9 @@ async function init() {
         }).catch(() => {});
         setConn(true);
         renderSOP(bench);
+        const now = new Date();
+        addRun({ id: 'live-' + runStamp(now), title: runStamp(now),
+            sub: `Live benchmark · ${now.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · hour ${bench.hour}, ${bench.rainfall_mm} mm · ${bench.observations} obs` });
         renderModels(ml);
         
         // Keep it empty even after API fetch completes
@@ -770,6 +799,9 @@ function importKeys(e) { if (e.key === 'Escape') closeImportPanel(); }
 
 function showImportResult(d) {
     closeImportPanel();
+    const when = new Date();
+    addRun({ id: 'import-' + runStamp(when) + '-' + RUNS.length, title: (d.source || d.filename || 'Imported CSV'),
+        sub: `Imported CSV · ${when.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}${d.rows ? ' · ' + d.rows + ' rows' : ''}` });
     const dir = (x) => x === 'framework_higher' ? 'higher' : x === 'framework_lower' ? 'lower' : 'equal';
     const s1 = (d.sop1 || []).map(r => `
         <tr><td>${esc(r.profile[0].toUpperCase() + r.profile.slice(1))}</td><td>${esc(r.criterion)}</td>

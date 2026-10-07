@@ -78,14 +78,26 @@ def train():
     model = RandomForestRegressor(
         n_estimators=200, max_depth=12, min_samples_leaf=3, random_state=_SEED, n_jobs=-1,
     )
-    model.fit(X_tr, y_tr)
+    # about 98 percent of the edges are jeepney, so unweighted the forest
+    # barely learns the mode feature and rail comes out wrong (0.59 at 30 mm
+    # against the rule's 0.36). each mode gets the same total weight instead.
+    sens, counts = np.unique(X_tr[:, 1], return_counts=True)
+    w_of = {s: len(X_tr) / (len(sens) * c) for s, c in zip(sens, counts)}
+    model.fit(X_tr, y_tr, sample_weight=np.array([w_of[s] for s in X_tr[:, 1]]))
     pred = model.predict(X_te)
+    # error per mode on the holdout, so a rare mode cannot hide behind the total
+    per_mode = {}
+    for s in sens:
+        mask = X_te[:, 1] == s
+        per_mode[str(round(float(s), 2))] = round(float(np.sqrt(mean_squared_error(y_te[mask], pred[mask]))), 4)
     metrics = {
         "rmse": round(float(np.sqrt(mean_squared_error(y_te, pred))), 4),  # equation 8
         "r2": round(float(r2_score(y_te, pred)), 4),
         "mae": round(float(mean_absolute_error(y_te, pred)), 4),
         "n_train": int(len(X_tr)),
         "n_test": int(len(X_te)),
+        "rmse_by_mode_sensitivity": per_mode,
+        "sample_weighting": "each mode weighted equally",
         "features": ["rainfall_mm", "mode_sensitivity", "base_exposure"],
         "exposure_source": f"mmda flood reports 2024-2025 incl. full-year summaries "
                            f"({_incident_count()} incident points, per-edge exposure)",
