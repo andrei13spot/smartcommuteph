@@ -14,10 +14,10 @@ from pathlib import Path
 from .graph import haversine_km
 
 _STATIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "stations.json"
-_MATCH_RADIUS_KM = 0.6  # an anchor must sit within this of a station to snap to it
+_MATCH_RADIUS_KM = 1.0  # an anchor must sit within this of a station to snap to it; a station away from its hub gets its own node (below), so the hub reaches it by that link (sm north mall is 0.64 km from north ave mrt)
 # the carousel has no stop at cubao or shaw; those anchors board at main ave
 # (0.9 km) and ortigas (0.8 km), so the busway snaps within a wider radius
-_MATCH_RADIUS_BY_MODE = {"EDSA-Bus": 1.0}
+_MATCH_RADIUS_BY_MODE: dict[str, float] = {}
 _OWN_NODE_KM = 0.15  # a station further than this from its hub gets its own node
 
 
