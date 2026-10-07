@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, Response
 
 from ..config import API_TITLE, API_VERSION
 from ..ml import flood, ridership
@@ -10,11 +10,13 @@ from ..profiles import PROFILES
 from ..research.benchmark import benchmark_log_csv, run_benchmark, run_benchmark_log
 from ..research.inspector import inspect
 from ..research.ml_metrics import ml_metrics
+from ..research import report
 from ..routing.graph import load_graph
 from ..schemas import (
     AnchorOut,
     CompareRequest,
     CompareResponse,
+    LogImportRequest,
     NetworkEdgeOut,
     NetworkResponse,
     ProfileOut,
@@ -173,3 +175,58 @@ def compare(req: CompareRequest) -> CompareResponse:
         destination=routes[0].destination,
         routes=routes,
     )
+
+
+# ---- import and export for the researcher dashboard ----
+
+def _pdf_response(pdf: bytes, filename: str) -> Response:
+    return Response(pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f"attachment; filename={filename}"})
+
+
+def _need_fpdf() -> None:
+    from importlib.util import find_spec
+    if find_spec("fpdf") is None:
+        raise HTTPException(status_code=501, detail="pdf export needs fpdf2: pip install -r requirements.txt")
+
+
+@router.get("/benchmark/report")
+def benchmark_report(hour: int = Query(8, ge=0, le=23), rainfall_mm: float = Query(30.0, ge=0, le=500)):
+    # pdf report that answers sop 1 to 3 from the live benchmark
+    _need_fpdf()
+    live = run_benchmark(hour=hour, rainfall_mm=rainfall_mm)
+    summary = report.summarize_log(run_benchmark_log(hour, rainfall_mm))
+    pdf = report.build_report_pdf(summary, live=live, context=report.live_context(),
+                                  source=f"live engine (hour {hour}, {rainfall_mm:g} mm rain)")
+    return _pdf_response(pdf, "smartcommuteph_benchmark_report.pdf")
+
+
+def _imported_summary(req: LogImportRequest) -> dict:
+    try:
+        return report.summarize_log(report.parse_log_csv(req.csv))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.post("/benchmark/import")
+def benchmark_import(req: LogImportRequest) -> dict:
+    # read a benchmark log csv (the same format the dashboard exports) and
+    # return the sop answers that the log supports
+    summary = _imported_summary(req)
+    summary["filename"] = req.filename or "imported.csv"
+    return summary
+
+
+@router.post("/benchmark/import/report")
+def benchmark_import_report(req: LogImportRequest):
+    # pdf report for an imported log
+    _need_fpdf()
+    summary = _imported_summary(req)
+    name = req.filename or "imported.csv"
+    pdf = report.build_report_pdf(summary, source=f"imported file {name}", context={"notes": [
+        "Computed from the imported benchmark log only: hour, rainfall, route stations and model "
+        "details are not stored in the log.",
+        "Crowding and fare use the same measure as the live SOP 1 test; flood risk and Convenient "
+        "use the log's worst-segment flood score and transfer count.",
+    ]})
+    return _pdf_response(pdf, "smartcommuteph_imported_report.pdf")

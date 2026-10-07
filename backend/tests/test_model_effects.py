@@ -160,3 +160,30 @@ def test_rail_corridors_run_through_real_stations():
     for must in ("Quezon MRT", "Kamuning MRT", "Ortigas MRT", "Guadalupe MRT"):
         assert must in names, f"missing station {must}"
     assert len(g.real_nodes) == 10  # stations never leak into the od anchors
+
+
+def test_export_import_round_trip():
+    # the csv the dashboard exports must import back with the same sop answers
+    from app.research.benchmark import benchmark_log_csv
+
+    csv_text = benchmark_log_csv(hour=8, rainfall_mm=30.0)
+    r = client.post("/api/benchmark/import", json={"csv": csv_text, "filename": "log.csv"})
+    assert r.status_code == 200
+    d = r.json()
+    assert d["rows"] == 360 and d["od_pairs"] == 45
+    live = client.get("/api/benchmark").json()
+    assert d["sop2"]["pct_with_variance"] == live["sop2"]["pct_with_variance"]
+    assert round(d["sop3"]["nodes"]["mean_framework"], 1) == round(live["sop3"]["nodes"]["mean_framework"], 1)
+    # a file that is not a benchmark log is refused with a reason
+    bad = client.post("/api/benchmark/import", json={"csv": "a,b\n1,2", "filename": "x.csv"})
+    assert bad.status_code == 422 and "missing columns" in bad.json()["detail"]
+
+
+def test_pdf_reports_are_pdfs():
+    from app.research.benchmark import benchmark_log_csv
+
+    r = client.get("/api/benchmark/report")
+    assert r.status_code == 200 and r.content[:4] == b"%PDF"
+    r2 = client.post("/api/benchmark/import/report",
+                     json={"csv": benchmark_log_csv(hour=8, rainfall_mm=30.0), "filename": "log.csv"})
+    assert r2.status_code == 200 and r2.content[:4] == b"%PDF"

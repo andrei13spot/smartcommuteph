@@ -46,8 +46,10 @@
             </div>
             
             <div class="dt-actions">
-                <button class="dt-btn ghost" type="button">Import CSV</button>
-                <button class="dt-btn" type="button">Export CSV</button>
+                <button class="dt-btn ghost" type="button" id="btn-import" title="Load a benchmark log CSV made with Export CSV">Import CSV</button>
+                <button class="dt-btn ghost" type="button" id="btn-export-csv" title="Download the 360-row benchmark log">Export CSV</button>
+                <button class="dt-btn" type="button" id="btn-export-pdf" title="Download a PDF report that answers SOP 1 to 3">Export PDF report</button>
+                <input type="file" id="import-file" accept=".csv,text/csv" hidden>
             </div>
         </div>
 

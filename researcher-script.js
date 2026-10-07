@@ -620,6 +620,7 @@ async function init() {
     buildQueryList(DEFAULT_ANCHORS, DEFAULT_PROFILES);
     initQueryLogClicks();
     initTimelinePlay();
+    initImportExport();
     
     // Set to empty placeholders on initial load
     renderAhp('safest', true);
@@ -674,3 +675,139 @@ async function init() {
     }
 }
 init();
+
+// ---- import and export ----
+// export: the 360-row benchmark log as csv, and a pdf report that answers the
+// three sops. import: a benchmark log csv in the same format the export makes;
+// the engine checks it and works out the sop answers the log supports.
+let IMPORTED = null;   // { csv, filename } of the last imported log
+
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtP = (p) => (p < 0.001 ? '&lt; 0.001' : Number(p).toFixed(4));
+const today = () => new Date().toISOString().slice(0, 10);
+
+function saveBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+async function errorText(r, fallback) {
+    try {
+        const j = await r.json();
+        if (typeof j.detail === 'string') return j.detail;
+        if (j.error) return j.error;
+    } catch (e) { /* not json */ }
+    return fallback;
+}
+
+async function downloadFile(url, name, btn, init) {
+    const label = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Preparing…'; }
+    try {
+        const r = await fetch(url, init);
+        if (!r.ok) throw new Error(await errorText(r, 'the engine did not answer'));
+        saveBlob(await r.blob(), name);
+    } catch (err) {
+        showToast('Export failed: ' + esc(err.message));
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = label; }
+    }
+}
+
+function closeImportPanel() {
+    const o = document.querySelector('.imp-overlay');
+    if (o) o.remove();
+    document.removeEventListener('keydown', importKeys);
+}
+
+function importKeys(e) { if (e.key === 'Escape') closeImportPanel(); }
+
+function showImportResult(d) {
+    closeImportPanel();
+    const dir = (x) => x === 'framework_higher' ? 'higher' : x === 'framework_lower' ? 'lower' : 'equal';
+    const s1 = (d.sop1 || []).map(r => `
+        <tr><td>${esc(r.profile[0].toUpperCase() + r.profile.slice(1))}</td><td>${esc(r.criterion)}</td>
+        <td>${r.mean_baseline.toFixed(3)}</td><td>${r.mean_framework.toFixed(3)}</td><td>${fmtP(r.p)}</td>
+        <td>${r.significant ? 'Yes' : 'No'}</td><td>${dir(r.direction)}</td></tr>`).join('');
+    const s2 = d.sop2, a = s2.rm_anova_travel_time, n = d.sop3.nodes, ms = d.sop3.exec_ms;
+    const ratio = ms.mean_baseline > 0 ? (ms.mean_framework / ms.mean_baseline).toFixed(1) : '–';
+    const warn = (d.warnings || []).map(w => `<div class="imp-warn">${esc(w)}</div>`).join('');
+    const o = document.createElement('div');
+    o.className = 'imp-overlay';
+    o.innerHTML = `
+      <div class="imp-card" role="dialog" aria-modal="true" aria-label="Imported benchmark log">
+        <div class="imp-head">
+          <div>
+            <div class="imp-eyebrow">Imported benchmark log</div>
+            <div class="imp-title">${esc(d.filename)}</div>
+            <div class="imp-sub">${d.rows} rows · ${d.od_pairs} origin and destination pairs · ${d.profiles.length} profiles</div>
+          </div>
+          <button class="imp-x" type="button" aria-label="Close">×</button>
+        </div>
+        ${warn}
+        <h4>SOP 1 · each profile against the distance baseline</h4>
+        <table class="imp-table"><thead><tr><th>Profile</th><th>Criterion</th><th>Baseline</th><th>Framework</th><th>p</th><th>p &lt; 0.05</th><th>Framework</th></tr></thead><tbody>${s1}</tbody></table>
+        <p class="imp-note">Crowding and fare are the same measures as the live test. Flood risk uses the worst segment and Convenient uses the number of transfers, because the log does not store the mean flood risk or the transfer friction.</p>
+        <h4>SOP 2 · different routes across the profiles</h4>
+        <p>${s2.pairs_with_variance} of ${d.od_pairs} pairs (${s2.pct_with_variance}%) have at least two different routes, ${s2.mean_distinct_routes} routes per pair on average.${a ? ` RM-ANOVA on travel time: F ${a.F}, corrected p ${fmtP(a.p_decision)}.` : ''}</p>
+        <h4>SOP 3 · search space</h4>
+        <p>Nodes expanded: baseline ${n.mean_baseline.toFixed(1)}, framework ${n.mean_framework.toFixed(1)}, p ${fmtP(n.p)}. Execution time: the framework takes about ${ratio} times as long.</p>
+        <div class="imp-actions">
+          <button class="imp-btn ghost imp-close" type="button">Close</button>
+          <button class="imp-btn imp-pdf" type="button">Download PDF report of this file</button>
+        </div>
+      </div>`;
+    document.body.appendChild(o);
+    o.addEventListener('click', (e) => { if (e.target === o) closeImportPanel(); });
+    o.querySelector('.imp-x').addEventListener('click', closeImportPanel);
+    o.querySelector('.imp-close').addEventListener('click', closeImportPanel);
+    const pdfBtn = o.querySelector('.imp-pdf');
+    pdfBtn.addEventListener('click', () => {
+        if (!IMPORTED) return;
+        const base = IMPORTED.filename.replace(/\.csv$/i, '').replace(/[^\w.-]+/g, '_');
+        downloadFile('/api/benchmark/import/report', `${base}_report.pdf`, pdfBtn, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(IMPORTED),
+        });
+    });
+    document.addEventListener('keydown', importKeys);
+}
+
+function initImportExport() {
+    const imp = $('btn-import'), file = $('import-file');
+    const csvBtn = $('btn-export-csv'), pdfBtn = $('btn-export-pdf');
+    if (csvBtn) csvBtn.addEventListener('click', () =>
+        downloadFile('/api/benchmark/log?format=csv', `smartcommuteph_benchmark_log_${today()}.csv`, csvBtn));
+    if (pdfBtn) pdfBtn.addEventListener('click', () =>
+        downloadFile('/api/benchmark/report', `smartcommuteph_benchmark_report_${today()}.pdf`, pdfBtn));
+    if (!imp || !file) return;
+    imp.addEventListener('click', () => { file.value = ''; file.click(); });
+    file.addEventListener('change', async () => {
+        const f = file.files && file.files[0];
+        if (!f) return;
+        if (f.size > 2000000) { showToast('That file is over 2 MB. Choose a benchmark log CSV made with Export CSV.'); return; }
+        const label = imp.textContent;
+        imp.disabled = true;
+        imp.textContent = 'Reading…';
+        try {
+            const text = await f.text();
+            const r = await fetch('/api/benchmark/import', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ csv: text, filename: f.name }),
+            });
+            if (!r.ok) throw new Error(await errorText(r, 'the engine could not read the file'));
+            IMPORTED = { csv: text, filename: f.name };
+            showImportResult(await r.json());
+        } catch (err) {
+            showToast('Import failed: ' + esc(err.message));
+        } finally {
+            imp.disabled = false;
+            imp.textContent = label;
+        }
+    });
+}

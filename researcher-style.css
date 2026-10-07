@@ -573,3 +573,25 @@ footer .label .mini-mark { width: 14px; height: 14px; border-radius: 4px; backgr
 
 /* where the ahp weights come from (synthetic until the survey lands) */
 .ahp-src { margin-top: 8px; font-size: 10.5px; line-height: 1.4; color: var(--ink-tertiary); }
+
+/* import / export */
+.dash-topbar .dt-btn:disabled { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+.imp-overlay { position: fixed; inset: 0; background: rgba(17,17,17,0.45); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.imp-card { background: #fff; color: var(--ink); border-radius: 18px; width: min(760px, 100%); max-height: 88vh; overflow-y: auto; padding: 24px 26px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
+.imp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.imp-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.imp-title { font-size: 18px; font-weight: 800; word-break: break-all; }
+.imp-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+.imp-x { border: none; background: transparent; font-size: 24px; line-height: 1; cursor: pointer; color: var(--ink-soft); }
+.imp-card h4 { font-size: 13px; font-weight: 700; margin: 18px 0 8px; }
+.imp-card p { font-size: 13px; margin: 0 0 6px; }
+.imp-note { color: var(--ink-soft); font-size: 11.5px !important; }
+.imp-warn { background: #fff7e6; border: 1px solid #f3d9a4; border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-top: 8px; }
+.imp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.imp-table th, .imp-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); }
+.imp-table th { font-weight: 700; color: var(--ink-soft); }
+.imp-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.imp-btn { background: var(--ink); color: #fff; padding: 9px 18px; border-radius: 50px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; }
+.imp-btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--rule); }
+.imp-btn:disabled { opacity: 0.6; cursor: wait; }
+@media (max-width: 600px) { .imp-table { font-size: 11px; } .imp-table th, .imp-table td { padding: 5px 4px; } }
