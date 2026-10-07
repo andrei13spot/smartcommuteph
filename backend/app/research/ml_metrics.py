@@ -8,6 +8,7 @@ from pathlib import Path
 from ..ml import flood, ridership
 
 _LSTM_METRICS = Path(__file__).parents[1] / "ml" / "models" / "ridership_metrics.json"
+_BUSWAY_METRICS = Path(__file__).parents[1] / "ml" / "models" / "busway_metrics.json"
 
 
 def ml_metrics() -> dict:
@@ -35,8 +36,23 @@ def ml_metrics() -> dict:
     except Exception:
         pass
 
+    models = [lstm, rfr]
+    # the busway lstm card appears only once train_busway.py has produced its
+    # metrics, so nothing changes on machines without the digitized data
+    try:
+        b = json.loads(_BUSWAY_METRICS.read_text())
+        models.append({
+            "key": "busway", "name": "LSTM · Busway Ridership", "criterion": "T - ridership (EDSA-Bus)",
+            "rmse": b.get("test_rmse"), "mse": b.get("test_mse"), "mae": b.get("test_mae"),
+            "detail": f"{b.get('n_hours')} hourly obs over {b.get('n_days')} days, "
+                      f"{', '.join(b.get('stations') or [])} station, dotr tally sheets digitized",
+            "status": "trained" if "EDSA-Bus" in getattr(rp, "_line_lstms", {}) else "data-derived curve",
+        })
+    except Exception:
+        pass
+
     return {
-        "models": [lstm, rfr],
+        "models": models,
         "metric": "holdout test set at training time",
         "note": "rfr metrics are live from the saved model bundle",
     }

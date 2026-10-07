@@ -73,6 +73,21 @@ def _load_lstm():
         return None
 
 
+def _load_line_lstms() -> dict[str, object]:
+    # per-line trained lstm, when a line has its own hourly series. today:
+    # edsa busway (models/busway_lstm.keras, trained by train_busway.py on the
+    # digitized dotr tally sheets). None entries fall back to the line curve.
+    models: dict[str, object] = {}
+    path = _MODEL_DIR / "busway_lstm.keras"
+    if path.exists():
+        try:
+            import tensorflow as tf
+            models["EDSA-Bus"] = tf.keras.models.load_model(path)
+        except Exception:
+            pass
+    return models
+
+
 def _load_line_curves() -> dict[str, dict[int, float]]:
     # per-line hourly demand curves from real counts, when a line has its own
     # data. today: edsa busway (kamuning station hourly boardings, may 2025,
@@ -93,6 +108,8 @@ class RidershipPredictor:
         self._curve = _load_real_curve()
         self._calibration = _load_calibration()
         self._line_curves = _load_line_curves()
+        self._line_lstms = _load_line_lstms()
+        self._line_cache: dict[tuple[str, int], float] = {}
         if self._lstm is not None:
             self.name = "lstm-ridership"
         elif self._curve is not None:
@@ -114,6 +131,24 @@ class RidershipPredictor:
         pred = float(self._lstm.predict(np.array([window]), verbose=0)[0][0])
         factor = pred * 1.5  # model outputs 0..1, curve scale peaks at 1.5
         self._lstm_cache[hour] = factor
+        return factor
+
+    def line_demand_factor(self, mode: str, hour: int) -> float | None:
+        # a line with its own lstm: feed the previous 24 hours of that line's
+        # mean curve through its model, same recipe as _lstm_factor. None when
+        # the line has no model of its own.
+        model = self._line_lstms.get(mode)
+        curve = self._line_curves.get(mode)
+        if model is None or not curve:
+            return None
+        key = (mode, hour % 24)
+        if key in self._line_cache:
+            return self._line_cache[key]
+        import numpy as np
+        peak = max(curve.values())
+        window = [[curve.get((hour - 24 + i) % 24, 0.0) / peak] for i in range(24)]
+        factor = float(model.predict(np.array([window]), verbose=0)[0][0]) * 1.5
+        self._line_cache[key] = factor
         return factor
 
     def demand_factor(self, hour: int) -> float:
@@ -144,6 +179,9 @@ class RidershipPredictor:
         # crowding for this edge at this hour, 0..1. a line with its own real
         # hourly curve (edsa busway) uses it directly; others use the mrt-3
         # demand shape scaled by their headway-based capacity factor
+        line_demand = self.line_demand_factor(edge.mode, hour)
+        if line_demand is not None:
+            return _clamp01(edge.ridership * line_demand)
         line_curve = self._line_curves.get(edge.mode)
         if line_curve:
             demand = line_curve.get(hour % 24, min(line_curve.values()))
