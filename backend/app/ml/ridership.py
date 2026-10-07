@@ -77,14 +77,17 @@ def _load_line_lstms() -> dict[str, object]:
     # per-line trained lstm, when a line has its own hourly series. today:
     # edsa busway (models/busway_lstm.keras, trained by train_busway.py on the
     # digitized dotr tally sheets). None entries fall back to the line curve.
+    # lrt-2 (models/lrt2_lstm.keras, trained by train_lrt2.py on the lrta
+    # entry/exit statistics by time band, 2024-2026).
     models: dict[str, object] = {}
-    path = _MODEL_DIR / "busway_lstm.keras"
-    if path.exists():
-        try:
-            import tensorflow as tf
-            models["EDSA-Bus"] = tf.keras.models.load_model(path)
-        except Exception:
-            pass
+    for mode, name in (("EDSA-Bus", "busway_lstm.keras"), ("LRT-2", "lrt2_lstm.keras")):
+        path = _MODEL_DIR / name
+        if path.exists():
+            try:
+                import tensorflow as tf
+                models[mode] = tf.keras.models.load_model(path)
+            except Exception:
+                pass
     return models
 
 

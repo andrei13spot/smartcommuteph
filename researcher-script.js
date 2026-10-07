@@ -135,7 +135,7 @@ function renderModels(data) {
         { key:'rfr', name:'RFR · Flood Risk', rmse:null, detail:'metrics unavailable' }
     ];
     el.innerHTML = models.map(m => {
-        const ic = m.key === 'rfr' ? 'R' : m.key === 'busway' ? 'B' : 'L';
+        const ic = m.key === 'rfr' ? 'R' : m.key === 'busway' ? 'B' : m.key === 'lrt2' ? '2' : 'L';
         const cls = m.key === 'rfr' ? 'rfr' : 'lstm';
         const rmse = m.rmse != null ? `RMSE ${m.rmse}` : 'RMSE —';
         return `<div class="model-card ${cls}">

@@ -1,0 +1,14 @@
+{
+  "test_rmse": 0.05842,
+  "test_mse": 0.00341,
+  "test_mae": 0.0309,
+  "epochs_ran": 60,
+  "split": "chronological 70-15-15 (train/val/holdout)",
+  "n_hours": 17928,
+  "n_days": 747,
+  "window": 24,
+  "peak_entries_per_hour": 20913,
+  "first_day": "2024-01-01",
+  "last_day": "2026-03-31",
+  "source": "lrta afc operational statistics, entries by time band spread per hour"
+}
