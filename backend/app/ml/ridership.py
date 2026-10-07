@@ -90,15 +90,16 @@ def _load_line_lstms() -> dict[str, object]:
 
 def _load_line_curves() -> dict[str, dict[int, float]]:
     # per-line hourly demand curves from real counts, when a line has its own
-    # data. today: edsa busway (kamuning station hourly boardings, may 2025,
-    # dotr workbook). lines without a curve fall back to the mrt-3 shape.
+    # data. today: edsa busway (digitized dotr tally sheets) and lrt-2 (lrta
+    # entry/exit statistics by time band, march 2026). lines without a curve
+    # (lrt-1) fall back to the mrt-3 shape scaled by headway.
     curves: dict[str, dict[int, float]] = {}
-    path = _MODEL_DIR / "busway_hourly_curve.json"
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        curves[data["line"]] = {int(h): float(v) for h, v in data["curve"].items()}
-    except Exception:
-        pass
+    for name in ("busway_hourly_curve.json", "lrt2_hourly_curve.json"):
+        try:
+            data = json.loads((_MODEL_DIR / name).read_text(encoding="utf-8"))
+            curves[data["line"]] = {int(h): float(v) for h, v in data["curve"].items()}
+        except Exception:
+            pass
     return curves
 
 
