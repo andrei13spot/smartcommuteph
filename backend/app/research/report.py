@@ -19,12 +19,12 @@ MAX_IMPORT_BYTES = 2_000_000
 
 # which logged kpi stands in for each profile's criterion when only the log is
 # available. T and F match the live sop1 measure exactly. the live sop1 uses
-# the mean flood risk and the transfer friction, which the log does not store,
-# so R uses the worst-segment flood score and P the number of transfers.
+# the transfer friction, which the log does not store, so P uses the number of
+# transfers. R uses the mean raw flood risk along the route.
 LOG_CRITERION = {
     "T": ("ridership_density_score", "mean crowding (0-1)", True),
     "F": ("fare_php", "trip fare (PHP)", True),
-    "R": ("flood_risk_score", "worst-segment flood risk (0-1)", False),
+    "R": ("flood_risk_score", "mean flood risk along the route (0-1)", False),
     "P": ("transfers", "number of transfers", False),
 }
 PROFILE_PRIORITY = {"uncrowded": "T", "cheapest": "F", "safest": "R", "convenient": "P"}
@@ -330,7 +330,7 @@ def build_report_pdf(log_summary: dict, live: dict | None = None, context: dict 
     # 6. kpis
     h2("6. The eight KPIs, mean per profile")
     labels = {"travel_time_min": "Time (min)", "distance_km": "Dist (km)", "fare_php": "Fare (PHP)",
-              "transfers": "Transfers", "flood_risk_score": "Flood (max)", "ridership_density_score": "Crowding",
+              "transfers": "Transfers", "flood_risk_score": "Flood (mean)", "ridership_density_score": "Crowding",
               "nodes_expanded": "Nodes", "exec_ms": "ms"}
     body = [[f"{r['profile'].title()} / {r['algorithm']}",
              *[f"{r[k]:.2f}" if k not in ("nodes_expanded",) else f"{r[k]:.0f}" for k in KPI_COLUMNS]]
@@ -339,9 +339,21 @@ def build_report_pdf(log_summary: dict, live: dict | None = None, context: dict 
     table(["Profile / run", *[labels[k] for k in KPI_COLUMNS]], body,
           (first, *([(W - first) / len(KPI_COLUMNS)] * len(KPI_COLUMNS))))
 
-    # 7. models and weights
+    # 7. flood model response to rain
+    if ctx.get("flood_rows"):
+        h2("7. How the flood model reacts to rain")
+        para("The benchmark above uses one fixed rainfall so it can be repeated. This table reruns the flood "
+             "model and the Safest route on the same 45 OD pairs at other rainfall levels. Values are the raw "
+             "Random Forest output (0-1), averaged along each route.", 9)
+        fb = [[r["label"], f"{r['network_mean']:.3f}", f"{r['baseline_route_mean']:.3f}",
+               f"{r['safest_route_mean']:.3f}", f"{r['safest_routes_changed']} of {r['od_pairs']}"]
+              for r in ctx["flood_rows"]]
+        table(["Rainfall", "Network mean", "Baseline routes", "Safest routes", "Safest routes changed vs 0 mm"],
+              fb, (34, 30, 30, 30, W - 124))
+
+    # 8. models and weights
     if ctx.get("model_rows") or ctx.get("weight_rows"):
-        h2("7. Models and AHP weights")
+        h2("8. Models and AHP weights")
         if ctx.get("model_rows"):
             table(["Model", "Trained on", "Holdout error"], ctx["model_rows"], (40, W - 80, 40))
         if ctx.get("weight_rows"):

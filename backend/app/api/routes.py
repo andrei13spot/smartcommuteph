@@ -7,7 +7,7 @@ from fastapi.responses import PlainTextResponse, Response
 from ..config import API_TITLE, API_VERSION
 from ..ml import flood, ridership
 from ..profiles import PROFILES
-from ..research.benchmark import benchmark_log_csv, run_benchmark, run_benchmark_log
+from ..research.benchmark import FLOOD_RAINS, benchmark_log_csv, flood_response, run_benchmark, run_benchmark_log
 from ..research.inspector import inspect
 from ..research.ml_metrics import ml_metrics
 from ..research import report
@@ -198,7 +198,16 @@ def benchmark_report(hour: int = Query(8, ge=0, le=23), rainfall_mm: float = Que
     _need_fpdf()
     live = run_benchmark(hour=hour, rainfall_mm=rainfall_mm)
     summary = report.summarize_log(run_benchmark_log(hour, rainfall_mm))
-    pdf = report.build_report_pdf(summary, live=live, context=report.live_context(),
+    context = report.live_context()
+    # the flood table: the fixed levels, this report's rainfall, and today's
+    # live rainfall from met norway
+    today = round(float(flood.fetch_rainfall_mm()), 1)
+    rains = sorted({*FLOOD_RAINS, round(rainfall_mm, 1), today})
+    labels = {round(rainfall_mm, 1): "this report", today: "today, " + flood.rainfall_source()}
+    context["flood_rows"] = [
+        {**r, "label": f"{r['rainfall_mm']:g} mm" + (f" ({labels[r['rainfall_mm']]})" if r["rainfall_mm"] in labels else "")}
+        for r in flood_response(hour, rains)]
+    pdf = report.build_report_pdf(summary, live=live, context=context,
                                   source=f"live engine (hour {hour}, {rainfall_mm:g} mm rain)")
     return _pdf_response(pdf, "smartcommuteph_benchmark_report.pdf")
 

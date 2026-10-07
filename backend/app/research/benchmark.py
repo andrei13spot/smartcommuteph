@@ -308,7 +308,11 @@ def _kpis(ctx: CostContext, res, exec_ms: float) -> dict:
         "distance_km": round(sum(e.distance_km for e in edges), 2),
         "fare_php": round(path_fare(ctx.graph, edges), 1),
         "transfers": count_transfers(edges),
-        "flood_risk_score": round(max((ctx.criteria[e.id].R for e in edges), default=0.0), 3),
+        # mean raw flood risk along the route, straight from the random forest.
+        # the old score was the worst segment after min-max scaling, and the
+        # scaling puts the riskiest edge of the network at 1, so it read about
+        # 1.0 at every rainfall. the raw mean moves with the rain.
+        "flood_risk_score": round(sum(ctx.raw_flood[e.id] for e in edges) / len(edges), 3) if edges else 0.0,
         "ridership_density_score": round(
             sum(ctx.criteria[e.id].T for e in edges) / len(edges), 3) if edges else 0.0,
         "nodes_expanded": res.expanded_nodes,
@@ -338,6 +342,48 @@ def run_benchmark_log(hour: int = 8, rainfall_mm: float = 30.0) -> list[dict]:
                     **_kpis(ctx, res, ms),
                 })
     _LOG_CACHE[key] = rows
+    return rows
+
+
+_FLOOD_CACHE: dict[tuple, list[dict]] = {}
+FLOOD_RAINS = (0.0, 10.0, 20.0, 30.0, 45.0, 60.0)
+
+
+def flood_response(hour: int = 8, rains=FLOOD_RAINS) -> list[dict]:
+    # how the flood model and the safest route react to rain, on the same 45
+    # od pairs: mean raw edge risk over the network, mean risk along the
+    # distance baseline and along the safest route, and how many safest routes
+    # change compared with a dry day
+    key = (hour, tuple(round(float(r), 1) for r in rains))
+    if key in _FLOOD_CACHE:
+        return _FLOOD_CACHE[key]
+    graph = load_graph()
+    pairs = list(combinations(graph.real_nodes, 2))
+    safest = PROFILES["safest"]
+    dry_routes = None
+    rows = []
+    for mm in sorted({round(float(r), 1) for r in (0.0, *rains)}):
+        ctx = CostContext(graph, hour=hour, rainfall_mm=mm)
+        raw = ctx.raw_flood
+        bl, sf, routes = [], [], []
+        for o, d in pairs:
+            b = shortest_route(graph, o, d, BASELINE, ctx).edges
+            s = shortest_route(graph, o, d, safest, ctx).edges
+            bl.append(sum(raw[e.id] for e in b) / len(b) if b else 0.0)
+            sf.append(sum(raw[e.id] for e in s) / len(s) if s else 0.0)
+            routes.append(tuple(e.id for e in s))
+        if dry_routes is None:
+            dry_routes = routes
+        if mm in {round(float(r), 1) for r in rains}:
+            rows.append({
+                "rainfall_mm": mm,
+                "network_mean": round(float(np.mean(list(raw.values()))), 3),
+                "baseline_route_mean": round(float(np.mean(bl)), 3),
+                "safest_route_mean": round(float(np.mean(sf)), 3),
+                "safest_routes_changed": sum(1 for a, b in zip(routes, dry_routes) if a != b),
+                "od_pairs": len(pairs),
+            })
+    _FLOOD_CACHE[key] = rows
     return rows
 
 

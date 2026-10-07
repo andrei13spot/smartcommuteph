@@ -295,6 +295,7 @@ a { color: inherit; text-decoration: none; }
 
 .rs-title { font-size: 14px; font-weight: 700; color: var(--ink); }
 .rs-sub { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+.rs-new .rs-title { color: var(--link); font-size: 13px; }
 
 /* Map & Dark Glass Overlays */
 .dash-center { position: relative; background: #0f172a; overflow: hidden; }

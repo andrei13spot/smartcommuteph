@@ -58,8 +58,14 @@ function setConn(on) {
 
 // active run: a real record of what the dashboard is showing. the live run is
 // stamped when /api/benchmark answers (with its hour and rainfall); each csv
-// imported in this session is added as its own run.
+// imported in this session is added as its own run. a run at today's
+// conditions (this hour, met norway rainfall) can be added from the list, and
+// the exports and the map playback follow the selected live run.
 const RUNS = [];
+let CURRENT_RUN = null;
+const runConditions = () => (CURRENT_RUN && CURRENT_RUN.hour != null)
+    ? { hour: CURRENT_RUN.hour, rainfall_mm: CURRENT_RUN.rainfall_mm } : { hour: 8, rainfall_mm: 30 };
+const conditionQuery = () => { const c = runConditions(); return `hour=${c.hour}&rainfall_mm=${c.rainfall_mm}`; };
 function runStamp(d) {
     const p = n => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
@@ -71,12 +77,41 @@ function addRun(run) {
         <div class="rs-item${i === 0 ? ' active' : ''}" data-run="${esc(r.id)}">
             <div class="rs-title">${esc(r.title)}</div>
             <div class="rs-sub">${esc(r.sub)}</div>
-        </div>`).join('');
+        </div>`).join('') + `
+        <div class="rs-item rs-new" data-run="__today">
+            <div class="rs-title">+ Run at today's conditions</div>
+            <div class="rs-sub">this hour and today's MET Norway rainfall</div>
+        </div>`;
     selectRun(run.id);
 }
+
+async function runToday() {
+    const t = document.querySelector('.active-run-title'), s = document.querySelector('.active-run-sub');
+    if (t) t.innerText = 'Running…';
+    if (s) s.innerText = "benchmark at today's conditions";
+    try {
+        const st = await fetch('/api/status').then(r => r.json());
+        const hour = new Date().getHours();
+        const rain = Math.round((st.rainfall_mm ?? 0) * 10) / 10;
+        const bench = await fetch(`/api/benchmark?hour=${hour}&rainfall_mm=${rain}`).then(r => r.json());
+        if (!bench || !bench.sop1) throw new Error('no benchmark');
+        const now = new Date();
+        addRun({ id: 'today-' + runStamp(now) + '-' + RUNS.length, title: runStamp(now) + ' · today', bench, hour, rainfall_mm: rain,
+            sub: `Today's conditions · hour ${hour}, ${rain} mm (${st.rainfall_source || 'MET Norway'}) · ${bench.observations} obs` });
+    } catch (e) {
+        showToast("Could not run the benchmark at today's conditions.");
+        if (CURRENT_RUN) selectRun(CURRENT_RUN.id);
+    }
+}
 function selectRun(id) {
+    if (id === '__today') { runToday(); return; }
     const r = RUNS.find(x => x.id === id);
     if (!r) return;
+    if (r.bench) {
+        CURRENT_RUN = r;
+        renderSOP(r.bench);
+        if (LAST_INSPECT) clearSearch();
+    }
     document.querySelectorAll('#run-select-section .rs-item').forEach(x => x.classList.toggle('active', x.dataset.run === id));
     const t = document.querySelector('.active-run-title'), s = document.querySelector('.active-run-sub');
     if (t) t.innerText = r.title;
@@ -464,7 +499,7 @@ async function playInspect(q, opts = {}) {
     let d;
     try {
         const res = await fetch('/api/inspect', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ origin: q.origin, destination: q.destination, profile: q.profile }) });
+            body: JSON.stringify({ origin: q.origin, destination: q.destination, profile: q.profile, ...runConditions() }) });
         d = await res.json();
     } catch (e) { return false; }
     if (token !== PLAY_TOKEN || !d || !d.found) return false;
@@ -779,7 +814,7 @@ async function init() {
         setConn(true);
         renderSOP(bench);
         const now = new Date();
-        addRun({ id: 'live-' + runStamp(now), title: runStamp(now),
+        addRun({ id: 'live-' + runStamp(now), title: runStamp(now), bench, hour: bench.hour, rainfall_mm: bench.rainfall_mm,
             sub: `Live benchmark · ${now.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · hour ${bench.hour}, ${bench.rainfall_mm} mm · ${bench.observations} obs` });
         renderModels(ml);
         
@@ -902,9 +937,9 @@ function initImportExport() {
     const imp = $('btn-import'), file = $('import-file');
     const csvBtn = $('btn-export-csv'), pdfBtn = $('btn-export-pdf');
     if (csvBtn) csvBtn.addEventListener('click', () =>
-        downloadFile('/api/benchmark/log?format=csv', `smartcommuteph_benchmark_log_${today()}.csv`, csvBtn));
+        downloadFile(`/api/benchmark/log?format=csv&${conditionQuery()}`, `smartcommuteph_benchmark_log_${today()}_h${runConditions().hour}_${runConditions().rainfall_mm}mm.csv`, csvBtn));
     if (pdfBtn) pdfBtn.addEventListener('click', () =>
-        downloadFile('/api/benchmark/report', `smartcommuteph_benchmark_report_${today()}.pdf`, pdfBtn));
+        downloadFile(`/api/benchmark/report?${conditionQuery()}`, `smartcommuteph_benchmark_report_${today()}_h${runConditions().hour}_${runConditions().rainfall_mm}mm.pdf`, pdfBtn));
     if (!imp || !file) return;
     imp.addEventListener('click', () => { file.value = ''; file.click(); });
     file.addEventListener('change', async () => {
