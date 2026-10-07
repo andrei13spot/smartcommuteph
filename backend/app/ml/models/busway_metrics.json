@@ -1,11 +1,11 @@
 {
-  "test_rmse": 0.05212,
-  "test_mse": 0.00272,
-  "test_mae": 0.02947,
-  "epochs_ran": 12,
+  "test_rmse": 0.04898,
+  "test_mse": 0.0024,
+  "test_mae": 0.02831,
+  "epochs_ran": 60,
   "split": "chronological 70-15-15 (train/val/holdout) per station",
-  "n_hours": 44808,
-  "n_days": 1855,
+  "n_hours": 52032,
+  "n_days": 2156,
   "window": 24,
   "peak_boardings": 10554,
   "first_day": "2024-06-01",
@@ -18,6 +18,7 @@
     "Kamuning",
     "Monumento",
     "Ortigas",
+    "Roosevelt",
     "Sm North"
   ],
   "source": "dotr edsa busway security detachment hourly tally sheets, digitized"
