@@ -346,39 +346,37 @@ function travel(route, ms, token, color) {
 // opts.fast is the timeline replay: same real a* run, shorter animation.
 // resolves true when the playback ran to the end, false if it was superseded
 // by another selection or the engine could not be reached.
-// a* search view (toggle on the map): the states each run expanded, the
-// framework in its profile colour and the distance baseline in white, plus the
-// baseline's own route dashed. drawn on one canvas layer so it stays light.
-let SEARCH_MODE = 'off', LAST_INSPECT = null, searchLayers = [], searchCanvas = null;
+// baseline view (switch on the map): off by default, the map shows only the
+// profile's route. switched on, it adds the distance baseline's own route as
+// a dashed white line and the states that baseline search expanded, so the
+// two a* runs can be compared on the same trip.
+let SHOW_BASELINE = false, LAST_INSPECT = null, searchLayers = [], searchCanvas = null;
 function clearSearch() { searchLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} }); searchLayers = []; }
-function drawSearch(d, profileId) {
+function drawSearch(d) {
     clearSearch();
-    if (!d || SEARCH_MODE === 'off' || !map) return;
-    searchCanvas = searchCanvas || L.canvas({ padding: 0.3 });
-    const dots = (ids, color) => (ids || []).forEach(id => {
-        const a = BY_ID[id];
-        if (a) searchLayers.push(L.circleMarker([a.lat, a.lng], { renderer: searchCanvas, radius: 2.5, stroke: false, fillColor: color, fillOpacity: 0.55, interactive: false }).addTo(map));
-    });
-    if (SEARCH_MODE === 'baseline' || SEARCH_MODE === 'both') {
-        dots(d.baseline_expanded_order, '#ffffff');
-        (d.baseline_legs || []).forEach(leg => {
-            const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
-            const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
-            if (pts) searchLayers.push(L.polyline(pts, { color: '#ffffff', weight: 3, opacity: 0.85, dashArray: '6 6', interactive: false }).addTo(map));
-        });
-    }
-    if (SEARCH_MODE === 'framework' || SEARCH_MODE === 'both') dots(d.expanded_order, PROFILE_DOT[profileId] || '#0071e3');
     const note = $('search-note');
-    if (note) note.innerText = SEARCH_MODE === 'off' ? '' :
-        `framework ${d.expanded_nodes} · baseline ${d.baseline_nodes} states expanded`;
+    if (note) note.innerText = '';
+    if (!d || !SHOW_BASELINE || !map) return;
+    searchCanvas = searchCanvas || L.canvas({ padding: 0.3 });
+    (d.baseline_expanded_order || []).forEach(id => {
+        const a = BY_ID[id];
+        if (a) searchLayers.push(L.circleMarker([a.lat, a.lng], { renderer: searchCanvas, radius: 2.5, stroke: false, fillColor: '#ffffff', fillOpacity: 0.45, interactive: false }).addTo(map));
+    });
+    (d.baseline_legs || []).forEach(leg => {
+        const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
+        const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
+        if (pts) searchLayers.push(L.polyline(pts, { color: '#ffffff', weight: 3, opacity: 0.9, dashArray: '6 6', interactive: false }).addTo(map));
+    });
+    if (note) note.innerText = `baseline expanded ${d.baseline_nodes} states · profile ${d.expanded_nodes}`;
 }
 function initSearchToggle() {
-    document.querySelectorAll('.search-toggle button').forEach(btn => btn.addEventListener('click', () => {
-        SEARCH_MODE = btn.dataset.mode;
-        document.querySelectorAll('.search-toggle button').forEach(b => b.classList.toggle('on', b === btn));
-        if (LAST_INSPECT) drawSearch(LAST_INSPECT.d, LAST_INSPECT.profile);
-        else if (SEARCH_MODE !== 'off') { const n = $('search-note'); if (n) n.innerText = 'pick a query from the log first'; }
-    }));
+    const sw = $('show-baseline');
+    if (!sw) return;
+    sw.addEventListener('change', () => {
+        SHOW_BASELINE = sw.checked;
+        if (LAST_INSPECT) drawSearch(LAST_INSPECT.d);
+        else if (SHOW_BASELINE) { const n = $('search-note'); if (n) n.innerText = 'pick a query from the log first'; }
+    });
 }
 
 async function playInspect(q, opts = {}) {
@@ -437,7 +435,7 @@ async function playInspect(q, opts = {}) {
     if ($('ov-nodes-delta')) $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
     if ($('ov-ms')) $('ov-ms').innerHTML = `${d.query_ms}<span class="ovc-unit">ms</span>`;
     if ($('ov-cost')) $('ov-cost').innerText = Math.round(d.total_cost * 10) / 10;
-    drawSearch(d, q.profile);
+    drawSearch(d);
     if (q.el) q.el.querySelector('.qli-bottom').innerText = `${d.expanded_nodes} nodes · ${d.query_ms} ms · vs ${d.baseline_nodes} baseline`;
     const arrived = await travel(route, fast ? 800 : 1800, token, PROFILE_DOT[q.profile] || '#0071e3');
     if (arrived && fast) await sleep(250);

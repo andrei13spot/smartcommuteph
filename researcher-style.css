@@ -596,10 +596,15 @@ footer .label .mini-mark { width: 14px; height: 14px; border-radius: 4px; backgr
 .imp-btn:disabled { opacity: 0.6; cursor: wait; }
 @media (max-width: 600px) { .imp-table { font-size: 11px; } .imp-table th, .imp-table td { padding: 5px 4px; } }
 
-/* a* search toggle: framework vs distance-baseline expansions on the map */
-.ov-search { bottom: 74px; left: 22px; padding: 10px 12px; pointer-events: auto; display: flex; flex-direction: column; gap: 8px; max-width: 260px; }
-.search-toggle { display: flex; gap: 4px; }
-.search-toggle button { padding: 5px 10px; border-radius: 100px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: rgba(255,255,255,.7); font-size: 11px; font-weight: 600; cursor: pointer; }
-.search-toggle button.on { background: #fff; color: #0b1220; border-color: transparent; }
-.search-note { font-size: 11px; color: rgba(255,255,255,.7); min-height: 0; }
+/* baseline switch: shows the distance baseline's route and search on demand */
+.ov-search { bottom: 74px; left: 22px; padding: 10px 14px; pointer-events: auto; display: flex; flex-direction: column; gap: 6px; max-width: 260px; }
+.baseline-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.baseline-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bs-track { width: 34px; height: 20px; border-radius: 100px; background: rgba(255,255,255,.18); position: relative; transition: background .2s; flex-shrink: 0; }
+.bs-thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.baseline-switch input:checked + .bs-track { background: #30d158; }
+.baseline-switch input:checked + .bs-track .bs-thumb { transform: translateX(14px); }
+.baseline-switch input:focus-visible + .bs-track { outline: 2px solid #fff; outline-offset: 2px; }
+.bs-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); }
+.search-note { font-size: 11px; color: rgba(255,255,255,.7); }
 .search-note:empty { display: none; }
