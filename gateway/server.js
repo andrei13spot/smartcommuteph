@@ -432,6 +432,12 @@ app.post("/api/inspect", guard(async (req, res) => {
       data.decomposition.forEach((leg, i) => {
         if (bent[i]) leg.points = bent[i];
       });
+      if (Array.isArray(data.baseline_legs)) {
+        const bentBase = bendRoute(data.baseline_legs, anchors);
+        data.baseline_legs.forEach((leg, i) => {
+          if (bentBase[i]) leg.points = bentBase[i];
+        });
+      }
     } catch {}
   }
   res.status(status).json(data);

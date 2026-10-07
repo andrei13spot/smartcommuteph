@@ -168,14 +168,11 @@ function initMap() {
     }).catch(() => {});
     NETWORK_GJ.then(gj => {
         const corridors = (gj.features || []).filter(f => f.geometry.type === 'LineString' && f.properties.mode !== 'Jeepney');
-        const anchors = (gj.features || []).filter(f => f.geometry.type === 'Point' && f.properties.id && !String(f.properties.id).startsWith('v_'));
         L.geoJSON({ type: 'FeatureCollection', features: corridors }, {
             style: f => ({ color: MODE_COLORS[f.properties.mode] || '#2b3550', weight: 3, opacity: 0.7 }),
         }).addTo(map);
-        L.geoJSON({ type: 'FeatureCollection', features: anchors }, {
-            pointToLayer: (f, ll) => L.circleMarker(ll, { radius: 5, color: '#fff', fillColor: '#0b1220', fillOpacity: 1, weight: 2 })
-                .bindTooltip(f.properties.name, { direction: 'top' }),
-        }).addTo(map);
+        // no station dots here: each replay marks only its own origin and
+        // destination, not every station the route passes through
         if (gj.bounds) map.fitBounds(gj.bounds, { padding:[40,40], maxZoom:13 });
         setTimeout(() => map.invalidateSize(), 250);
     }).catch(() => {});
@@ -349,12 +346,48 @@ function travel(route, ms, token, color) {
 // opts.fast is the timeline replay: same real a* run, shorter animation.
 // resolves true when the playback ran to the end, false if it was superseded
 // by another selection or the engine could not be reached.
+// a* search view (toggle on the map): the states each run expanded, the
+// framework in its profile colour and the distance baseline in white, plus the
+// baseline's own route dashed. drawn on one canvas layer so it stays light.
+let SEARCH_MODE = 'off', LAST_INSPECT = null, searchLayers = [], searchCanvas = null;
+function clearSearch() { searchLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} }); searchLayers = []; }
+function drawSearch(d, profileId) {
+    clearSearch();
+    if (!d || SEARCH_MODE === 'off' || !map) return;
+    searchCanvas = searchCanvas || L.canvas({ padding: 0.3 });
+    const dots = (ids, color) => (ids || []).forEach(id => {
+        const a = BY_ID[id];
+        if (a) searchLayers.push(L.circleMarker([a.lat, a.lng], { renderer: searchCanvas, radius: 2.5, stroke: false, fillColor: color, fillOpacity: 0.55, interactive: false }).addTo(map));
+    });
+    if (SEARCH_MODE === 'baseline' || SEARCH_MODE === 'both') {
+        dots(d.baseline_expanded_order, '#ffffff');
+        (d.baseline_legs || []).forEach(leg => {
+            const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
+            const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
+            if (pts) searchLayers.push(L.polyline(pts, { color: '#ffffff', weight: 3, opacity: 0.85, dashArray: '6 6', interactive: false }).addTo(map));
+        });
+    }
+    if (SEARCH_MODE === 'framework' || SEARCH_MODE === 'both') dots(d.expanded_order, PROFILE_DOT[profileId] || '#0071e3');
+    const note = $('search-note');
+    if (note) note.innerText = SEARCH_MODE === 'off' ? '' :
+        `framework ${d.expanded_nodes} · baseline ${d.baseline_nodes} states expanded`;
+}
+function initSearchToggle() {
+    document.querySelectorAll('.search-toggle button').forEach(btn => btn.addEventListener('click', () => {
+        SEARCH_MODE = btn.dataset.mode;
+        document.querySelectorAll('.search-toggle button').forEach(b => b.classList.toggle('on', b === btn));
+        if (LAST_INSPECT) drawSearch(LAST_INSPECT.d, LAST_INSPECT.profile);
+        else if (SEARCH_MODE !== 'off') { const n = $('search-note'); if (n) n.innerText = 'pick a query from the log first'; }
+    }));
+}
+
 async function playInspect(q, opts = {}) {
     if (!q || !map) return false;
     const fast = !!opts.fast;
     const token = ++PLAY_TOKEN;
     animLayers.forEach(l => { try { map.removeLayer(l); } catch (e) {} });
     animLayers = [];
+    clearSearch();
     let d;
     try {
         const res = await fetch('/api/inspect', { method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -365,6 +398,8 @@ async function playInspect(q, opts = {}) {
     if ($('ov-origin')) $('ov-origin').innerText = d.origin || q.origin;
     if ($('ov-dest')) $('ov-dest').innerText = d.destination || q.destination;
     renderDecomp(d);
+    LAST_INSPECT = { d, profile: q.profile };
+    clearSearch();
     // frame the route before it draws, so nothing animates outside the view
     const frame = (d.path || []).map(id => BY_ID[id]).filter(Boolean).map(a => [a.lat, a.lng]);
     if (frame.length > 1) map.fitBounds(frame, { padding: [60, 60], maxZoom: 14, animate: !fast });
@@ -402,6 +437,7 @@ async function playInspect(q, opts = {}) {
     if ($('ov-nodes-delta')) $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
     if ($('ov-ms')) $('ov-ms').innerHTML = `${d.query_ms}<span class="ovc-unit">ms</span>`;
     if ($('ov-cost')) $('ov-cost').innerText = Math.round(d.total_cost * 10) / 10;
+    drawSearch(d, q.profile);
     if (q.el) q.el.querySelector('.qli-bottom').innerText = `${d.expanded_nodes} nodes · ${d.query_ms} ms · vs ${d.baseline_nodes} baseline`;
     const arrived = await travel(route, fast ? 800 : 1800, token, PROFILE_DOT[q.profile] || '#0071e3');
     if (arrived && fast) await sleep(250);
@@ -626,6 +662,7 @@ async function init() {
     initQueryLogClicks();
     initTimelinePlay();
     initImportExport();
+    initSearchToggle();
     
     // Set to empty placeholders on initial load
     renderAhp('safest', true);

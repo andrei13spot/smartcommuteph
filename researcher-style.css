@@ -595,3 +595,11 @@ footer .label .mini-mark { width: 14px; height: 14px; border-radius: 4px; backgr
 .imp-btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--rule); }
 .imp-btn:disabled { opacity: 0.6; cursor: wait; }
 @media (max-width: 600px) { .imp-table { font-size: 11px; } .imp-table th, .imp-table td { padding: 5px 4px; } }
+
+/* a* search toggle: framework vs distance-baseline expansions on the map */
+.ov-search { bottom: 74px; left: 22px; padding: 10px 12px; pointer-events: auto; display: flex; flex-direction: column; gap: 8px; max-width: 260px; }
+.search-toggle { display: flex; gap: 4px; }
+.search-toggle button { padding: 5px 10px; border-radius: 100px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: rgba(255,255,255,.7); font-size: 11px; font-weight: 600; cursor: pointer; }
+.search-toggle button.on { background: #fff; color: #0b1220; border-color: transparent; }
+.search-note { font-size: 11px; color: rgba(255,255,255,.7); min-height: 0; }
+.search-note:empty { display: none; }

@@ -138,6 +138,17 @@
                     <span class="ovl-chip"><span class="ovl-dot"></span>MET Norway</span>
                 </div>
 
+                <div class="map-overlay ov-search glass-panel">
+                    <span class="ov-layers-l">A* search</span>
+                    <div class="search-toggle" role="group" aria-label="Show the A* search">
+                        <button type="button" data-mode="off" class="on">Route</button>
+                        <button type="button" data-mode="framework">Framework</button>
+                        <button type="button" data-mode="baseline">Baseline</button>
+                        <button type="button" data-mode="both">Both</button>
+                    </div>
+                    <div class="search-note" id="search-note"></div>
+                </div>
+
                 <div class="map-overlay ov-legend glass-panel">
                     <button class="leg-item uncrowded selected" type="button" data-profile="uncrowded" aria-pressed="true"><span class="leg-dot"></span>Uncrowded</button>
                     <button class="leg-item cheapest" type="button" data-profile="cheapest" aria-pressed="false"><span class="leg-dot"></span>Cheapest</button>

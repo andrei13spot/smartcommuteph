@@ -59,4 +59,9 @@ def inspect(origin: str, destination: str, profile_name: str,
         "path": path,
         "expanded_order": res.expanded_order,
         "decomposition": rows,
+        # the distance baseline's own route and search, so the dashboard can
+        # show both a* runs side by side (which states each one expanded)
+        "baseline_path": ([base.edges[0].src] + [e.dst for e in base.edges]) if base.edges else [origin],
+        "baseline_legs": [{"from_id": e.src, "to_id": e.dst, "mode": e.mode} for e in base.edges],
+        "baseline_expanded_order": base.expanded_order,
     }
