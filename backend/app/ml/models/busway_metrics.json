@@ -1,0 +1,17 @@
+{
+  "test_rmse": 0.0627,
+  "test_mse": 0.00393,
+  "test_mae": 0.03268,
+  "epochs_ran": 10,
+  "split": "chronological 70-15-15 (train/val/holdout)",
+  "n_hours": 5976,
+  "n_days": 249,
+  "window": 24,
+  "peak_boardings": 3500,
+  "first_day": "2024-11-17",
+  "last_day": "2025-12-15",
+  "stations": [
+    "Kamuning"
+  ],
+  "source": "dotr edsa busway security detachment hourly tally sheets, digitized"
+}

@@ -31,7 +31,8 @@ def load_rows(verified_only: bool = True) -> list[dict]:
             if verified_only and r.get("day_status") != "verified":
                 continue
             rows.append({"timestamp": r["timestamp"], "hour": int(r["hour"]),
-                         "boardings": float(r["boardings"]), "station": r.get("station", "")})
+                         "boardings": float(r["boardings"]), "station": r.get("station", ""),
+                         "service_date": r.get("service_date", "")})
     rows.sort(key=lambda r: r["timestamp"])
     if not rows:
         raise SystemExit(f"no usable rows in {DATA_PATH}")
@@ -84,7 +85,7 @@ def train(rows: list[dict]) -> dict:
                      validation_data=(X[s1:s2], y[s1:s2]), callbacks=[early])
     loss, mae = model.evaluate(X[s2:], y[s2:], verbose=0)
     model.save(MODEL_PATH)
-    days = {r["timestamp"][:10] for r in rows}
+    days = {r.get("service_date") or r["timestamp"][:10] for r in rows}  # service day runs 06:00 to 05:59
     metrics = {
         "test_rmse": round(float(np.sqrt(loss)), 5),
         "test_mse": round(float(loss), 5),
