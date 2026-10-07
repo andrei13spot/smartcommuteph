@@ -1,17 +1,18 @@
 {
-  "test_rmse": 0.0627,
-  "test_mse": 0.00393,
-  "test_mae": 0.03268,
-  "epochs_ran": 10,
-  "split": "chronological 70-15-15 (train/val/holdout)",
-  "n_hours": 5976,
-  "n_days": 249,
+  "test_rmse": 0.04453,
+  "test_mse": 0.00198,
+  "test_mae": 0.02153,
+  "epochs_ran": 42,
+  "split": "chronological 70-15-15 (train/val/holdout) per station",
+  "n_hours": 10272,
+  "n_days": 427,
   "window": 24,
-  "peak_boardings": 3500,
-  "first_day": "2024-11-17",
+  "peak_boardings": 10554,
+  "first_day": "2024-06-13",
   "last_day": "2025-12-15",
   "stations": [
-    "Kamuning"
+    "Kamuning",
+    "Ortigas"
   ],
   "source": "dotr edsa busway security detachment hourly tally sheets, digitized"
 }

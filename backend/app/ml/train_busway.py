@@ -33,7 +33,7 @@ def load_rows(verified_only: bool = True) -> list[dict]:
             rows.append({"timestamp": r["timestamp"], "hour": int(r["hour"]),
                          "boardings": float(r["boardings"]), "station": r.get("station", ""),
                          "service_date": r.get("service_date", "")})
-    rows.sort(key=lambda r: r["timestamp"])
+    rows.sort(key=lambda r: (r["station"], r["timestamp"]))
     if not rows:
         raise SystemExit(f"no usable rows in {DATA_PATH}")
     return rows
@@ -42,12 +42,21 @@ def load_rows(verified_only: bool = True) -> list[dict]:
 def hourly_mean_curve(rows: list[dict]) -> dict[int, float]:
     # mean boardings per clock hour, normalized so the peak hour = 1.5 (the
     # same scale as the mrt-3 demand curve)
-    by: dict[int, list[float]] = {}
-    for r in rows:
-        by.setdefault(r["hour"], []).append(r["boardings"])
-    means = {h: float(np.mean(v)) for h, v in by.items()}
-    peak = max(means.values())
-    return {h: round(1.5 * m / peak, 3) for h, m in sorted(means.items())}
+    # each station is scaled to its own peak hour first, so a busy station
+    # (ortigas) does not drown out a quiet one (kamuning) in the shape
+    per_station: dict[str, dict[int, float]] = {}
+    for st in {r["station"] for r in rows}:
+        by: dict[int, list[float]] = {}
+        for r in rows:
+            if r["station"] == st:
+                by.setdefault(r["hour"], []).append(r["boardings"])
+        means = {h: float(np.mean(v)) for h, v in by.items()}
+        peak = max(means.values())
+        per_station[st] = {h: m / peak for h, m in means.items()}
+    hours = sorted({h for c in per_station.values() for h in c})
+    shape = {h: float(np.mean([c[h] for c in per_station.values() if h in c])) for h in hours}
+    top = max(shape.values())
+    return {h: round(1.5 * v / top, 3) for h, v in shape.items()}
 
 
 def export_curve(rows: list[dict]) -> dict[int, float]:
@@ -70,9 +79,20 @@ def train(rows: list[dict]) -> dict:
     import tensorflow as tf
 
     tf.keras.utils.set_random_seed(_SEED)
-    series = np.array([r["boardings"] for r in rows], dtype=float)
-    X, y, peak = make_windows(series)
-    s1, s2 = int(len(X) * 0.70), int(len(X) * 0.85)
+    # windows are built per station (each scaled to its own peak) so a window
+    # never runs from one station into another; each station is split in time
+    # order 70-15-15 and the parts are stacked
+    parts = {"tr": [], "va": [], "te": []}
+    series_len, peaks = 0, []
+    for st in sorted({r["station"] for r in rows}):
+        series = np.array([r["boardings"] for r in rows if r["station"] == st], dtype=float)
+        Xs, ys, pk = make_windows(series)
+        a, b = int(len(Xs) * 0.70), int(len(Xs) * 0.85)
+        parts["tr"].append((Xs[:a], ys[:a])); parts["va"].append((Xs[a:b], ys[a:b])); parts["te"].append((Xs[b:], ys[b:]))
+        series_len += len(series); peaks.append(pk)
+    cat = lambda k: (np.concatenate([x for x, _ in parts[k]]), np.concatenate([y for _, y in parts[k]]))
+    (Xtr, ytr), (Xva, yva), (Xte, yte) = cat("tr"), cat("va"), cat("te")
+    peak = max(peaks)
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=(_WINDOW, 1)),
         tf.keras.layers.LSTM(32),
@@ -81,22 +101,22 @@ def train(rows: list[dict]) -> dict:
     ])
     model.compile(optimizer="adam", loss="mse", metrics=["mae"])
     early = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=8, restore_best_weights=True)
-    hist = model.fit(X[:s1], y[:s1], epochs=60, batch_size=32, verbose=2,
-                     validation_data=(X[s1:s2], y[s1:s2]), callbacks=[early])
-    loss, mae = model.evaluate(X[s2:], y[s2:], verbose=0)
+    hist = model.fit(Xtr, ytr, epochs=60, batch_size=32, verbose=2,
+                     validation_data=(Xva, yva), callbacks=[early])
+    loss, mae = model.evaluate(Xte, yte, verbose=0)
     model.save(MODEL_PATH)
-    days = {r.get("service_date") or r["timestamp"][:10] for r in rows}  # service day runs 06:00 to 05:59
+    days = {(r["station"], r.get("service_date") or r["timestamp"][:10]) for r in rows}  # station-days; service day runs 06:00 to 05:59
     metrics = {
         "test_rmse": round(float(np.sqrt(loss)), 5),
         "test_mse": round(float(loss), 5),
         "test_mae": round(float(mae), 5),
         "epochs_ran": int(len(hist.history["loss"])),
-        "split": "chronological 70-15-15 (train/val/holdout)",
-        "n_hours": int(len(series)),
+        "split": "chronological 70-15-15 (train/val/holdout) per station",
+        "n_hours": int(series_len),
         "n_days": len(days),
         "window": _WINDOW,
         "peak_boardings": int(peak),
-        "first_day": min(days), "last_day": max(days),
+        "first_day": min(d for _, d in days), "last_day": max(d for _, d in days),
         "stations": sorted({r["station"] for r in rows if r["station"]}),
         "source": "dotr edsa busway security detachment hourly tally sheets, digitized",
     }
