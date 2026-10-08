@@ -122,7 +122,8 @@ def test_fare_model_matches_published_matrices():
     assert all(e.mode == "MRT-3" for e in mrt.edges)
     assert 24 <= path_fare(g, mrt.edges) <= 32
     # one jeepney ride along a single route: 13 for the first 4 km, 1.80 per km after
-    start = next(e for e in g.neighbors("sm_novaliches") if e.mode == "Jeepney")
+    stop = next(e.dst for e in g.neighbors("sm_novaliches") if e.mode == "Walk")  # walk to the nearest stop
+    start = next(e for e in g.neighbors(stop) if e.mode == "Jeepney")
     ride, node, prev = [start], start.dst, start.src
     while sum(e.distance_km for e in ride) < 6:
         nxt = next((e for e in g.neighbors(node) if e.mode == "Jeepney" and e.dst != prev and g.nodes[e.dst].virtual), None)

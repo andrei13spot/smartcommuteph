@@ -13,7 +13,7 @@ from scipy import stats
 
 from ..profiles import BASELINE, PROFILES
 from ..routing.astar import shortest_route
-from ..routing.cost import CostContext, count_transfers, path_transfer_friction
+from ..routing.cost import CostContext, count_transfers, next_mode_state, path_transfer_friction
 from ..routing.fares import path_fare
 from ..routing.graph import load_graph
 
@@ -84,7 +84,7 @@ def _reference_cost(ctx: CostContext, edges) -> float:
         c = ctx.criteria[e.id]
         p = ctx.friction_norm(prev, e.mode, e.src)
         total += e.base_time * (1.0 + 0.25 * (c.T + c.F + c.R + p))
-        prev = e.mode
+        prev = next_mode_state(prev, e.mode)
     return total
 
 

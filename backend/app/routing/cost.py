@@ -21,15 +21,25 @@ _FRICTION_MATRIX = {
     "EDSA-Bus": {"LRT-1": 1.3, "LRT-2": 1.2, "MRT-3": 1.0, "EDSA-Bus": 0.0, "Jeepney": 1.6},
     "Jeepney":  {"LRT-1": 2.0, "LRT-2": 1.9, "MRT-3": 1.8, "EDSA-Bus": 1.6, "Jeepney": 0.5},
 }
-# a walking transfer splits one table-3 transfer into two steps without making
-# it cheaper: x -> walk -> jeepney costs table3[x][jeepney] (the walk takes all
-# but the 0.5 jeepney boarding), jeepney -> walk -> jeepney costs the 0.5 line
-# change, and walk -> x costs what jeepney -> x does.
-_FRICTION_MATRIX["Jeepney"]["Walk"] = 0.0
-for _m in ("LRT-1", "LRT-2", "MRT-3", "EDSA-Bus"):
-    _FRICTION_MATRIX[_m]["Walk"] = _FRICTION_MATRIX[_m]["Jeepney"] - _FRICTION_MATRIX["Jeepney"]["Jeepney"]
-_FRICTION_MATRIX["Walk"] = {**{m: _FRICTION_MATRIX["Jeepney"][m] for m in ("LRT-1", "LRT-2", "MRT-3", "EDSA-Bus")},
-                            "Jeepney": _FRICTION_MATRIX["Jeepney"]["Jeepney"], "Walk": 0.0}
+# walking between vehicles carries no friction of its own. the search state
+# remembers which vehicle was left before the walk ("Walk<MRT-3>"), and the
+# next vehicle boarded pays table 3 from that vehicle, exactly as a direct
+# transfer would: jeepney -> walk -> jeepney pays the 0.5 line change on the
+# second jeepney, mrt -> walk -> jeepney pays 1.8, and a trip that starts by
+# walking to its first jeepney pays nothing. charging it on the walk edge made
+# the penalty scale with walking time (equation 4 multiplies by edge time).
+def next_mode_state(arriving: str | None, edge_mode: str) -> str:
+    if edge_mode == "Walk":
+        return f"Walk<{vehicle_of(arriving) or ''}>"
+    return edge_mode
+
+
+def vehicle_of(mode_state: str | None) -> str | None:
+    if mode_state and mode_state.startswith("Walk<"):
+        return mode_state[5:-1] or None
+    return mode_state
+
+
 # biggest entry, used to normalize P' into 0..1
 _MAX_FRICTION = max(v for row in _FRICTION_MATRIX.values() for v in row.values())
 
@@ -65,6 +75,10 @@ def transfer_friction(mode_a: str | None, mode_b: str, continuing: bool = False)
     # continuing=True means the hop happens at a virtual stop mid-corridor:
     # staying on the same vehicle is not a transfer, so the same-mode diagonal
     # (jeepney->jeepney 0.5 = changing jeepney LINES) must not be charged there.
+    if mode_b == "Walk":
+        return 0.0  # walking pays nothing; the next vehicle pays the transfer
+    if mode_a is not None and mode_a.startswith("Walk<"):
+        mode_a, continuing = vehicle_of(mode_a), False  # a walk always means a new vehicle
     if mode_a is None:
         return 0.0
     if continuing and mode_a == mode_b:
@@ -82,7 +96,7 @@ def path_transfer_friction(graph: Graph, edges: list[Edge]) -> float:
     prev: str | None = None
     for e in edges:
         total += transfer_friction(prev, e.mode, continuing=graph.nodes[e.src].virtual)
-        prev = e.mode
+        prev = next_mode_state(prev, e.mode)
     return total
 
 

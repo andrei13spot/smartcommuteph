@@ -6,7 +6,7 @@
 # graph construction, using only verifiable facts in the file:
 #   - consecutive stops in a chain become jeepney edges with the REAL
 #     along-road spacing (delta of distance_m)
-#   - a stop within LINK_RADIUS_KM of an anchor gets a boarding link to it,
+#   - a stop within LINK_RADIUS_KM of an anchor gets a walking link to it,
 #     matching the paper's "intermodal transitions between virtual jeepney
 #     nodes and nearby formal stations" (page 52)
 #   - chains that never come near any anchor or rail/busway station cannot
@@ -106,14 +106,10 @@ def build_jeepney_layer(anchors: dict[str, dict], stations: list[dict] | None = 
                 "fare": 0.0, "ridership": JEEPNEY_RIDERSHIP_BASELINE,
                 "flood_risk": FLOOD_PLACEHOLDER, "distance_km": spacing_km,
             })
-        # boarding links to nearby stations
+        # the walk from a nearby anchor to the stop (it used to be a jeepney
+        # edge, so a 270 m walk was charged a fare and counted as a ride)
         for idx, aid, d in chain_links:
-            edges.append({
-                "from": aid, "to": ids[idx], "mode": "Jeepney",
-                "fare": 0.0, "ridership": JEEPNEY_RIDERSHIP_BASELINE,
-                "flood_risk": FLOOD_PLACEHOLDER,
-                "distance_km": max(d, 0.02),
-            })
+            edges.append(walk_edge(aid, ids[idx], d))
 
     # walking transfers between routes: for each stop, the nearest stop of every
     # other route within TRANSFER_KM (grid buckets keep this fast)

@@ -8,7 +8,7 @@ import heapq
 from dataclasses import dataclass
 
 from ..profiles import Profile
-from .cost import CostContext
+from .cost import CostContext, next_mode_state
 from .graph import Edge, Graph
 from .heuristic import distance_heuristic, time_heuristic
 
@@ -70,7 +70,7 @@ def shortest_route(
         for edge in graph.neighbors(node):
             if edge.dst == prev_node:
                 continue
-            nxt = (edge.dst, edge.mode)
+            nxt = (edge.dst, next_mode_state(arriving_mode, edge.mode))
             if nxt in visited:
                 continue
             tentative = g_score[state] + ctx.edge_cost(edge, arriving_mode, profile)

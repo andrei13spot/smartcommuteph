@@ -10,7 +10,7 @@ from ..ml import flood as flood_model
 from ..ml.flood import fetch_rainfall_mm
 from ..profiles import Profile, resolve_profile
 from ..routing.astar import shortest_route
-from ..routing.cost import CostContext, count_transfers, modes_in_order, path_transfer_friction
+from ..routing.cost import CostContext, count_transfers, modes_in_order, next_mode_state, path_transfer_friction
 from ..routing.fares import path_fare
 from ..routing.graph import Edge, Graph, load_graph
 from ..schemas import (
@@ -86,9 +86,9 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     prev_mode: str | None = None
     p_vals: list[float] = []
     for e in edges:
-        if not ctx.graph.nodes[e.src].virtual or prev_mode != e.mode:
+        if e.mode != "Walk" and (not ctx.graph.nodes[e.src].virtual or prev_mode != e.mode):
             p_vals.append(ctx.friction_norm(prev_mode, e.mode, e.src))
-        prev_mode = e.mode
+        prev_mode = next_mode_state(prev_mode, e.mode)
     p = sum(p_vals) / len(p_vals) if p_vals else 0.0
 
     return {

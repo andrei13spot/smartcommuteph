@@ -6,7 +6,7 @@ import time
 
 from ..profiles import BASELINE, resolve_profile
 from ..routing.astar import shortest_route
-from ..routing.cost import CostContext
+from ..routing.cost import next_mode_state, CostContext
 from ..routing.graph import load_graph
 
 
@@ -37,7 +37,7 @@ def inspect(origin: str, destination: str, profile_name: str,
             "multiplier": round(mult, 3),
             "cost": round(e.base_time * mult, 2),
         })
-        prev_mode = e.mode
+        prev_mode = next_mode_state(prev_mode, e.mode)
 
     # ordered path node ids: first leg's origin, then each leg's destination
     path = ([res.edges[0].src] + [e.dst for e in res.edges]) if res.edges else [origin]
