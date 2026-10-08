@@ -147,10 +147,8 @@ class CostContext:
         raw_R: dict[str, float] = {}
         for eid, edge, fv in zip(eids, edge_list, flood_vals):
             raw_T[eid] = ridership.predictor.predict(edge, hour)
-            # F' = fare intensity of the edge (the per-km marginal cost of its
-            # mode). boarding base fares are path-dependent and show up in the
-            # reported total via path_fare; the per-boarding pain is already
-            # penalized by the transfer term P'.
+            # per-km fare of the edge. the search itself uses fare_norm below,
+            # which also adds the base fare when the edge boards a new vehicle
             raw_F[eid] = fares.marginal_fare(edge.mode, edge.distance_km)
             raw_R[eid] = fv
 
@@ -168,6 +166,10 @@ class CostContext:
         self.raw_flood = raw_R  # raw (un-normalized) flood values, read by the rainfall-effect test
         self.rain_flood = rain_R  # the rain-driven part, what R' scales
         self.raw_crowd = raw_T  # predicted crowding (0-1) before scaling, for the route's crowd level
+        # scale for the boarding-aware fare term: the most any edge can add to
+        # the trip (its mode's base fare plus its per-km part)
+        self._fare_scale = max((fares.mode_params(e.mode)["base_php"] + fares.marginal_fare(e.mode, e.distance_km)
+                                for e in edge_list if e.mode != "Walk"), default=1.0) or 1.0
 
     def friction_norm(self, arriving_mode: str | None, edge_mode: str,
                       src_id: str | None = None) -> float:
@@ -175,6 +177,21 @@ class CostContext:
         # happens: at a virtual stop the ride just continues (no transfer).
         continuing = bool(src_id) and self.graph.nodes[src_id].virtual
         return transfer_friction(arriving_mode, edge_mode, continuing) / _MAX_FRICTION
+
+    def fare_norm(self, edge: Edge, arriving_mode: str | None) -> float:
+        # F' = what this edge adds to the fare, scaled 0..1: boarding a new
+        # vehicle adds its base fare, staying on adds only the per-km part.
+        # with the per-km part alone, cheapest split one jeepney ride into two
+        # short ones to save seconds and paid a second base fare (php 77 vs 64)
+        from . import fares
+        if edge.mode == "Walk":
+            return 0.0
+        walked = bool(arriving_mode) and arriving_mode.startswith("Walk<")
+        boarding = arriving_mode is None or walked or vehicle_of(arriving_mode) != edge.mode
+        raw = fares.marginal_fare(edge.mode, edge.distance_km)
+        if boarding:
+            raw += fares.mode_params(edge.mode)["base_php"]
+        return min(1.0, raw / self._fare_scale)
 
     def edge_cost(self, edge: Edge, arriving_mode: str | None, profile: Profile) -> float:
         # profile-weighted cost of taking this edge.
@@ -184,5 +201,6 @@ class CostContext:
             return edge.distance_km
         c = self.criteria[edge.id]
         p = self.friction_norm(arriving_mode, edge.mode, edge.src)
-        multiplier = 1.0 + profile.w_T * c.T + profile.w_F * c.F + profile.w_R * c.R + profile.w_P * p
+        f = self.fare_norm(edge, arriving_mode)
+        multiplier = 1.0 + profile.w_T * c.T + profile.w_F * f + profile.w_R * c.R + profile.w_P * p
         return edge.base_time * multiplier

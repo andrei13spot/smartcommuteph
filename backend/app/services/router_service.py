@@ -69,7 +69,12 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     # "high" at noon and "moderate" at 3 am). walks have no crowding to count
     rides = [e for e in edges if e.mode != "Walk"] or edges
     t = sum(ctx.raw_crowd[e.id] for e in rides) / len(rides)
-    f = sum(ctx.criteria[e.id].F for e in edges) / len(edges)
+    prev_f: str | None = None
+    f_vals = []
+    for e in edges:
+        f_vals.append(ctx.fare_norm(e, prev_f))
+        prev_f = next_mode_state(prev_f, e.mode)
+    f = sum(f_vals) / len(f_vals)
     # flood: the rain-driven part of the raw risk, averaged along the route. the old
     # value was the worst min-max scaled segment, which puts the riskiest edge
     # of the network at 1 on every query, so every route read "high"

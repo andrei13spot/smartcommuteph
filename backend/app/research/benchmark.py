@@ -83,7 +83,7 @@ def _reference_cost(ctx: CostContext, edges) -> float:
     for e in edges:
         c = ctx.criteria[e.id]
         p = ctx.friction_norm(prev, e.mode, e.src)
-        total += e.base_time * (1.0 + 0.25 * (c.T + c.F + c.R + p))
+        total += e.base_time * (1.0 + 0.25 * (c.T + ctx.fare_norm(e, prev) + c.R + p))
         prev = next_mode_state(prev, e.mode)
     return total
 
