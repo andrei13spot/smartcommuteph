@@ -419,65 +419,72 @@ function clearSearch() { SEARCH_TOKEN++; searchLayers.forEach(l => { try { map.r
 // as the profile route. its expanded states appear in the order the search
 // popped them, the dashed route is laid leg by leg, then a white arrow rides it.
 let SEARCH_TOKEN = 0;
-async function drawSearch(d) {
+async function drawSearch(d, opts = {}) {
+    // the baseline playback runs on the same clock as the profile arrow
+    // (opts.ms), so it always finishes with it: on the connected network the
+    // baseline searches ~2,000 states and rides ~50 legs, and a fixed step per
+    // chunk made it run seconds past the profile arrow and get cut off
     clearSearch();
     const token = ++SEARCH_TOKEN;
     const note = $('search-note');
     if (note) note.innerText = '';
     if (!d || !SHOW_BASELINE || !map) return;
+    const total_ms = opts.ms || 1800;
     searchCanvas = searchCanvas || L.canvas({ padding: 0.3 });
     const live = () => token === SEARCH_TOKEN && SHOW_BASELINE;
+    const frame = () => new Promise(r => setTimeout(r, 16));  // a timer, not rAF: rAF stops in a hidden window
     if (note) note.innerText = `baseline expanded ${d.baseline_nodes} states · profile ${d.expanded_nodes}`;
-    // 1. the search: dots in expansion order, in about 40 chunks
+    // 1. the search: dots in expansion order over the first ~30 percent of the time
     const order = d.baseline_expanded_order || [];
-    const chunk = Math.max(1, Math.ceil(order.length / 40));
-    for (let i = 0; i < order.length; i += chunk) {
+    const dotsUntil = performance.now() + total_ms * 0.3;
+    let i = 0;
+    while (i < order.length) {
         if (!live()) return;
-        for (const id of order.slice(i, i + chunk)) {
+        const left = Math.max(1, dotsUntil - performance.now());
+        const n = Math.max(1, Math.ceil((order.length - i) / Math.max(1, left / 16)));
+        for (const id of order.slice(i, i + n)) {
             const a = BY_ID[id];
             if (a) searchLayers.push(L.circleMarker([a.lat, a.lng], { renderer: searchCanvas, radius: 2.5, stroke: false, fillColor: '#ffffff', fillOpacity: 0.45, interactive: false }).addTo(map));
         }
-        await sleep(25);
+        i += n;
+        await frame();
     }
-    // 2. the route, leg by leg, collecting the waypoints for the arrow
+    // 2. the whole baseline route at once, as one dashed line
     const route = [];
-    const legs = d.baseline_legs || [];
-    const lchunk = Math.max(1, Math.ceil(legs.length / 30));
-    for (let i = 0; i < legs.length; i += lchunk) {
-        if (!live()) return;
-        for (const leg of legs.slice(i, i + lchunk)) {
-            const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
-            const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
-            if (!pts) continue;
-            searchLayers.push(L.polyline(pts, { color: '#ffffff', weight: 3, opacity: 0.9, dashArray: '6 6', interactive: false }).addTo(map));
-            pts.forEach(p => { const last = route[route.length - 1]; if (!last || last[0] !== p[0] || last[1] !== p[1]) route.push(p); });
-        }
-        await sleep(25);
+    for (const leg of (d.baseline_legs || [])) {
+        const a = BY_ID[leg.from_id], b = BY_ID[leg.to_id];
+        const pts = leg.points || ((a && b) ? [[a.lat, a.lng], [b.lat, b.lng]] : null);
+        if (!pts) continue;
+        pts.forEach(p => { const last = route[route.length - 1]; if (!last || last[0] !== p[0] || last[1] !== p[1]) route.push(p); });
     }
-    // 3. the arrow rides the baseline route
     if (!live() || route.length < 2) return;
+    searchLayers.push(L.polyline(route, { color: '#ffffff', weight: 3, opacity: 0.9, dashArray: '6 6', interactive: false }).addTo(map));
+    // 3. the arrow rides it in the remaining ~70 percent of the time
     const cum = [0];
-    for (let i = 1; i < route.length; i++) {
-        const a = route[i - 1], b = route[i], kx = Math.cos(((a[0] + b[0]) / 2) * Math.PI / 180);
-        cum.push(cum[i - 1] + Math.hypot((b[1] - a[1]) * kx, b[0] - a[0]));
+    for (let k = 1; k < route.length; k++) {
+        const a = route[k - 1], b = route[k], kx = Math.cos(((a[0] + b[0]) / 2) * Math.PI / 180);
+        cum.push(cum[k - 1] + Math.hypot((b[1] - a[1]) * kx, b[0] - a[0]));
     }
     const total = cum[cum.length - 1];
     const icon = L.divIcon({ className: 'route-traveler', iconSize: [22, 22], iconAnchor: [11, 11],
         html: '<div class="rt-arrow"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 4 L22 12 L3 20 L8 12 Z" fill="#0b1220" stroke="#ffffff" stroke-width="2.4" stroke-linejoin="round"/></svg></div>' });
     const marker = L.marker(route[0], { icon, interactive: false, keyboard: false, zIndexOffset: 1100 }).addTo(map);
     searchLayers.push(marker);
-    const steps = 60;
-    for (let s = 1; s <= steps; s++) {
+    const rideMs = Math.max(300, total_ms * 0.7), t0 = performance.now();
+    let k = 1;
+    while (true) {
         if (!live()) return;
-        const target = total * s / steps;
-        let k = 1; while (k < cum.length - 1 && cum[k] < target) k++;
-        const a = route[k - 1], b = route[k], seg = (cum[k] - cum[k - 1]) || 1, f = Math.min(1, (target - cum[k - 1]) / seg);
-        marker.setLatLng([a[0] + f * (b[0] - a[0]), a[1] + f * (b[1] - a[1])]);
+        const f = Math.min(1, (performance.now() - t0) / rideMs);
+        const target = total * f;
+        while (k < cum.length - 1 && cum[k] < target) k++;
+        const a = route[k - 1], b = route[k], seg = (cum[k] - cum[k - 1]) || 1, u = Math.min(1, (target - cum[k - 1]) / seg);
+        marker.setLatLng([a[0] + u * (b[0] - a[0]), a[1] + u * (b[1] - a[1])]);
         const el = marker.getElement && marker.getElement();
         const svg = el && el.querySelector('.rt-arrow');
         const pa = map.latLngToLayerPoint(a), pb = map.latLngToLayerPoint(b);
         if (svg && (pa.x !== pb.x || pa.y !== pb.y)) svg.style.transform = `rotate(${Math.atan2(pb.y - pa.y, pb.x - pa.x)}rad)`;
-        await sleep(30);
+        if (f >= 1) break;
+        await frame();
     }
 }
 function initSearchToggle() {
@@ -546,7 +553,7 @@ async function playInspect(q, opts = {}) {
     if ($('ov-nodes-delta')) $('ov-nodes-delta').innerText = `vs ${d.baseline_nodes} baseline`;
     if ($('ov-ms')) $('ov-ms').innerHTML = `${d.query_ms}<span class="ovc-unit">ms</span>`;
     if ($('ov-cost')) $('ov-cost').innerText = Math.round(d.total_cost * 10) / 10;
-    drawSearch(d);
+    drawSearch(d, { ms: fast ? 800 : 1800 });
     if (q.el) q.el.querySelector('.qli-bottom').innerText = `${d.expanded_nodes} nodes · ${d.query_ms} ms · vs ${d.baseline_nodes} baseline`;
     const arrived = await travel(route, fast ? 800 : 1800, token, PROFILE_DOT[q.profile] || '#0071e3');
     if (arrived && fast) await sleep(250);
