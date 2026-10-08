@@ -25,6 +25,47 @@ try {
 
 const SNAP_KM = 0.8; // an endpoint further than this off its line's shape falls back to straight
 
+// the engine gives an anchor its own link to a station that sits 0.15 to 1 km
+// away (rail_stations.py, _OWN_NODE_KM and _MATCH_RADIUS_KM). that link is the
+// walk from the anchor to the platform, not a ride, so it must not be bent
+// along the track: the anchor's nearest track point can lie past the station
+// (cubao, sm north) and the line would overshoot the stop and come back.
+const STATIONS_PATH = path.resolve(__dirname, "../backend/app/data/stations.json");
+let STATION_LINES = {};
+try {
+  STATION_LINES = JSON.parse(fs.readFileSync(STATIONS_PATH, "utf-8")).lines || {};
+} catch {
+  console.warn("stations.json not found - anchor links bend like rides");
+}
+const LINK_MIN_KM = 0.15, LINK_MAX_KM = 1.0;
+
+function haversineKm(a, b) {
+  const R = 6371, rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+// name of the station an anchor walks to on this line, or null when the
+// anchor sits at a station (or no station is close enough)
+function linkStationName(anchor, mode) {
+  const stations = (STATION_LINES[mode] || {}).stations || [];
+  let best = null, bestKm = LINK_MAX_KM;
+  for (const s of stations) {
+    const d = haversineKm(anchor, s);
+    if (d <= bestKm) { best = s; bestKm = d; }
+  }
+  return best && bestKm > LINK_MIN_KM ? best.name : null;
+}
+
+// true when this leg is an anchor's walk link to its own station node
+function isAnchorLink(a, b, mode) {
+  const aAnchor = !String(a.id).startsWith("v_"), bAnchor = !String(b.id).startsWith("v_");
+  if (aAnchor === bAnchor) return false;
+  const [anchor, station] = aAnchor ? [a, b] : [b, a];
+  return linkStationName(anchor, mode) === station.name;
+}
+
 function shapeFor(mode) {
   const lines = LINE_SHAPES.lines || {};
   const key = lines[mode] ? mode : (LINE_SHAPES.aliases || {})[mode];
@@ -58,6 +99,7 @@ function projectOnShape(pts, lat, lng) {
 // straight). the path runs monotonically between the two projections, so it
 // never backtracks past a station.
 function bendPoints(a, b, mode) {
+  if (isAnchorLink(a, b, mode)) return null; // walk link: drawn straight
   const pts = shapeFor(mode);
   if (!pts) return null;
   const pa = projectOnShape(pts, a.lat, a.lng);
