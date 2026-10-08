@@ -230,6 +230,9 @@ async function routeToGeoJSON(route) {
           if (arrivingMode !== departingMode) {
               role = "transfer";
               displayMode = departingMode;
+          } else if (arrivingMode === 'Jeepney' && departingMode === 'Jeepney' && !String(id).startsWith('v_')) {
+              role = "transfer";
+              displayMode = departingMode;
           }
       }
       
