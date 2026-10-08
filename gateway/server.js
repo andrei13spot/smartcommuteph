@@ -38,6 +38,7 @@ try {
   console.warn("stations.json not found - anchor links bend like rides");
 }
 const LINK_MIN_KM = 0.15, LINK_MAX_KM = 1.0;
+const WALK_COLOR = "#94a3b8";
 
 function haversineKm(a, b) {
   const R = 6371, rad = Math.PI / 180;
@@ -205,7 +206,11 @@ function lineFeature(a, b, mode, pts) {
   return {
     type: "Feature",
     geometry: { type: "LineString", coordinates },
-    properties: { mode, color: MODE_COLORS[mode] || "#334155" },
+    // an anchor's link to its own station is a walk to the platform: the map
+    // draws it thin, dashed and grey so it does not read as a train or bus ride
+    properties: isAnchorLink(a, b, mode)
+      ? { mode, walk: true, color: WALK_COLOR }
+      : { mode, color: MODE_COLORS[mode] || "#334155" },
   };
 }
 

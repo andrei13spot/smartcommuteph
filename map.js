@@ -49,6 +49,8 @@
   }
 
   function styleLine(feature) {
+    // walk links (anchor to its station platform) are thin and dashed
+    if (feature.properties.walk) return { color: feature.properties.color || "#94a3b8", weight: 3, opacity: 0.9, dashArray: "4 7" };
     return { color: feature.properties.color || "#334155", weight: 5, opacity: 0.95 };
   }
 
