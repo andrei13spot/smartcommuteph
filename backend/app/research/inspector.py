@@ -26,14 +26,15 @@ def inspect(origin: str, destination: str, profile_name: str,
     for e in res.edges:
         c = ctx.criteria[e.id]
         p = ctx.friction_norm(prev_mode, e.mode, e.src)
-        mult = 1.0 + profile.w_T * c.T + profile.w_F * c.F + profile.w_R * c.R + profile.w_P * p
+        f = ctx.fare_norm(e, prev_mode)
+        mult = 1.0 + profile.w_T * c.T + profile.w_F * f + profile.w_R * c.R + profile.w_P * p
         rows.append({
             "from_id": e.src, "to_id": e.dst,
             "from": graph.node(e.src).name,
             "to": graph.node(e.dst).name,
             "mode": e.mode,
             "base_time": round(e.base_time, 2),
-            "T": round(c.T, 2), "F": round(c.F, 2), "R": round(c.R, 2), "P": round(p, 2),
+            "T": round(c.T, 2), "F": round(f, 2), "R": round(c.R, 2), "P": round(p, 2),
             "multiplier": round(mult, 3),
             "cost": round(e.base_time * mult, 2),
         })
