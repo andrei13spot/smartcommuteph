@@ -167,6 +167,7 @@ class CostContext:
         }
         self.raw_flood = raw_R  # raw (un-normalized) flood values, read by the rainfall-effect test
         self.rain_flood = rain_R  # the rain-driven part, what R' scales
+        self.raw_crowd = raw_T  # predicted crowding (0-1) before scaling, for the route's crowd level
 
     def friction_norm(self, arriving_mode: str | None, edge_mode: str,
                       src_id: str | None = None) -> float:

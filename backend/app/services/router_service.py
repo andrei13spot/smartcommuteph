@@ -45,6 +45,11 @@ def _level(value: float) -> str:
 # thresholds from the benchmark routes: 8 mm adds about 0.004, 30 mm about
 # 0.10, 45 mm about 0.23.
 _FLOOD_LOW, _FLOOD_HIGH = 0.03, 0.15
+def _crowd_level(value: float) -> str:
+    # one crowding scale for every crowd label in the app: light / medium / high
+    return {"Low": "Light", "Moderate": "Medium", "High": "High"}[_level(value)]
+
+
 def _flood_level(value: float) -> str:
     if value < _FLOOD_LOW:
         return "Low"
@@ -53,17 +58,17 @@ def _flood_level(value: float) -> str:
     return "High"
 
 
-def _crowd_word(value: float) -> str:
-    return {"Low": "Light", "Moderate": "Moderate", "High": "Heavy"}[_level(value)]
-
-
 def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionOut]:
     # roll the per-edge criteria up to a route-level value
     if not edges:
         zero = CriterionOut(value=0.0, level="Low")
         return {"T": zero, "F": zero, "R": zero, "P": zero}
 
-    t = sum(ctx.criteria[e.id].T for e in edges) / len(edges)
+    # crowd level: the predicted crowding itself (0-1) averaged over the rides,
+    # not the per-query 0-1 scaling, which cancels the hour out (a route read
+    # "high" at noon and "moderate" at 3 am). walks have no crowding to count
+    rides = [e for e in edges if e.mode != "Walk"] or edges
+    t = sum(ctx.raw_crowd[e.id] for e in rides) / len(rides)
     f = sum(ctx.criteria[e.id].F for e in edges) / len(edges)
     # flood: the rain-driven part of the raw risk, averaged along the route. the old
     # value was the worst min-max scaled segment, which puts the riskiest edge
@@ -81,7 +86,7 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     p = sum(p_vals) / len(p_vals) if p_vals else 0.0
 
     return {
-        "T": CriterionOut(value=round(t, 2), level=_level(t)),
+        "T": CriterionOut(value=round(t, 2), level=_crowd_level(t)),
         "F": CriterionOut(value=round(f, 2), level=_level(f)),
         "R": CriterionOut(value=round(r, 2), level=_flood_level(r)),
         "P": CriterionOut(value=round(p, 2), level=_level(p)),
@@ -106,7 +111,8 @@ def _prioritized(profile: Profile, summary: RouteSummary,
                  criteria: dict[str, CriterionOut]) -> dict[str, str]:
     # headline value + subtitle for whatever the profile cares about most
     if profile.priority == "T":
-        return {"title": _crowd_word(criteria["T"].value), "subtitle": "Crowd level"}
+        # one crowding scale everywhere: light / medium / high, same as the tiles
+        return {"title": criteria["T"].level, "subtitle": "Crowd level"}
     if profile.priority == "F":
         return {"title": f"₱{int(round(summary.fare_php))}", "subtitle": "Lowest total fare"}
     if profile.priority == "R":
@@ -121,7 +127,7 @@ def _why(profile: Profile, summary: RouteSummary, criteria: dict[str, CriterionO
         return {
             "heading": "Avoids the most crowded stations",
             "description": "this route sticks to segments forecast to be below peak load, "
-                           f"so crowding stays {_crowd_word(criteria['T'].value).lower()} for your time.",
+                           f"so crowding stays {criteria['T'].level.lower()} for your time.",
         }
     if profile.priority == "F":
         return {

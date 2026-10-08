@@ -78,7 +78,7 @@ class ProfileOut(BaseModel):
 
 class CriterionOut(BaseModel):
     value: float = Field(..., description="normalized route value 0..1")
-    level: str = Field(..., description="low / moderate / high")
+    level: str = Field(..., description="crowding: light / medium / high; flood and the rest: low / moderate / high")
 
 
 class SegmentOut(BaseModel):
