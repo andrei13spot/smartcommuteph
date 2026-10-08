@@ -810,6 +810,11 @@ body.modal-open {
     box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
 }
 
+
+.route-segment.mode-walk .route-segment-icon {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    box-shadow: 0 3px 10px rgba(148, 163, 184, 0.25);
+}
 .route-segment.mode-jeepney .route-segment-icon {
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     box-shadow: 0 3px 10px rgba(245, 158, 11, 0.25);
