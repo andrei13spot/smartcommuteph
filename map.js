@@ -89,10 +89,24 @@
     return layer;
   }
 
-  async function getJSON(url, opts) {
-    const res = await fetch(url, opts);
-    if (!res.ok) throw new Error(`${url} -> ${res.status}`);
-    return res.json();
+  // the engine takes a few seconds to load its graph and models after it
+  // starts; until then the gateway answers 502/503. a map that asked once and
+  // gave up stayed blank until a manual refresh, so keep asking for up to a
+  // minute while the engine is coming up. real errors (4xx, 500) fail at once.
+  async function getJSON(url, opts, waitMs = 60000) {
+    const t0 = Date.now();
+    for (;;) {
+      let res = null;
+      try {
+        res = await fetch(url, opts);
+      } catch (err) {
+        if (Date.now() - t0 > waitMs) throw err;  // gateway itself unreachable
+      }
+      if (res && res.ok) return res.json();
+      if (res && res.status !== 502 && res.status !== 503) throw new Error(`${url} -> ${res.status}`);
+      if (Date.now() - t0 > waitMs) throw new Error(`${url} -> ${res ? res.status : "unreachable"}`);
+      await new Promise((r) => setTimeout(r, 1500));
+    }
   }
 
   // small legend showing which transit modes the route uses

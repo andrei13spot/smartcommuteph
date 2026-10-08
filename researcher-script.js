@@ -1,5 +1,19 @@
 const $ = (id) => document.getElementById(id);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// fetch json, waiting up to a minute while the engine is still starting
+// (the gateway answers 502/503 until the graph and models are loaded); a
+// dashboard opened right after the servers start no longer stays offline
+async function fetchJSON(url, init, waitMs = 60000) {
+    const t0 = Date.now();
+    for (;;) {
+        let res = null;
+        try { res = await fetch(url, init); } catch (e) { if (Date.now() - t0 > waitMs) throw e; }
+        if (res && res.ok) return res.json();
+        if (res && res.status !== 502 && res.status !== 503) throw new Error(`${url} -> ${res.status}`);
+        if (Date.now() - t0 > waitMs) throw new Error(`${url} -> ${res ? res.status : 'unreachable'}`);
+        await sleep(1500);
+    }
+}
 // Re-mapped to match user side styles.css variables
 const MODE_COLORS = { 
     "LRT-1": "#ef4444", 
@@ -218,12 +232,12 @@ function initMap() {
     // esri dark canvas: keyless (carto now watermarks keyless requests); native tiles to z16
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom:19, maxNativeZoom:16, attribution:'Esri, HERE, Garmin, &copy; OpenStreetMap contributors' }).addTo(map);
     // one download shared with init(), which reads the same geojson for node positions
-    NETWORK_GJ = fetch('/api/map/network').then(r => r.json());
+    NETWORK_GJ = fetchJSON('/api/map/network');
     // base layer: every jeepney route as an orange line (the jeepney mode
     // colour), rail and busway corridors in mode colours, and the ten anchors
     // only - the virtual stops are what the router walks through, not
     // something to draw
-    fetch('/api/map/routes').then(r => r.json()).then(routes => {
+    fetchJSON('/api/map/routes').then(routes => {
         L.geoJSON(routes, {
             style: () => ({ color: MODE_COLORS.Jeepney, weight: 2, opacity: 0.6 }),
             onEachFeature: (f, layer) => { if (f.properties.route) layer.bindTooltip(f.properties.route, { sticky: true }); },
@@ -800,10 +814,10 @@ async function init() {
     
     try {
         const [bench, ml, anchors, profiles] = await Promise.all([
-            fetch('/api/benchmark').then(r => r.json()),
-            fetch('/api/ml-metrics').then(r => r.json()),
-            fetch('/api/map/anchors').then(r => r.json()),
-            fetch('/api/map/profiles').then(r => r.json()),
+            fetchJSON('/api/benchmark'),
+            fetchJSON('/api/ml-metrics'),
+            fetchJSON('/api/map/anchors'),
+            fetchJSON('/api/map/profiles'),
         ]);
         // with the engine down the gateway answers 502 with an error object, not
         // a list. stop here so the page keeps its offline defaults
