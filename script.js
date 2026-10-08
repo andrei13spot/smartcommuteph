@@ -827,14 +827,15 @@ function buildRouteSegmentsFromRouteData(routeData) {
         
         // Extract route name from Jeepney stops
         if (modeName === 'Jeepney') {
-            if (leg.jeepneyRouteName) {
-                displayModeName = `${modeName} - ${leg.jeepneyRouteName}`;
-            }
             if (fromName.startsWith('Jeepney Stop (')) {
                 fromNameDisplay = 'Jeepney Stop';
             }
             if (toName.startsWith('Jeepney Stop (')) {
                 toNameDisplay = 'Jeepney Stop';
+            }
+            if (leg.jeepneyRouteName) {
+                fromNameDisplay = `${fromNameDisplay} - ${leg.jeepneyRouteName}`;
+                toNameDisplay = `${toNameDisplay} - ${leg.jeepneyRouteName}`;
             }
         }
         
