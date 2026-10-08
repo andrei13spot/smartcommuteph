@@ -6,6 +6,7 @@ from __future__ import annotations
 import time
 from datetime import datetime
 
+from ..ml import flood as flood_model
 from ..ml.flood import fetch_rainfall_mm
 from ..profiles import Profile, resolve_profile
 from ..routing.astar import shortest_route
@@ -37,6 +38,31 @@ def _level(value: float) -> str:
     return "High"
 
 
+# flood level shown to the commuter: how much the rain raises the worst
+# segment's flood risk above its dry-day value. the dry value is the road's
+# flood history (mmda exposure); a road with a flooding past is not flooding
+# today when it is not raining. thresholds from the benchmark routes: 0 to 15
+# mm adds under 0.03, about 30 mm adds about 0.17, 45 to 60 mm adds 0.4 to 0.5.
+_FLOOD_LOW, _FLOOD_HIGH = 0.05, 0.25
+_DRY_FLOOD: dict[str, float] = {}
+
+
+def _dry_flood(graph: Graph) -> dict[str, float]:
+    if not _DRY_FLOOD:
+        edges = list(graph.edges.values())
+        vals = flood_model.predictor.predict_batch(edges, 0.0)
+        _DRY_FLOOD.update(vals if isinstance(vals, dict) else dict(zip((e.id for e in edges), vals)))
+    return _DRY_FLOOD
+
+
+def _flood_level(value: float) -> str:
+    if value < _FLOOD_LOW:
+        return "Low"
+    if value < _FLOOD_HIGH:
+        return "Moderate"
+    return "High"
+
+
 def _crowd_word(value: float) -> str:
     return {"Low": "Light", "Moderate": "Moderate", "High": "Heavy"}[_level(value)]
 
@@ -49,7 +75,11 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
 
     t = sum(ctx.criteria[e.id].T for e in edges) / len(edges)
     f = sum(ctx.criteria[e.id].F for e in edges) / len(edges)
-    r = max(ctx.criteria[e.id].R for e in edges)  # worst segment for flood
+    # flood: the rain-driven part of the worst segment's raw risk. the old
+    # value was the worst min-max scaled segment, which puts the riskiest edge
+    # of the network at 1 on every query, so every route read "high"
+    dry = _dry_flood(ctx.graph)
+    r = max(max(0.0, ctx.raw_flood[e.id] - dry.get(e.id, 0.0)) for e in edges)
     # transfer friction along the path, averaged over the transitions where a
     # transfer can actually happen (real stops), not every 300m virtual hop -
     # dividing by the edge count made a worse transfer look lower on long routes
@@ -64,7 +94,7 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     return {
         "T": CriterionOut(value=round(t, 2), level=_level(t)),
         "F": CriterionOut(value=round(f, 2), level=_level(f)),
-        "R": CriterionOut(value=round(r, 2), level=_level(r)),
+        "R": CriterionOut(value=round(r, 2), level=_flood_level(r)),
         "P": CriterionOut(value=round(p, 2), level=_level(p)),
     }
 
