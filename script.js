@@ -1039,6 +1039,16 @@ window.zoomToNodeMap = function(nodeName, map, geojson) {
         return false;
     });
 
+    // Pass 1.5: exact match on rawName (in case searchName is already the raw name)
+    if (!feature) {
+        feature = geojson.features.find(f => {
+            if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.rawName) {
+                return f.properties.rawName.toLowerCase().trim() === searchName;
+            }
+            return false;
+        });
+    }
+
     // Pass 2: Map the short name back to its raw anchor name, and find by rawName
     if (!feature) {
         // Build reverse map from the shared anchorStationMap
