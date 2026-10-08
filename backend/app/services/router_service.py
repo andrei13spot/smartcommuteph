@@ -112,6 +112,13 @@ def _segments(graph: Graph, edges: list[Edge]) -> list[SegmentOut]:
     return out
 
 
+def _shown_fare(summary: RouteSummary) -> float:
+    # the fare the rider pays: the student / senior fare when one was asked
+    # for, the same number the fare tiles show (the headline used to show the
+    # regular fare next to a student fare tile, php 80 vs 64 on the same route)
+    return summary.fare_discounted_php if summary.fare_discounted_php is not None else summary.fare_php
+
+
 def _prioritized(profile: Profile, summary: RouteSummary,
                  criteria: dict[str, CriterionOut]) -> dict[str, str]:
     # headline value + subtitle for whatever the profile cares about most
@@ -119,7 +126,7 @@ def _prioritized(profile: Profile, summary: RouteSummary,
         # one crowding scale everywhere: light / medium / high, same as the tiles
         return {"title": criteria["T"].level, "subtitle": "Crowd level"}
     if profile.priority == "F":
-        return {"title": f"₱{int(round(summary.fare_php))}", "subtitle": "Lowest total fare"}
+        return {"title": f"₱{int(round(_shown_fare(summary)))}", "subtitle": "Lowest total fare"}
     if profile.priority == "R":
         return {"title": criteria["R"].level, "subtitle": "Flood risk"}
     return {"title": str(summary.transfers), "subtitle": "Vehicle changes"}
@@ -138,7 +145,7 @@ def _why(profile: Profile, summary: RouteSummary, criteria: dict[str, CriterionO
         return {
             "heading": "Bypasses the most expensive rides",
             "description": f"this path uses cheaper segments ({modes}) to bring the total "
-                           f"down to about ₱{int(round(summary.fare_php))}.",
+                           f"down to about ₱{int(round(_shown_fare(summary)))}.",
         }
     if profile.priority == "R":
         return {
