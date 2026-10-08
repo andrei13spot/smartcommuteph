@@ -767,7 +767,21 @@ function buildRouteSegmentsFromRouteData(routeData) {
     const collapsedLegs = [];
     transitLegs.forEach((leg) => {
         let currentCollapse = null;
+        let shouldCollapse = false;
+        
         if (collapsedLegs.length > 0 && collapsedLegs[collapsedLegs.length - 1].mode === leg.mode) {
+            // For Jeepneys, only collapse if we are continuing along virtual nodes.
+            // If we board from an anchor (from_id does not start with v_), it's a new ride!
+            if (leg.mode === 'Jeepney') {
+                if (leg.from_id && String(leg.from_id).startsWith('v_')) {
+                    shouldCollapse = true;
+                }
+            } else {
+                shouldCollapse = true;
+            }
+        }
+        
+        if (shouldCollapse) {
             currentCollapse = collapsedLegs[collapsedLegs.length - 1];
             currentCollapse.to_name = leg.to_name;
             currentCollapse.to_id = leg.to_id;
