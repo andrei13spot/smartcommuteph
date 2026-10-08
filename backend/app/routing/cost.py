@@ -147,10 +147,8 @@ class CostContext:
         raw_R: dict[str, float] = {}
         for eid, edge, fv in zip(eids, edge_list, flood_vals):
             raw_T[eid] = ridership.predictor.predict(edge, hour)
-            # F' = fare intensity of the edge (the per-km marginal cost of its
-            # mode). boarding base fares are path-dependent and show up in the
-            # reported total via path_fare; the per-boarding pain is already
-            # penalized by the transfer term P'.
+            # per-km fare of the edge. the search itself uses fare_norm below,
+            # which also adds the base fare when the edge boards a new vehicle
             raw_F[eid] = fares.marginal_fare(edge.mode, edge.distance_km)
             raw_R[eid] = fv
 
