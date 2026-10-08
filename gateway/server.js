@@ -302,6 +302,14 @@ async function routeToGeoJSON(route) {
         }
     };
 
+    const isTransitRide = (seg) => {
+      if (!seg || seg.mode === "Walk") return false;
+      const a = anchors.get(seg.from_id);
+      const b = anchors.get(seg.to_id);
+      if (!a || !b) return false;
+      return !isAnchorLink(a, b, seg.mode);
+    };
+
     nodeIds.forEach((id, i) => {
       const a = anchors.get(id);
       if (!a) return;
@@ -316,14 +324,27 @@ async function routeToGeoJSON(route) {
           role = "destination";
           if (segs.length > 0) displayMode = segs[i - 1].mode;
       } else {
-          const arrivingMode = segs[i - 1].mode;
-          const departingMode = segs[i].mode;
-          if (arrivingMode !== departingMode) {
-              role = "transfer";
-              displayMode = departingMode;
-          } else if (arrivingMode === 'Jeepney' && departingMode === 'Jeepney' && !String(id).startsWith('v_')) {
-              role = "transfer";
-              displayMode = departingMode;
+          const arrSeg = segs[i - 1];
+          const depSeg = segs[i];
+          const arrivingIsRide = isTransitRide(arrSeg);
+          const departingIsRide = isTransitRide(depSeg);
+          
+          if (!arrivingIsRide && departingIsRide) {
+              role = "board";
+              displayMode = depSeg.mode;
+          } else if (arrivingIsRide && !departingIsRide) {
+              role = "alight";
+              displayMode = arrSeg.mode;
+          } else if (arrivingIsRide && departingIsRide) {
+              if (arrSeg.mode !== depSeg.mode || (arrSeg.mode === 'Jeepney' && depSeg.mode === 'Jeepney' && !String(id).startsWith('v_'))) {
+                  role = "transfer";
+                  displayMode = depSeg.mode;
+              }
+          } else {
+              if (arrSeg.mode !== depSeg.mode) {
+                  role = "transfer";
+                  displayMode = depSeg.mode;
+              }
           }
       }
       
@@ -333,8 +354,7 @@ async function routeToGeoJSON(route) {
           if (displayMode && anchorStationMap[displayMode] && anchorStationMap[displayMode][name]) {
               name = anchorStationMap[displayMode][name];
           }
-          const arrivingMode = i > 0 ? segs[i - 1].mode : null;
-          features.push(pointFeature({ ...a, name, rawName }, role, arrivingMode));
+          features.push(pointFeature({ ...a, name, rawName }, role, displayMode));
       }
     });
     const bent = bendRoute(segs, anchors);

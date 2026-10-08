@@ -38,7 +38,7 @@
 
   function pointToLayer(feature, latlng) {
     const p = feature.properties;
-    const big = p.role === "origin" || p.role === "destination" || p.role === "transfer";
+    const big = p.role === "origin" || p.role === "destination" || p.role === "transfer" || p.role === "board" || p.role === "alight";
     const color = ROLE_COLOR[p.role] || p.color || "#3b82f6";
     const marker = L.marker(latlng, { icon: nodeIcon(color, big), keyboard: false });
     if (p.name) {
