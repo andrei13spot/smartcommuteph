@@ -61,7 +61,15 @@ def shortest_route(
         if node == destination:
             return _reconstruct(came_from, state, g_score[state], expanded, order)
 
+        # never step straight back to the node we just came from. equation 4
+        # scales the transfer penalty by the boarding edge's travel time, so a
+        # 20 m out-and-back hop made boarding almost free: convenient routes
+        # rode a jeepney stub and back before the real ride and paid a second
+        # fare. a real route never does u -> v -> u.
+        prev_node = came_from[state][0][0] if state in came_from else None
         for edge in graph.neighbors(node):
+            if edge.dst == prev_node:
+                continue
             nxt = (edge.dst, edge.mode)
             if nxt in visited:
                 continue
