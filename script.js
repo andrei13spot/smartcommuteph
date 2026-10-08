@@ -622,6 +622,8 @@ function getRouteIconHTML(segment) {
             return '<i data-lucide="car-front"></i>';
         } else if (lowerMode.includes('bus')) {
             return '<i data-lucide="bus-front"></i>';
+        } else if (lowerMode === 'walk') {
+            return '<i data-lucide="footprints"></i>';
         }
         return '<i data-lucide="tram-front"></i>';
     } else {
@@ -839,6 +841,14 @@ function buildRouteSegmentsFromRouteData(routeData) {
         let fromNameDisplay = fromName;
         let toNameDisplay = toName;
         
+        // a walking transfer: show it as a walk between two plain stop names
+        if (modeName === 'Walk') {
+            const plain = (n) => (n.startsWith('Jeepney Stop (') ? 'Jeepney Stop' : n);
+            segments.push({ type: 'transit', name: 'Walk', modeClass: 'mode-walk', label: 'Walk from', place: plain(fromName), searchName: fromName });
+            segments.push({ type: 'transit', name: 'Walk', modeClass: 'mode-walk', label: 'Walk to', place: plain(toName), searchName: toName });
+            return;
+        }
+
         // Extract route name from Jeepney stops
         if (modeName === 'Jeepney') {
             if (fromName.startsWith('Jeepney Stop (')) {
