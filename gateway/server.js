@@ -198,7 +198,7 @@ function pointFeature(anchor, role, mode) {
     type: "Feature",
     geometry: { type: "Point", coordinates: [anchor.lng, anchor.lat] },
     properties: {
-      id: anchor.id, name: anchor.name, role, mode: mode || null,
+      id: anchor.id, name: anchor.name, rawName: anchor.rawName || anchor.name, role, mode: mode || null,
       lines: anchor.lines || null, color: nodeColor(mode, anchor.lines),
     },
   };
@@ -273,26 +273,68 @@ async function routeToGeoJSON(route) {
   } else {
     // node list in order: first leg's origin, then every leg's target
     const nodeIds = [segs[0].from_id, ...segs.map((s) => s.to_id)];
+    const anchorStationMap = {
+        "MRT-3": {
+            "SM City North EDSA": "North Avenue MRT",
+            "Cubao Gateway": "Cubao MRT",
+            "Shaw Boulevard": "Shaw MRT",
+            "Pasay EDSA-Taft": "Taft Ave MRT"
+        },
+        "LRT-1": {
+            "Doroteo Jose": "Doroteo Jose LRT",
+            "Monumento Circle": "Monumento LRT",
+            "SM City North EDSA": "Roosevelt LRT",
+            "Pasay EDSA-Taft": "EDSA LRT",
+            "PITX": "PITX"
+        },
+        "LRT-2": {
+            "Antipolo LRT-2": "Antipolo LRT",
+            "Cubao Gateway": "Araneta Center-Cubao LRT",
+            "Doroteo Jose": "Recto LRT"
+        },
+        "EDSA-Bus": {
+            "Monumento Circle": "Monumento",
+            "SM City North EDSA": "North Avenue",
+            "Cubao Gateway": "Main Avenue",
+            "Shaw Boulevard": "Ortigas",
+            "Pasay EDSA-Taft": "Taft Avenue",
+            "PITX": "PITX"
+        }
+    };
+
     nodeIds.forEach((id, i) => {
       const a = anchors.get(id);
       if (!a) return;
       
       let role = "stop";
+      let displayMode = null;
+
       if (i === 0) {
           role = "origin";
+          if (segs.length > 0) displayMode = segs[0].mode;
       } else if (i === nodeIds.length - 1) {
           role = "destination";
+          if (segs.length > 0) displayMode = segs[i - 1].mode;
       } else {
           const arrivingMode = segs[i - 1].mode;
           const departingMode = segs[i].mode;
           if (arrivingMode !== departingMode) {
               role = "transfer";
+              displayMode = departingMode;
+          } else if (arrivingMode === 'Jeepney' && departingMode === 'Jeepney' && !String(id).startsWith('v_')) {
+              role = "transfer";
+              displayMode = departingMode;
           }
       }
       
       if (role !== "stop") {
+          let name = a.name;
+          const rawName = a.name;
+          if (displayMode && anchorStationMap[displayMode] && anchorStationMap[displayMode][name]) {
+              name = anchorStationMap[displayMode][name];
+          }
           const arrivingMode = i > 0 ? segs[i - 1].mode : null;
-          features.push(pointFeature(a, role, arrivingMode));
+          features.push(pointFeature({ ...a, name, rawName }, role, arrivingMode));
       }
     });
     const bent = bendRoute(segs, anchors);

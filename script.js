@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (breakdownContainer && details.route) {
                 const segments = parseRouteSegments(details.route);
                 breakdownContainer.innerHTML = segments.map((segment) => `
-                    <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" style="color: #f8fafc;">
+                    <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" style="color: #f8fafc;">
                         <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
                         <div class="route-segment-info">
                             <div class="route-segment-label" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;">${segment.label}</div>
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!segments || segments.length === 0) return;
 
             breakdownContainer.innerHTML = segments.map((segment) => `
-                <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" style="color: #f8fafc;">
+                <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" style="color: #f8fafc;">
                     <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
                     <div class="route-segment-info">
                         <div class="route-segment-label" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;">${segment.label}</div>
@@ -766,36 +766,123 @@ function buildRouteSegmentsFromRouteData(routeData) {
     // Collapse adjacent segments that share the same mode
     const collapsedLegs = [];
     transitLegs.forEach((leg) => {
+        let currentCollapse = null;
+        let shouldCollapse = false;
+        
         if (collapsedLegs.length > 0 && collapsedLegs[collapsedLegs.length - 1].mode === leg.mode) {
-            collapsedLegs[collapsedLegs.length - 1].to_name = leg.to_name;
-            collapsedLegs[collapsedLegs.length - 1].to_id = leg.to_id;
+            // For Jeepneys, only collapse if we are continuing along virtual nodes.
+            // If we board from an anchor (from_id does not start with v_), it's a new ride!
+            if (leg.mode === 'Jeepney') {
+                if (leg.from_id && String(leg.from_id).startsWith('v_')) {
+                    shouldCollapse = true;
+                }
+            } else {
+                shouldCollapse = true;
+            }
+        }
+        
+        if (shouldCollapse) {
+            currentCollapse = collapsedLegs[collapsedLegs.length - 1];
+            currentCollapse.to_name = leg.to_name;
+            currentCollapse.to_id = leg.to_id;
         } else {
-            collapsedLegs.push({ ...leg });
+            currentCollapse = { ...leg };
+            collapsedLegs.push(currentCollapse);
+        }
+        
+        // Extract jeepney route name from any leg
+        if (leg.mode === 'Jeepney' && !currentCollapse.jeepneyRouteName) {
+            const matchFrom = (leg.from_name || '').match(/Jeepney Stop \((.*?)\)/);
+            if (matchFrom) currentCollapse.jeepneyRouteName = matchFrom[1];
+            else {
+                const matchTo = (leg.to_name || '').match(/Jeepney Stop \((.*?)\)/);
+                if (matchTo) currentCollapse.jeepneyRouteName = matchTo[1];
+            }
         }
     });
 
+    const anchorStationMap = {
+        "MRT-3": {
+            "SM City North EDSA": "North Avenue",
+            "Cubao Gateway": "Cubao",
+            "Shaw Boulevard": "Shaw",
+            "Pasay EDSA-Taft": "Taft Ave"
+        },
+        "LRT-1": {
+            "Doroteo Jose": "Doroteo Jose",
+            "Monumento Circle": "Monumento",
+            "SM City North EDSA": "Roosevelt",
+            "Pasay EDSA-Taft": "EDSA",
+            "PITX": "PITX"
+        },
+        "LRT-2": {
+            "Antipolo LRT-2": "Antipolo",
+            "Cubao Gateway": "Araneta Center-Cubao",
+            "Doroteo Jose": "Recto"
+        },
+        "EDSA-Bus": {
+            "Monumento Circle": "Monumento",
+            "SM City North EDSA": "North Avenue",
+            "Cubao Gateway": "Main Avenue",
+            "Shaw Boulevard": "Ortigas",
+            "Pasay EDSA-Taft": "Taft Avenue",
+            "PITX": "PITX"
+        }
+    };
+
     collapsedLegs.forEach((leg, index) => {
         const modeName = leg.mode || 'Transit';
-        const fromName = leg.from_name || '';
-        const toName = leg.to_name || '';
+        let fromName = leg.from_name || '';
+        let toName = leg.to_name || '';
+        
+        let displayModeName = modeName;
+        let fromNameDisplay = fromName;
+        let toNameDisplay = toName;
+        
+        // Extract route name from Jeepney stops
+        if (modeName === 'Jeepney') {
+            if (fromName.startsWith('Jeepney Stop (')) {
+                fromNameDisplay = 'Jeepney Stop';
+            }
+            if (toName.startsWith('Jeepney Stop (')) {
+                toNameDisplay = 'Jeepney Stop';
+            }
+            if (leg.jeepneyRouteName) {
+                fromNameDisplay = `${fromNameDisplay} - ${leg.jeepneyRouteName}`;
+                toNameDisplay = `${toNameDisplay} - ${leg.jeepneyRouteName}`;
+            }
+        }
+        
+        if (anchorStationMap[modeName]) {
+            if (anchorStationMap[modeName][fromName]) {
+                fromName = anchorStationMap[modeName][fromName];
+                fromNameDisplay = fromName;
+            }
+            if (anchorStationMap[modeName][toName]) {
+                toName = anchorStationMap[modeName][toName];
+                toNameDisplay = toName;
+            }
+        }
         
         if (fromName) {
             segments.push({
                 type: 'transit',
-                name: modeName,
+                name: displayModeName,
                 modeClass: getTransitModeClass(modeName),
                 label: 'Board at',
-                place: fromName
+                place: fromNameDisplay,
+                searchName: fromName
             });
         }
 
         if (toName) {
             segments.push({
                 type: 'transit',
-                name: modeName,
+                name: displayModeName,
                 modeClass: getTransitModeClass(modeName),
                 label: 'Alight at',
-                place: toName
+                place: toNameDisplay,
+                searchName: toName
             });
         }
     });
@@ -832,7 +919,7 @@ function openRouteModal(routeText, profileName, routeData = null) {
     const segments = routeDetails.length ? routeDetails : parseRouteSegments(routeText);
 
     breakdownContainer.innerHTML = segments.map((segment) => `
-        <div class="route-segment route-segment-${segment.type} ${segment.modeClass}">
+        <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}">
             <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
             <div class="route-segment-info">
                 <div class="route-segment-label">${segment.label}</div>
@@ -958,15 +1045,63 @@ window.zoomToNodeMap = function(nodeName, map, geojson) {
     // Clean up nodeName for searching
     const searchName = (nodeName || '').toLowerCase().trim();
     
-    // Find the feature by name
-    const feature = geojson.features.find(f => {
+    // Pass 1: Find an exact match by name
+    let feature = geojson.features.find(f => {
         if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {
-            const fName = f.properties.name.toLowerCase().trim();
-            // Match the node name, considering some variations like "LRT1 Doroteo Jose" vs "Doroteo Jose"
-            return fName.includes(searchName) || searchName.includes(fName);
+            return f.properties.name.toLowerCase().trim() === searchName;
         }
         return false;
     });
+
+    // Pass 1.5: exact match on rawName (in case searchName is already the raw name)
+    if (!feature) {
+        feature = geojson.features.find(f => {
+            if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.rawName) {
+                return f.properties.rawName.toLowerCase().trim() === searchName;
+            }
+            return false;
+        });
+    }
+
+    // Pass 2: Map the short name back to its raw anchor name, and find by rawName
+    if (!feature) {
+        // Build reverse map from the shared anchorStationMap
+        const anchorStationMap = {
+            "MRT-3": { "SM City North EDSA": "North Avenue", "Cubao Gateway": "Cubao", "Shaw Boulevard": "Shaw", "Pasay EDSA-Taft": "Taft Ave" },
+            "LRT-1": { "Doroteo Jose": "Doroteo Jose", "Monumento Circle": "Monumento", "SM City North EDSA": "Roosevelt", "Pasay EDSA-Taft": "EDSA", "PITX": "PITX" },
+            "LRT-2": { "Antipolo LRT-2": "Antipolo", "Cubao Gateway": "Araneta Center-Cubao", "Doroteo Jose": "Recto" },
+            "EDSA-Bus": { "Monumento Circle": "Monumento", "SM City North EDSA": "North Avenue", "Cubao Gateway": "Main Avenue", "Shaw Boulevard": "Ortigas", "Pasay EDSA-Taft": "Taft Avenue", "PITX": "PITX" }
+        };
+        let targetRawName = null;
+        for (const mode in anchorStationMap) {
+            for (const raw in anchorStationMap[mode]) {
+                if (anchorStationMap[mode][raw].toLowerCase().trim() === searchName) {
+                    targetRawName = raw.toLowerCase().trim();
+                    break;
+                }
+            }
+        }
+        
+        if (targetRawName) {
+            feature = geojson.features.find(f => {
+                if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.rawName) {
+                    return f.properties.rawName.toLowerCase().trim() === targetRawName;
+                }
+                return false;
+            });
+        }
+    }
+
+    // Pass 3: Fallback to fuzzy match on name
+    if (!feature) {
+        feature = geojson.features.find(f => {
+            if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {
+                const fName = f.properties.name.toLowerCase().trim();
+                return fName.includes(searchName) || searchName.includes(fName);
+            }
+            return false;
+        });
+    }
     
     if (feature) {
         const coords = feature.geometry.coordinates; // [lng, lat]
@@ -981,15 +1116,18 @@ document.addEventListener('click', (e) => {
     const segmentEl = e.target.closest('.route-segment');
     if (!segmentEl) return;
     
-    // Get the place name to search for (try details first, then main name)
-    const nameEl = segmentEl.querySelector('.route-segment-name');
-    const detailsEl = segmentEl.querySelector('.route-segment-details');
+    // Get the place name to search for
+    let searchName = segmentEl.getAttribute('data-search-name') || '';
     
-    let searchName = '';
-    if (detailsEl && detailsEl.textContent.trim()) {
-        searchName = detailsEl.textContent;
-    } else if (nameEl && nameEl.textContent.trim()) {
-        searchName = nameEl.textContent;
+    if (!searchName) {
+        const nameEl = segmentEl.querySelector('.route-segment-name');
+        const detailsEl = segmentEl.querySelector('.route-segment-details');
+        
+        if (detailsEl && detailsEl.textContent.trim()) {
+            searchName = detailsEl.textContent;
+        } else if (nameEl && nameEl.textContent.trim()) {
+            searchName = nameEl.textContent;
+        }
     }
     
     // Determine which map is active based on modal visibility or page
