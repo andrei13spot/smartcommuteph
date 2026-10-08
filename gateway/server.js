@@ -39,6 +39,20 @@ try {
 }
 const LINK_MIN_KM = 0.15, LINK_MAX_KM = 1.0;
 const WALK_COLOR = "#94a3b8";
+// street paths for those walks, from the openstreetmap foot router, saved by
+// backend/app/data/build_walk_paths.py (keyed anchor id + mode)
+const WALK_PATHS_PATH = path.resolve(__dirname, "../backend/app/data/walk_paths.json");
+const WALK_PATHS = new Map();
+try {
+  for (const l of JSON.parse(fs.readFileSync(WALK_PATHS_PATH, "utf-8")).links || []) {
+    WALK_PATHS.set(`${l.anchor_id}|${l.mode}`, l.points);
+  }
+} catch {
+  console.warn("walk_paths.json not found - walk links draw straight");
+}
+// a station this close to its line's shape starts its line on the track, so
+// there is no little spur from the platform point to the rails
+const ON_TRACK_KM = 0.15;
 
 function haversineKm(a, b) {
   const R = 6371, rad = Math.PI / 180;
@@ -99,8 +113,18 @@ function projectOnShape(pts, lat, lng) {
 // or null when the shape does not cover this hop (then the caller draws
 // straight). the path runs monotonically between the two projections, so it
 // never backtracks past a station.
+// street path for an anchor's walk link, oriented a -> b, or null
+function walkPoints(a, b, mode) {
+  const aAnchor = !String(a.id).startsWith("v_");
+  const anchor = aAnchor ? a : b;
+  const pts = WALK_PATHS.get(`${anchor.id}|${mode}`);
+  if (!pts) return null;
+  const path = aAnchor ? pts : [...pts].reverse();
+  return [[a.lat, a.lng], ...path, [b.lat, b.lng]];
+}
+
 function bendPoints(a, b, mode) {
-  if (isAnchorLink(a, b, mode)) return null; // walk link: drawn straight
+  if (isAnchorLink(a, b, mode)) return walkPoints(a, b, mode); // walk link: street path, else straight
   const pts = shapeFor(mode);
   if (!pts) return null;
   const pa = projectOnShape(pts, a.lat, a.lng);
@@ -112,7 +136,11 @@ function bendPoints(a, b, mode) {
   const [p1, p2] = fwd ? [pa, pb] : [pb, pa];
   const path = [[p1.lat, p1.lng], ...pts.slice(p1.seg + 1, p2.seg + 1), [p2.lat, p2.lng]];
   if (!fwd) path.reverse();
-  return [[a.lat, a.lng], ...path, [b.lat, b.lng]];
+  // a virtual station a few metres off the drawn track starts on the track;
+  // anchors keep their own point so the route meets its marker
+  const keepA = !String(a.id).startsWith("v_") || pa.d > ON_TRACK_KM;
+  const keepB = !String(b.id).startsWith("v_") || pb.d > ON_TRACK_KM;
+  return [...(keepA ? [[a.lat, a.lng]] : []), ...path, ...(keepB ? [[b.lat, b.lng]] : [])];
 }
 
 const MODE_COLORS = {
@@ -190,8 +218,12 @@ function bendRoute(segs, anchors) {
   });
   for (let i = 0; i + 1 < legs.length; i++) {
     if (legs[i] && legs[i + 1] && segs[i].mode === segs[i + 1].mode && segs[i].to_id === segs[i + 1].from_id) {
-      legs[i] = legs[i].slice(0, -1);
-      legs[i + 1] = legs[i + 1].slice(1);
+      // drop the shared node point only where it is still there (bendPoints
+      // already starts on the track for a station close to it)
+      const n = anchors.get(segs[i].to_id);
+      const isNode = (p) => p && n && p[0] === n.lat && p[1] === n.lng;
+      if (isNode(legs[i][legs[i].length - 1])) legs[i] = legs[i].slice(0, -1);
+      if (isNode(legs[i + 1][0])) legs[i + 1] = legs[i + 1].slice(1);
     }
   }
   return legs;
@@ -369,7 +401,9 @@ app.get("/api/map/network", guard(async (_req, res) => {
   for (const e of data.edges) {
     const a = byId.get(e.from_id);
     const b = byId.get(e.to_id);
-    if (a && b) features.push(lineFeature(a, b, e.mode));
+    // the network map shows the transit lines only; an anchor's walk to its
+    // platform appears on a route map when a route uses it
+    if (a && b && !isAnchorLink(a, b, e.mode)) features.push(lineFeature(a, b, e.mode));
   }
   res.json({
     type: "FeatureCollection",
