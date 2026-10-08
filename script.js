@@ -1004,7 +1004,36 @@ window.zoomToNodeMap = function(nodeName, map, geojson) {
         return false;
     });
 
-    // Pass 2: Fallback to fuzzy match
+    // Pass 2: Map the short name back to its raw anchor name, and find by rawName
+    if (!feature) {
+        // Build reverse map from the shared anchorStationMap
+        const anchorStationMap = {
+            "MRT-3": { "SM City North EDSA": "North Avenue", "Cubao Gateway": "Cubao", "Shaw Boulevard": "Shaw", "Pasay EDSA-Taft": "Taft Ave" },
+            "LRT-1": { "Doroteo Jose": "Doroteo Jose", "Monumento Circle": "Monumento", "SM City North EDSA": "Roosevelt", "Pasay EDSA-Taft": "EDSA", "PITX": "PITX" },
+            "LRT-2": { "Antipolo LRT-2": "Antipolo", "Cubao Gateway": "Araneta Center-Cubao", "Doroteo Jose": "Recto" },
+            "EDSA-Bus": { "Monumento Circle": "Monumento", "SM City North EDSA": "North Avenue", "Cubao Gateway": "Main Avenue", "Shaw Boulevard": "Ortigas", "Pasay EDSA-Taft": "Taft Avenue", "PITX": "PITX" }
+        };
+        let targetRawName = null;
+        for (const mode in anchorStationMap) {
+            for (const raw in anchorStationMap[mode]) {
+                if (anchorStationMap[mode][raw].toLowerCase().trim() === searchName) {
+                    targetRawName = raw.toLowerCase().trim();
+                    break;
+                }
+            }
+        }
+        
+        if (targetRawName) {
+            feature = geojson.features.find(f => {
+                if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.rawName) {
+                    return f.properties.rawName.toLowerCase().trim() === targetRawName;
+                }
+                return false;
+            });
+        }
+    }
+
+    // Pass 3: Fallback to fuzzy match on name
     if (!feature) {
         feature = geojson.features.find(f => {
             if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {

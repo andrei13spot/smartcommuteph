@@ -127,7 +127,7 @@ function pointFeature(anchor, role, mode) {
     type: "Feature",
     geometry: { type: "Point", coordinates: [anchor.lng, anchor.lat] },
     properties: {
-      id: anchor.id, name: anchor.name, role, mode: mode || null,
+      id: anchor.id, name: anchor.name, rawName: anchor.rawName || anchor.name, role, mode: mode || null,
       lines: anchor.lines || null, color: nodeColor(mode, anchor.lines),
     },
   };
@@ -235,11 +235,12 @@ async function routeToGeoJSON(route) {
       
       if (role !== "stop") {
           let name = a.name;
+          const rawName = a.name;
           if (displayMode && anchorStationMap[displayMode] && anchorStationMap[displayMode][name]) {
               name = anchorStationMap[displayMode][name];
           }
           const arrivingMode = i > 0 ? segs[i - 1].mode : null;
-          features.push(pointFeature({ ...a, name }, role, arrivingMode));
+          features.push(pointFeature({ ...a, name, rawName }, role, arrivingMode));
       }
     });
     const bent = bendRoute(segs, anchors);
