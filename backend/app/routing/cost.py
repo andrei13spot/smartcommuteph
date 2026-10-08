@@ -40,6 +40,17 @@ def vehicle_of(mode_state: str | None) -> str | None:
     return mode_state
 
 
+# minutes the one-time boarding terms (the base fare part of F' and the
+# transfer friction P') are charged over. they used to be multiplied by the
+# time of the edge where the boarding happens, which is usually a 300 m
+# jeepney hop (0.9 min), so a whole extra base fare cost cheapest ~0.3 min
+# and an extra transfer cost convenient ~0.5 min: any route a minute faster
+# won and the four profiles mostly returned the same route. 9 min is the
+# average in-vehicle time of one ride leg on the routes the framework
+# returns (8.97 min over the 45 benchmark pairs), so a boarding is weighed
+# against a typical ride instead of the first stop's hop.
+BOARDING_MIN = 9.0
+
 # biggest entry, used to normalize P' into 0..1
 _MAX_FRICTION = max(v for row in _FRICTION_MATRIX.values() for v in row.values())
 
@@ -178,20 +189,41 @@ class CostContext:
         continuing = bool(src_id) and self.graph.nodes[src_id].virtual
         return transfer_friction(arriving_mode, edge_mode, continuing) / _MAX_FRICTION
 
-    def fare_norm(self, edge: Edge, arriving_mode: str | None) -> float:
-        # F' = what this edge adds to the fare, scaled 0..1: boarding a new
-        # vehicle adds its base fare, staying on adds only the per-km part.
+    def fare_parts(self, edge: Edge, arriving_mode: str | None) -> tuple[float, float]:
+        # F' split in two, both scaled by the largest base + per-km value:
+        # (per-km part of this edge, base fare if this edge boards a new
+        # vehicle). boarding = trip start, after a walk, or a mode change.
         # with the per-km part alone, cheapest split one jeepney ride into two
         # short ones to save seconds and paid a second base fare (php 77 vs 64)
         from . import fares
         if edge.mode == "Walk":
-            return 0.0
+            return 0.0, 0.0
         walked = bool(arriving_mode) and arriving_mode.startswith("Walk<")
         boarding = arriving_mode is None or walked or vehicle_of(arriving_mode) != edge.mode
-        raw = fares.marginal_fare(edge.mode, edge.distance_km)
-        if boarding:
-            raw += fares.mode_params(edge.mode)["base_php"]
-        return min(1.0, raw / self._fare_scale)
+        per_km = min(1.0, fares.marginal_fare(edge.mode, edge.distance_km) / self._fare_scale)
+        base = fares.mode_params(edge.mode)["base_php"] / self._fare_scale if boarding else 0.0
+        return per_km, base
+
+    def fare_norm(self, edge: Edge, arriving_mode: str | None) -> float:
+        # F' as one 0..1 number (what the edge adds to the fare), for the
+        # route's reported fare criterion
+        per_km, base = self.fare_parts(edge, arriving_mode)
+        return min(1.0, per_km + base)
+
+    def edge_terms(self, edge: Edge, arriving_mode: str | None, w_T: float, w_F: float,
+                   w_R: float, w_P: float) -> dict:
+        # equation 4 for one edge, with the one-time boarding terms apart:
+        #   cost = time x (1 + wT T' + wF F'km + wR R')  +  BOARDING_MIN x (wF F'base + wP P')
+        # the in-ride multiplier keeps the paper's 1..2 bound; the boarding
+        # part is only paid on the edge that boards a vehicle
+        c = self.criteria[edge.id]
+        p = self.friction_norm(arriving_mode, edge.mode, edge.src)
+        per_km, base = self.fare_parts(edge, arriving_mode)
+        multiplier = 1.0 + w_T * c.T + w_F * per_km + w_R * c.R
+        boarding = BOARDING_MIN * (w_F * base + w_P * p)
+        return {"T": c.T, "F": min(1.0, per_km + base), "R": c.R, "P": p,
+                "multiplier": multiplier, "boarding_min": boarding,
+                "cost": edge.base_time * multiplier + boarding}
 
     def edge_cost(self, edge: Edge, arriving_mode: str | None, profile: Profile) -> float:
         # profile-weighted cost of taking this edge.
@@ -199,8 +231,5 @@ class CostContext:
         # time basis and no criteria penalties at all.
         if profile.id == "baseline":
             return edge.distance_km
-        c = self.criteria[edge.id]
-        p = self.friction_norm(arriving_mode, edge.mode, edge.src)
-        f = self.fare_norm(edge, arriving_mode)
-        multiplier = 1.0 + profile.w_T * c.T + profile.w_F * f + profile.w_R * c.R + profile.w_P * p
-        return edge.base_time * multiplier
+        return self.edge_terms(edge, arriving_mode, profile.w_T, profile.w_F,
+                               profile.w_R, profile.w_P)["cost"]

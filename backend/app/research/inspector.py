@@ -25,9 +25,8 @@ def inspect(origin: str, destination: str, profile_name: str,
     prev_mode = None
     for e in res.edges:
         c = ctx.criteria[e.id]
-        p = ctx.friction_norm(prev_mode, e.mode, e.src)
-        f = ctx.fare_norm(e, prev_mode)
-        mult = 1.0 + profile.w_T * c.T + profile.w_F * f + profile.w_R * c.R + profile.w_P * p
+        t = ctx.edge_terms(e, prev_mode, profile.w_T, profile.w_F, profile.w_R, profile.w_P)
+        p, f, mult = t["P"], t["F"], t["multiplier"]
         rows.append({
             "from_id": e.src, "to_id": e.dst,
             "from": graph.node(e.src).name,
@@ -36,7 +35,8 @@ def inspect(origin: str, destination: str, profile_name: str,
             "base_time": round(e.base_time, 2),
             "T": round(c.T, 2), "F": round(f, 2), "R": round(c.R, 2), "P": round(p, 2),
             "multiplier": round(mult, 3),
-            "cost": round(e.base_time * mult, 2),
+            "boarding_min": round(t["boarding_min"], 2),
+            "cost": round(t["cost"], 2),
         })
         prev_mode = next_mode_state(prev_mode, e.mode)
 
