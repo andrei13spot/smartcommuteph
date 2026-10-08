@@ -121,10 +121,17 @@ def test_fare_model_matches_published_matrices():
     mrt = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
     assert all(e.mode == "MRT-3" for e in mrt.edges)
     assert 24 <= path_fare(g, mrt.edges) <= 32
-    jeep = shortest_route(g, "sm_novaliches", "monumento", resolve_profile("cheapest"), ctx)
-    km = sum(e.distance_km for e in jeep.edges)
+    # one jeepney ride along a single route: 13 for the first 4 km, 1.80 per km after
+    start = next(e for e in g.neighbors("sm_novaliches") if e.mode == "Jeepney")
+    ride, node, prev = [start], start.dst, start.src
+    while sum(e.distance_km for e in ride) < 6:
+        nxt = next((e for e in g.neighbors(node) if e.mode == "Jeepney" and e.dst != prev and g.nodes[e.dst].virtual), None)
+        if nxt is None:
+            break
+        ride.append(nxt); prev, node = node, nxt.dst
+    km = sum(e.distance_km for e in ride)
     expected = 13 + 1.8 * max(0, km - 4)
-    assert abs(path_fare(g, jeep.edges) - expected) <= 2.0
+    assert abs(path_fare(g, ride) - expected) <= 1.0
 
 
 def test_hour_and_line_change_crowding():

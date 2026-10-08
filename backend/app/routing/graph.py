@@ -25,6 +25,7 @@ MODE_SPEED_KMH = {
     "MRT-3": 60.0,
     "EDSA-Bus": 30.0,  # the paper's value (page 59). the mmda edsa bus travel time survey of 6 jan 2025 measured 17.69 kph; kept in the notes as a limitation
     "Jeepney": 20.0,
+    "Walk": 5.0,  # walking transfers between jeepney lines and to stations
 }
 
 # fastest speed, only used in the heuristic so it stays admissible
@@ -162,6 +163,23 @@ def _use_geojson() -> bool:
     return geojson_network.available()
 
 
+def _station_walk_links(nodes: list[dict], station_nodes: list[dict]) -> list[dict]:
+    # walk from each threaded rail/busway station to the nearest stop of every
+    # jeepney route within the boarding radius, so jeepney rides can start or
+    # end at a station, not only at the 10 anchors
+    from .geojson_network import LINK_RADIUS_KM, _hav_km, walk_edge
+    stops = [n for n in nodes if n["id"].startswith("v_gj")]
+    out = []
+    for st in station_nodes:
+        best: dict[str, tuple] = {}
+        for s in stops:
+            d = _hav_km([st["lng"], st["lat"]], [s["lng"], s["lat"]])
+            if d <= LINK_RADIUS_KM and (s["name"] not in best or d < best[s["name"]][0]):
+                best[s["name"]] = (d, s["id"])
+        out += [walk_edge(st["id"], sid, d) for d, sid in best.values()]
+    return out
+
+
 @lru_cache(maxsize=1)
 def load_graph() -> Graph:
     # build the graph once and keep it cached
@@ -169,7 +187,8 @@ def load_graph() -> Graph:
         from . import geojson_network
         anchors = _load_json("anchors.json")["anchors"]
         anchor_pos = {a["id"]: {"lat": a["lat"], "lng": a["lng"]} for a in anchors}
-        stops, jeep_edges = geojson_network.build_jeepney_layer(anchor_pos)
+        station_pos = [s for line in _load_json("stations.json")["lines"].values() for s in line["stations"]]
+        stops, jeep_edges = geojson_network.build_jeepney_layer(anchor_pos, station_pos)
         anchors = anchors + stops
         # rail + edsa bus corridors stay from graph.json; the jeepney layer
         # comes entirely from the geojson routes
@@ -184,6 +203,7 @@ def load_graph() -> Graph:
     # lines follow actual station coordinates and legs are station-accurate
     from .rail_stations import subdivide_rail
     station_nodes, raw_edges = subdivide_rail(anchors, raw_edges)
+    raw_edges = raw_edges + _station_walk_links(anchors, station_nodes)
     for a in anchors + station_nodes:
         graph.nodes[a["id"]] = Node(
             id=a["id"], name=a["name"], area=a["area"],

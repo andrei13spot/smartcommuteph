@@ -6,7 +6,8 @@ const MODE_COLORS = {
     "LRT-2": "#a855f7", 
     "MRT-3": "#3b82f6", 
     "EDSA-Bus": "#10b981", 
-    "Jeepney": "#f59e0b" 
+    "Jeepney": "#f59e0b",
+    "Walk": "#94a3b8" 
 };
 
 const CRIT = {

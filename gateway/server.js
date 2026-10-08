@@ -148,6 +148,7 @@ const MODE_COLORS = {
   "MRT-3": "#3b82f6",
   "EDSA-Bus": "#10b981",
   "Jeepney": "#f59e0b",
+  "Walk": "#94a3b8",
 };
 
 process.on("unhandledRejection", (err) => {
@@ -251,7 +252,7 @@ function lineFeature(a, b, mode, pts) {
     geometry: { type: "LineString", coordinates },
     // an anchor's link to its own station is a walk to the platform: the map
     // draws it thin, dashed and grey so it does not read as a train or bus ride
-    properties: isAnchorLink(a, b, mode)
+    properties: mode === "Walk" || isAnchorLink(a, b, mode)
       ? { mode, walk: true, color: WALK_COLOR }
       : { mode, color: MODE_COLORS[mode] || "#334155" },
   };
@@ -414,7 +415,7 @@ app.get("/api/map/network", guard(async (_req, res) => {
     const b = byId.get(e.to_id);
     // the network map shows the transit lines only; an anchor's walk to its
     // platform appears on a route map when a route uses it
-    if (a && b && !isAnchorLink(a, b, e.mode)) features.push(lineFeature(a, b, e.mode));
+    if (a && b && e.mode !== "Walk" && !isAnchorLink(a, b, e.mode)) features.push(lineFeature(a, b, e.mode));
   }
   res.json({
     type: "FeatureCollection",

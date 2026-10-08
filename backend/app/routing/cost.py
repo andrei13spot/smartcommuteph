@@ -21,21 +21,42 @@ _FRICTION_MATRIX = {
     "EDSA-Bus": {"LRT-1": 1.3, "LRT-2": 1.2, "MRT-3": 1.0, "EDSA-Bus": 0.0, "Jeepney": 1.6},
     "Jeepney":  {"LRT-1": 2.0, "LRT-2": 1.9, "MRT-3": 1.8, "EDSA-Bus": 1.6, "Jeepney": 0.5},
 }
+# a walking transfer splits one table-3 transfer into two steps without making
+# it cheaper: x -> walk -> jeepney costs table3[x][jeepney] (the walk takes all
+# but the 0.5 jeepney boarding), jeepney -> walk -> jeepney costs the 0.5 line
+# change, and walk -> x costs what jeepney -> x does.
+_FRICTION_MATRIX["Jeepney"]["Walk"] = 0.0
+for _m in ("LRT-1", "LRT-2", "MRT-3", "EDSA-Bus"):
+    _FRICTION_MATRIX[_m]["Walk"] = _FRICTION_MATRIX[_m]["Jeepney"] - _FRICTION_MATRIX["Jeepney"]["Jeepney"]
+_FRICTION_MATRIX["Walk"] = {**{m: _FRICTION_MATRIX["Jeepney"][m] for m in ("LRT-1", "LRT-2", "MRT-3", "EDSA-Bus")},
+                            "Jeepney": _FRICTION_MATRIX["Jeepney"]["Jeepney"], "Walk": 0.0}
 # biggest entry, used to normalize P' into 0..1
 _MAX_FRICTION = max(v for row in _FRICTION_MATRIX.values() for v in row.values())
 
 
-def modes_in_order(edges: list[Edge]) -> list[str]:
-    # the sequence of modes ridden, collapsing consecutive legs of the same mode
-    modes: list[str] = []
+def _mode_runs(edges: list[Edge]) -> list[str]:
+    runs: list[str] = []
     for e in edges:
-        if not modes or modes[-1] != e.mode:
-            modes.append(e.mode)
+        if not runs or runs[-1] != e.mode:
+            runs.append(e.mode)
+    return runs
+
+
+def modes_in_order(edges: list[Edge]) -> list[str]:
+    # the sequence of modes ridden, collapsing consecutive legs of the same
+    # mode. walking between lines is not a mode the rider takes
+    modes: list[str] = []
+    for m in _mode_runs(edges):
+        if m != "Walk" and (not modes or modes[-1] != m):
+            modes.append(m)
     return modes
 
 
 def count_transfers(edges: list[Edge]) -> int:
-    return max(0, len(modes_in_order(edges)) - 1)
+    # vehicles boarded minus one; a walk between two jeepney lines is a change
+    # of jeepney, so the two rides count separately
+    rides = [m for m in _mode_runs(edges) if m != "Walk"]
+    return max(0, len(rides) - 1)
 
 
 def transfer_friction(mode_a: str | None, mode_b: str, continuing: bool = False) -> float:

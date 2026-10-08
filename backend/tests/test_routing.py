@@ -34,11 +34,12 @@ def test_dense_graph_virtual_stops_are_wired():
     virtual = [n for n in g.nodes.values() if n.virtual and not n.id.startswith("v_st_")]
     if not virtual:  # coarse graph (SCPH_GEOJSON=0), nothing to check
         return
-    # every virtual stop is a pass-through: exactly on a jeepney chain
+    # every virtual stop sits on a jeepney chain; walks link it to other lines
     for n in virtual[:20]:
         edges = g.neighbors(n.id)
         assert edges, f"virtual stop {n.id} has no edges"
-        assert all(e.mode == "Jeepney" for e in edges)
+        assert all(e.mode in ("Jeepney", "Walk") for e in edges)
+        assert any(e.mode == "Jeepney" for e in edges)
     # a jeepney corridor route now walks through virtual stops
     res = shortest_route(g, "pitx", "pasay", resolve_profile("cheapest"), _ctx())
     assert res.found

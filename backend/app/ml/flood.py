@@ -21,6 +21,7 @@ _MODE_SENSITIVITY = {
     "MRT-3": 0.20,
     "EDSA-Bus": 0.85,
     "Jeepney": 1.00,
+    "Walk": 1.00,
 }
 
 _MODEL_PATH = Path(__file__).with_name("models") / "flood_rfr.joblib"
