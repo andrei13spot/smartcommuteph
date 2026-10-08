@@ -79,7 +79,9 @@
   }
 
   function drawCollection(map, geojson) {
-    const filteredGeojson = geojson;
+    // Filter out intermediate stops so only origin, transfer, and destination points are shown
+    const filteredFeatures = (geojson.features || []).filter(f => f.geometry.type !== "Point" || f.properties.role !== "stop");
+    const filteredGeojson = { ...geojson, features: filteredFeatures };
     
     const layer = L.geoJSON(filteredGeojson, { style: styleLine, pointToLayer }).addTo(map);
     const b = geojson.bounds || layer.getBounds();
@@ -410,7 +412,8 @@
         keyboard: false, tap: false,
       }).setView(METRO_CENTER, 11);
       L.tileLayer(TILES.dark, tileOpts("dark", false)).addTo(mini);
-      const filteredGeojson = item.geojson;
+      const filteredFeatures = (item.geojson.features || []).filter(f => f.geometry.type !== "Point" || f.properties.role !== "stop");
+      const filteredGeojson = { ...item.geojson, features: filteredFeatures };
       const layer = L.geoJSON(filteredGeojson, { style: styleLine, pointToLayer }).addTo(mini);
       const b = item.geojson.bounds || layer.getBounds();
       keepSized(mini, el, () => { if (b) mini.fitBounds(b, { padding: [16, 16], maxZoom: 13 }); });
@@ -440,7 +443,8 @@
     window.currentModalMap = map;
     window.currentModalGeoJSON = item.geojson;
     L.tileLayer(TILES.dark, tileOpts("dark", true)).addTo(map);
-    const filteredGeojson = item.geojson;
+    const filteredFeatures = (item.geojson.features || []).filter(f => f.geometry.type !== "Point" || f.properties.role !== "stop");
+    const filteredGeojson = { ...item.geojson, features: filteredFeatures };
     const layer = L.geoJSON(filteredGeojson, { style: styleLine, pointToLayer }).addTo(map);
     const b = item.geojson.bounds || layer.getBounds();
     keepSized(map, newEl, () => { if (b) map.fitBounds(b, { padding: [30, 30], maxZoom: 14 }); });
