@@ -38,12 +38,14 @@ def _level(value: float) -> str:
     return "High"
 
 
-# flood level shown to the commuter: how much the rain raises the worst
-# segment's flood risk above its dry-day value. the dry value is the road's
-# flood history (mmda exposure); a road with a flooding past is not flooding
-# today when it is not raining. thresholds from the benchmark routes: 0 to 15
-# mm adds under 0.03, about 30 mm adds about 0.17, 45 to 60 mm adds 0.4 to 0.5.
-_FLOOD_LOW, _FLOOD_HIGH = 0.05, 0.25
+# flood level shown to the commuter: how much the rain raises the route's
+# flood risk above its dry-day value, averaged along the route. the dry value
+# is the road's flood history (mmda exposure); a road with a flooding past is
+# not flooding today when it is not raining. averaging (not the worst segment)
+# keeps the forest's small wobble on single segments from reading as rain.
+# thresholds from the benchmark routes: 8 mm adds about 0.004, 30 mm about
+# 0.10, 45 mm about 0.23.
+_FLOOD_LOW, _FLOOD_HIGH = 0.03, 0.15
 _DRY_FLOOD: dict[str, float] = {}
 
 
@@ -75,11 +77,11 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
 
     t = sum(ctx.criteria[e.id].T for e in edges) / len(edges)
     f = sum(ctx.criteria[e.id].F for e in edges) / len(edges)
-    # flood: the rain-driven part of the worst segment's raw risk. the old
+    # flood: the rain-driven part of the raw risk, averaged along the route. the old
     # value was the worst min-max scaled segment, which puts the riskiest edge
     # of the network at 1 on every query, so every route read "high"
     dry = _dry_flood(ctx.graph)
-    r = max(max(0.0, ctx.raw_flood[e.id] - dry.get(e.id, 0.0)) for e in edges)
+    r = sum(max(0.0, ctx.raw_flood[e.id] - dry.get(e.id, 0.0)) for e in edges) / len(edges)
     # transfer friction along the path, averaged over the transitions where a
     # transfer can actually happen (real stops), not every 300m virtual hop -
     # dividing by the edge count made a worse transfer look lower on long routes
