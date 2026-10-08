@@ -20,8 +20,13 @@
       ]
     },
     "LRT-1": {
-      "source": "dotc gtfs 2013 stops.txt (lrta baclaran-roosevelt, 20 stations)",
+      "source": "dotc gtfs 2013 stops.txt (lrta baclaran-roosevelt, 20 stations); cavite extension stations (dr. santos, ninoy aquino ave, pitx / asia world, mia road, redemptorist-aseana) from coordinates supplied by the group",
       "stations": [
+        { "name": "Dr. Santos LRT", "lat": 14.485249, "lng": 120.989418 },
+        { "name": "Ninoy Aquino Ave LRT", "lat": 14.499039, "lng": 120.994284 },
+        { "name": "PITX LRT", "lat": 14.508364, "lng": 120.991242 },
+        { "name": "MIA Road LRT", "lat": 14.518595, "lng": 120.992923 },
+        { "name": "Redemptorist-Aseana LRT", "lat": 14.530799, "lng": 120.992958 },
         { "name": "Baclaran LRT", "lat": 14.5339, "lng": 120.998 },
         { "name": "EDSA LRT", "lat": 14.5381, "lng": 121.001 },
         { "name": "Libertad LRT", "lat": 14.5479, "lng": 120.999 },
@@ -63,7 +68,7 @@
       ]
     },
     "EDSA-Bus": {
-      "source": "dotr edsa busway ridership workbook interpolated along shape",
+      "source": "dotr edsa busway ridership workbook interpolated along shape; sm north edsa, dfa, ayala malls manila bay and pitx corrected to the openstreetmap stop positions",
       "stations": [
         {
           "name": "Monumento",
@@ -92,8 +97,8 @@
         },
         {
           "name": "SM North EDSA",
-          "lat": 14.6548,  
-          "lng": 121.0340 
+          "lat": 14.65579,
+          "lng": 121.02891
         },
         {
           "name": "North Avenue",
@@ -172,18 +177,18 @@
         },
         {
           "name": "DFA/Shell/Starbucks",
-          "lat": 14.531,
-          "lng": 120.987
+          "lat": 14.53066,
+          "lng": 120.98986
         },
         {
           "name": "Ayala Malls/Aseana",
-          "lat": 14.525,
-          "lng": 120.988
+          "lat": 14.52338,
+          "lng": 120.99018
         },
         {
           "name": "PITX",
-          "lat": 14.51201,
-          "lng": 120.98974
+          "lat": 14.51116,
+          "lng": 120.99172
         }
       ]
     }

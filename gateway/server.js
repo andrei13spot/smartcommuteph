@@ -50,9 +50,7 @@ try {
 } catch {
   console.warn("walk_paths.json not found - walk links draw straight");
 }
-// a station this close to its line's shape starts its line on the track, so
-// there is no little spur from the platform point to the rails
-const ON_TRACK_KM = 0.15;
+
 
 function haversineKm(a, b) {
   const R = 6371, rad = Math.PI / 180;
@@ -136,10 +134,11 @@ function bendPoints(a, b, mode) {
   const [p1, p2] = fwd ? [pa, pb] : [pb, pa];
   const path = [[p1.lat, p1.lng], ...pts.slice(p1.seg + 1, p2.seg + 1), [p2.lat, p2.lng]];
   if (!fwd) path.reverse();
-  // a virtual station a few metres off the drawn track starts on the track;
-  // anchors keep their own point so the route meets its marker
-  const keepA = !String(a.id).startsWith("v_") || pa.d > ON_TRACK_KM;
-  const keepB = !String(b.id).startsWith("v_") || pb.d > ON_TRACK_KM;
+  // a station's line always stays on the track (no spur out to a platform
+  // point beside it); only anchors keep their own point so the route meets
+  // its origin or destination marker
+  const keepA = !String(a.id).startsWith("v_");
+  const keepB = !String(b.id).startsWith("v_");
   return [...(keepA ? [[a.lat, a.lng]] : []), ...path, ...(keepB ? [[b.lat, b.lng]] : [])];
 }
 
@@ -214,17 +213,29 @@ function bendRoute(segs, anchors) {
   const legs = segs.map((s) => {
     const a = anchors.get(s.from_id);
     const b = anchors.get(s.to_id);
-    return a && b ? bendPoints(a, b, s.mode) : null;
+    if (!a || !b) return null;
+    // no shape for this leg (jeepney, or off the track): straight between the two stops
+    return bendPoints(a, b, s.mode) || [[a.lat, a.lng], [b.lat, b.lng]];
   });
   for (let i = 0; i + 1 < legs.length; i++) {
     if (legs[i] && legs[i + 1] && segs[i].mode === segs[i + 1].mode && segs[i].to_id === segs[i + 1].from_id) {
-      // drop the shared node point only where it is still there (bendPoints
-      // already starts on the track for a station close to it)
+      // drop the shared node point only for an anchor the ride passes through
+      // (stations already start on the track, and a station sitting exactly on
+      // the track would lose its only joining point and cut the line)
       const n = anchors.get(segs[i].to_id);
-      const isNode = (p) => p && n && p[0] === n.lat && p[1] === n.lng;
+      const isNode = (p) => p && n && !String(n.id).startsWith("v_") && p[0] === n.lat && p[1] === n.lng;
       if (isNode(legs[i][legs[i].length - 1])) legs[i] = legs[i].slice(0, -1);
       if (isNode(legs[i + 1][0])) legs[i + 1] = legs[i + 1].slice(1);
     }
+  }
+  // a route is drawn as one unbroken line: where a leg starts somewhere other
+  // than where the last one ended (a walk reaching the platform point while
+  // the ride starts on the track beside it), join them with a short piece
+  for (let i = 1; i < legs.length; i++) {
+    const prev = legs[i - 1], cur = legs[i];
+    if (!prev || !cur || !prev.length || !cur.length) continue;
+    const end = prev[prev.length - 1], start = cur[0];
+    if (end[0] !== start[0] || end[1] !== start[1]) legs[i] = [end, ...cur];
   }
   return legs;
 }

@@ -13,6 +13,7 @@ from pathlib import Path
 
 ENGINE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000"
 GATEWAY_RULE_MIN_KM, GATEWAY_RULE_MAX_KM = 0.15, 1.0
+MAX_DETOUR = 4.0  # a street walk longer than this many times the straight distance is not used
 HERE = Path(__file__).parent
 ROUTER = "https://routing.openstreetmap.de/routed-foot/route/v1/foot/{a};{b}?overview=full&geometries=geojson"
 
@@ -51,6 +52,12 @@ def main():
         seen.add(key)
         r = get(ROUTER.format(a=f'{anchor["lng"]},{anchor["lat"]}', b=f'{station["lng"]},{station["lat"]}'))
         route = r["routes"][0]
+        if route["distance"] / 1000 > MAX_DETOUR * d:
+            # the router found no direct footpath (pitx terminal to the lrt-1
+            # station is a walkway openstreetmap does not have), so the gateway
+            # draws this one straight
+            print(f'{anchor["name"]} -> {station["name"]}: walk {route["distance"] / 1000:.2f} km for {d:.2f} km, drawn straight')
+            continue
         links.append({
             "anchor_id": anchor["id"], "anchor": anchor["name"], "mode": e["mode"], "station": station["name"],
             "straight_km": round(d, 3), "walk_km": round(route["distance"] / 1000, 3),
