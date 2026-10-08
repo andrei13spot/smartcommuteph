@@ -774,10 +774,48 @@ function buildRouteSegmentsFromRouteData(routeData) {
         }
     });
 
+    const anchorStationMap = {
+        "MRT-3": {
+            "SM City North EDSA": "North Avenue",
+            "Cubao Gateway": "Cubao",
+            "Shaw Boulevard": "Shaw",
+            "Pasay EDSA-Taft": "Taft Ave"
+        },
+        "LRT-1": {
+            "Doroteo Jose": "Doroteo Jose",
+            "Monumento Circle": "Monumento",
+            "SM City North EDSA": "Roosevelt",
+            "Pasay EDSA-Taft": "EDSA",
+            "PITX": "PITX"
+        },
+        "LRT-2": {
+            "Antipolo LRT-2": "Antipolo",
+            "Cubao Gateway": "Araneta Center-Cubao",
+            "Doroteo Jose": "Recto"
+        },
+        "EDSA-Bus": {
+            "Monumento Circle": "Monumento",
+            "SM City North EDSA": "North Avenue",
+            "Cubao Gateway": "Main Avenue",
+            "Shaw Boulevard": "Ortigas",
+            "Pasay EDSA-Taft": "Taft Avenue",
+            "PITX": "PITX"
+        }
+    };
+
     collapsedLegs.forEach((leg, index) => {
         const modeName = leg.mode || 'Transit';
-        const fromName = leg.from_name || '';
-        const toName = leg.to_name || '';
+        let fromName = leg.from_name || '';
+        let toName = leg.to_name || '';
+        
+        if (anchorStationMap[modeName]) {
+            if (anchorStationMap[modeName][fromName]) {
+                fromName = anchorStationMap[modeName][fromName];
+            }
+            if (anchorStationMap[modeName][toName]) {
+                toName = anchorStationMap[modeName][toName];
+            }
+        }
         
         if (fromName) {
             segments.push({
@@ -958,15 +996,24 @@ window.zoomToNodeMap = function(nodeName, map, geojson) {
     // Clean up nodeName for searching
     const searchName = (nodeName || '').toLowerCase().trim();
     
-    // Find the feature by name
-    const feature = geojson.features.find(f => {
+    // Pass 1: Find an exact match by name
+    let feature = geojson.features.find(f => {
         if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {
-            const fName = f.properties.name.toLowerCase().trim();
-            // Match the node name, considering some variations like "LRT1 Doroteo Jose" vs "Doroteo Jose"
-            return fName.includes(searchName) || searchName.includes(fName);
+            return f.properties.name.toLowerCase().trim() === searchName;
         }
         return false;
     });
+
+    // Pass 2: Fallback to fuzzy match
+    if (!feature) {
+        feature = geojson.features.find(f => {
+            if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {
+                const fName = f.properties.name.toLowerCase().trim();
+                return fName.includes(searchName) || searchName.includes(fName);
+            }
+            return false;
+        });
+    }
     
     if (feature) {
         const coords = feature.geometry.coordinates; // [lng, lat]
