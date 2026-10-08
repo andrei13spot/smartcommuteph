@@ -766,11 +766,24 @@ function buildRouteSegmentsFromRouteData(routeData) {
     // Collapse adjacent segments that share the same mode
     const collapsedLegs = [];
     transitLegs.forEach((leg) => {
+        let currentCollapse = null;
         if (collapsedLegs.length > 0 && collapsedLegs[collapsedLegs.length - 1].mode === leg.mode) {
-            collapsedLegs[collapsedLegs.length - 1].to_name = leg.to_name;
-            collapsedLegs[collapsedLegs.length - 1].to_id = leg.to_id;
+            currentCollapse = collapsedLegs[collapsedLegs.length - 1];
+            currentCollapse.to_name = leg.to_name;
+            currentCollapse.to_id = leg.to_id;
         } else {
-            collapsedLegs.push({ ...leg });
+            currentCollapse = { ...leg };
+            collapsedLegs.push(currentCollapse);
+        }
+        
+        // Extract jeepney route name from any leg
+        if (leg.mode === 'Jeepney' && !currentCollapse.jeepneyRouteName) {
+            const matchFrom = (leg.from_name || '').match(/Jeepney Stop \((.*?)\)/);
+            if (matchFrom) currentCollapse.jeepneyRouteName = matchFrom[1];
+            else {
+                const matchTo = (leg.to_name || '').match(/Jeepney Stop \((.*?)\)/);
+                if (matchTo) currentCollapse.jeepneyRouteName = matchTo[1];
+            }
         }
     });
 
@@ -814,17 +827,13 @@ function buildRouteSegmentsFromRouteData(routeData) {
         
         // Extract route name from Jeepney stops
         if (modeName === 'Jeepney') {
-            const matchFrom = fromName.match(/Jeepney Stop \((.*?)\)/);
-            const matchTo = toName.match(/Jeepney Stop \((.*?)\)/);
-            
-            if (matchFrom) {
-                displayModeName = `${modeName} - ${matchFrom[1]}`;
+            if (leg.jeepneyRouteName) {
+                displayModeName = `${modeName} - ${leg.jeepneyRouteName}`;
+            }
+            if (fromName.startsWith('Jeepney Stop (')) {
                 fromNameDisplay = 'Jeepney Stop';
             }
-            if (matchTo) {
-                if (!matchFrom) {
-                    displayModeName = `${modeName} - ${matchTo[1]}`;
-                }
+            if (toName.startsWith('Jeepney Stop (')) {
                 toNameDisplay = 'Jeepney Stop';
             }
         }
