@@ -6,7 +6,6 @@ from __future__ import annotations
 import time
 from datetime import datetime
 
-from ..ml import flood as flood_model
 from ..ml.flood import fetch_rainfall_mm
 from ..profiles import Profile, resolve_profile
 from ..routing.astar import shortest_route
@@ -46,17 +45,6 @@ def _level(value: float) -> str:
 # thresholds from the benchmark routes: 8 mm adds about 0.004, 30 mm about
 # 0.10, 45 mm about 0.23.
 _FLOOD_LOW, _FLOOD_HIGH = 0.03, 0.15
-_DRY_FLOOD: dict[str, float] = {}
-
-
-def _dry_flood(graph: Graph) -> dict[str, float]:
-    if not _DRY_FLOOD:
-        edges = list(graph.edges.values())
-        vals = flood_model.predictor.predict_batch(edges, 0.0)
-        _DRY_FLOOD.update(vals if isinstance(vals, dict) else dict(zip((e.id for e in edges), vals)))
-    return _DRY_FLOOD
-
-
 def _flood_level(value: float) -> str:
     if value < _FLOOD_LOW:
         return "Low"
@@ -80,8 +68,7 @@ def _route_criteria(ctx: CostContext, edges: list[Edge]) -> dict[str, CriterionO
     # flood: the rain-driven part of the raw risk, averaged along the route. the old
     # value was the worst min-max scaled segment, which puts the riskiest edge
     # of the network at 1 on every query, so every route read "high"
-    dry = _dry_flood(ctx.graph)
-    r = sum(max(0.0, ctx.raw_flood[e.id] - dry.get(e.id, 0.0)) for e in edges) / len(edges)
+    r = sum(ctx.rain_flood[e.id] for e in edges) / len(edges)
     # transfer friction along the path, averaged over the transitions where a
     # transfer can actually happen (real stops), not every 300m virtual hop -
     # dividing by the edge count made a worse transfer look lower on long routes

@@ -114,6 +114,19 @@ class EdgeCriteria:
     R: float  # flood risk
 
 
+_DRY_FLOOD: dict[str, float] = {}
+
+
+def dry_flood(graph: Graph) -> dict[str, float]:
+    # the forest's flood value for every edge with no rain: the road's flood
+    # history from the mmda exposure. computed once, the graph is cached
+    if not _DRY_FLOOD:
+        edges = list(graph.edges.values())
+        vals = flood.predictor.predict_batch(edges, 0.0)
+        _DRY_FLOOD.update(vals if isinstance(vals, dict) else dict(zip((e.id for e in edges), vals)))
+    return _DRY_FLOOD
+
+
 class CostContext:
     # one per query: run the predictors then min-max normalize ridership/fare/flood
     # across all edges
@@ -141,11 +154,19 @@ class CostContext:
             raw_F[eid] = fares.marginal_fare(edge.mode, edge.distance_km)
             raw_R[eid] = fv
 
-        T, F, R = (_min_max_scaled(r) for r in (raw_T, raw_F, raw_R))
+        # R' is the flood risk the rain adds today: the forest's value at this
+        # rainfall minus its dry-day value (the road's flood history). with the
+        # history left in, safest dodged old flood spots on a dry night and could
+        # pick a pricier, riskier route; now a dry day leaves R' flat and safest
+        # follows the fastest route, and in rain it avoids the roads the rain hits
+        dry = dry_flood(graph)
+        rain_R = {eid: max(0.0, v - dry.get(eid, 0.0)) for eid, v in raw_R.items()}
+        T, F, R = (_min_max_scaled(r) for r in (raw_T, raw_F, rain_R))
         self.criteria: dict[str, EdgeCriteria] = {
             eid: EdgeCriteria(T=T[eid], F=F[eid], R=R[eid]) for eid in graph.edges
         }
         self.raw_flood = raw_R  # raw (un-normalized) flood values, read by the rainfall-effect test
+        self.rain_flood = rain_R  # the rain-driven part, what R' scales
 
     def friction_norm(self, arriving_mode: str | None, edge_mode: str,
                       src_id: str | None = None) -> float:
