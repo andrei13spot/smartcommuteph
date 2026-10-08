@@ -122,6 +122,12 @@ function walkPoints(a, b, mode) {
 }
 
 function bendPoints(a, b, mode) {
+  if (mode === "Walk") {
+    // the engine sends a hub's walk to its own platform as a Walk edge; the
+    // cached street path is keyed by the line it walks to
+    const line = Object.keys(STATION_LINES).find((m) => isAnchorLink(a, b, m));
+    return line ? walkPoints(a, b, line) : null;
+  }
   if (isAnchorLink(a, b, mode)) return walkPoints(a, b, mode); // walk link: street path, else straight
   const pts = shapeFor(mode);
   if (!pts) return null;

@@ -217,7 +217,8 @@ def load_graph() -> Graph:
         # to the straight-line distance between the endpoints
         dist = float(e["distance_km"]) if e.get("distance_km") else graph.straight_line_km(src, dst)
         # time = distance / mode speed, in minutes
-        speed = MODE_SPEED_KMH.get(mode, MAX_SPEED_KMH)
+        # (a hub's walk to its own platform keeps its line's speed, speed_mode)
+        speed = MODE_SPEED_KMH.get(e.get("speed_mode") or mode, MAX_SPEED_KMH)
         base_time = dist / speed * 60.0
         edge = Edge(
             id=f"{src}->{dst}:{mode}",

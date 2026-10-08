@@ -37,14 +37,19 @@ def test_hour_raises_crowding():
 
 
 def test_multiplier_stays_in_paper_bound():
-    # equation 4: penalty multiplier bounded 1.0..2.0 for every edge x profile
+    # equation 4: the in-ride multiplier stays bounded 1.0..2.0 for every edge
+    # x profile; the boarding part is only paid on the edge that boards
     g = load_graph()
     ctx = CostContext(g, hour=18, rainfall_mm=60.0)
     for pid in PROFILES:
         prof = resolve_profile(pid)
         for e in list(g.edges.values())[:200]:
-            mult = ctx.edge_cost(e, "Jeepney", prof) / e.base_time
-            assert 1.0 - 1e-9 <= mult <= 2.0 + 1e-9, f"{pid} multiplier {mult} out of bound"
+            t = ctx.edge_terms(e, "Jeepney", prof.w_T, prof.w_F, prof.w_R, prof.w_P)
+            assert 1.0 - 1e-9 <= t["multiplier"] <= 2.0 + 1e-9, f"{pid} multiplier {t['multiplier']} out of bound"
+            assert t["boarding_min"] >= 0.0
+            # staying on the same vehicle pays no boarding
+            if e.mode == "Jeepney" and g.nodes[e.src].virtual:
+                assert t["boarding_min"] == 0.0
 
 
 def test_no_friction_on_virtual_continuation():
@@ -119,7 +124,8 @@ def test_fare_model_matches_published_matrices():
     g = load_graph()
     ctx = CostContext(g, hour=8, rainfall_mm=30.0)
     mrt = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
-    assert all(e.mode == "MRT-3" for e in mrt.edges)
+    # the only vehicle is mrt-3 (the sm north hub walks to north ave station first)
+    assert {e.mode for e in mrt.edges if e.mode != "Walk"} == {"MRT-3"}
     assert 24 <= path_fare(g, mrt.edges) <= 32
     # one jeepney ride along a single route: 13 for the first 4 km, 1.80 per km after
     stop = next(e.dst for e in g.neighbors("sm_novaliches") if e.mode == "Walk")  # walk to the nearest stop
@@ -160,7 +166,7 @@ def test_rail_legs_priced_by_official_matrix():
     g = load_graph()
     ctx = CostContext(g, hour=8, rainfall_mm=30.0)
     full = shortest_route(g, "sm_north", "pasay", resolve_profile("convenient"), ctx)
-    assert all(e.mode == "MRT-3" for e in full.edges)
+    assert {e.mode for e in full.edges if e.mode != "Walk"} == {"MRT-3"}
     assert path_fare(g, full.edges) == 28.0  # official north ave -> taft
     assert path_fare(g, full.edges, discounted=True) == 22.0  # brochure's discounted matrix
     short = shortest_route(g, "cubao", "shaw", resolve_profile("convenient"), ctx)

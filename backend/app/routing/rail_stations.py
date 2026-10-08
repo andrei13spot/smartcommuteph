@@ -68,9 +68,11 @@ def subdivide_rail(anchors: list[dict], raw_edges: list[dict]) -> tuple[list[dic
         # _OWN_NODE_KM from the hub it gets its own node at its real position,
         # so the line is drawn and measured from the real station and the hub
         # is reached by that short link
-        if haversine_km(a["lat"], a["lng"], line["stations"][ia]["lat"], line["stations"][ia]["lng"]) > _OWN_NODE_KM:
+        own_a = haversine_km(a["lat"], a["lng"], line["stations"][ia]["lat"], line["stations"][ia]["lng"]) > _OWN_NODE_KM
+        own_b = haversine_km(b["lat"], b["lng"], line["stations"][ib]["lat"], line["stations"][ib]["lng"]) > _OWN_NODE_KM
+        if own_a:
             between = [line["stations"][ia], *between]
-        if haversine_km(b["lat"], b["lng"], line["stations"][ib]["lat"], line["stations"][ib]["lng"]) > _OWN_NODE_KM:
+        if own_b:
             between = [*between, line["stations"][ib]]
         if not between:
             new_edges.append(e)
@@ -87,7 +89,16 @@ def subdivide_rail(anchors: list[dict], raw_edges: list[dict]) -> tuple[list[dic
                 }
             chain_ids.append(station_nodes[key]["id"])
         hops = [e["from"], *chain_ids, e["to"]]
-        for u, v in zip(hops, hops[1:]):
-            new_edges.append({**e, "from": u, "to": v, "distance_km": None})
+        for k, (u, v) in enumerate(zip(hops, hops[1:])):
+            # the hop between a hub and its own station node is the walk to the
+            # platform, not a ride: no fare, no crowding, no transfer. it keeps
+            # the line's speed for its time (speed_mode), so the route times do
+            # not change; before, a route could "ride" only this hop and pay a
+            # whole bus fare for it (monumento circle -> monumento busway stop)
+            if (k == 0 and own_a) or (k == len(hops) - 2 and own_b):
+                new_edges.append({**e, "from": u, "to": v, "distance_km": None, "mode": "Walk",
+                                  "speed_mode": e["mode"], "fare": 0.0, "ridership": 0.0})
+            else:
+                new_edges.append({**e, "from": u, "to": v, "distance_km": None})
 
     return list(station_nodes.values()), new_edges
