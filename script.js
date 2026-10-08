@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (breakdownContainer && details.route) {
                 const segments = parseRouteSegments(details.route);
                 breakdownContainer.innerHTML = segments.map((segment) => `
-                    <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" style="color: #f8fafc;">
+                    <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" data-node-key="${segment.nodeKey || ''}" style="color: #f8fafc;">
                         <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
                         <div class="route-segment-info">
                             <div class="route-segment-label" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;">${segment.label}</div>
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!segments || segments.length === 0) return;
 
             breakdownContainer.innerHTML = segments.map((segment) => `
-                <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" style="color: #f8fafc;">
+                <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" data-node-key="${segment.nodeKey || ''}" style="color: #f8fafc;">
                     <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
                     <div class="route-segment-info">
                         <div class="route-segment-label" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8;">${segment.label}</div>
@@ -844,8 +844,8 @@ function buildRouteSegmentsFromRouteData(routeData) {
         // a walking transfer: show it as a walk between two plain stop names
         if (modeName === 'Walk') {
             const plain = (n) => (n.startsWith('Jeepney Stop (') ? 'Jeepney Stop' : n);
-            segments.push({ type: 'transit', name: 'Walk', modeClass: 'mode-walk', label: 'Walk from', place: plain(fromName), searchName: fromName });
-            segments.push({ type: 'transit', name: 'Walk', modeClass: 'mode-walk', label: 'Walk to', place: plain(toName), searchName: toName });
+            segments.push({ type: 'transit', name: 'Walk', modeClass: 'mode-walk', label: 'Walk from', place: plain(fromName), searchName: fromName, nodeKey: `walk_from|${leg.from_id}|Walk` });
+            segments.push({ type: 'transit', name: 'Walk', modeClass: 'mode-walk', label: 'Walk to', place: plain(toName), searchName: toName, nodeKey: `walk_to|${leg.to_id}|Walk` });
             return;
         }
 
@@ -881,7 +881,8 @@ function buildRouteSegmentsFromRouteData(routeData) {
                 modeClass: getTransitModeClass(modeName),
                 label: 'Board at',
                 place: fromNameDisplay,
-                searchName: fromName
+                searchName: fromName,
+                nodeKey: `board|${leg.from_id}|${modeName}`
             });
         }
 
@@ -892,7 +893,8 @@ function buildRouteSegmentsFromRouteData(routeData) {
                 modeClass: getTransitModeClass(modeName),
                 label: 'Alight at',
                 place: toNameDisplay,
-                searchName: toName
+                searchName: toName,
+                nodeKey: `alight|${leg.to_id}|${modeName}`
             });
         }
     });
@@ -929,7 +931,7 @@ function openRouteModal(routeText, profileName, routeData = null) {
     const segments = routeDetails.length ? routeDetails : parseRouteSegments(routeText);
 
     breakdownContainer.innerHTML = segments.map((segment) => `
-        <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}">
+        <div class="route-segment route-segment-${segment.type} ${segment.modeClass}" data-search-name="${segment.searchName || segment.place || segment.name}" data-node-key="${segment.nodeKey || ''}">
             <div class="route-segment-icon">${getRouteIconHTML(segment)}</div>
             <div class="route-segment-info">
                 <div class="route-segment-label">${segment.label}</div>
@@ -1049,14 +1051,22 @@ if (document.body.classList.contains('page-compare') || window.location.pathname
     });
 }
 
-window.zoomToNodeMap = function(nodeName, map, geojson) {
+window.zoomToNodeMap = function(nodeName, map, geojson, nodeKey) {
     if (!map || !geojson || !geojson.features) return;
     
     // Clean up nodeName for searching
     const searchName = (nodeName || '').toLowerCase().trim();
     
+    // Pass 0: a board / alight row points at its own marker by key
+    let feature = nodeKey ? geojson.features.find(f => f.properties && (f.properties.keys || []).includes(nodeKey)) : null;
+    if (feature) {
+        const c = feature.geometry.coordinates;
+        map.flyTo([c[1], c[0]], 16, { duration: 1.5 });
+        return;
+    }
+
     // Pass 1: Find an exact match by name
-    let feature = geojson.features.find(f => {
+    feature = geojson.features.find(f => {
         if (f.geometry && f.geometry.type === 'Point' && f.properties && f.properties.name) {
             return f.properties.name.toLowerCase().trim() === searchName;
         }
@@ -1154,6 +1164,6 @@ document.addEventListener('click', (e) => {
     }
     
     if (activeMap && activeGeoJSON && searchName) {
-        window.zoomToNodeMap(searchName, activeMap, activeGeoJSON);
+        window.zoomToNodeMap(searchName, activeMap, activeGeoJSON, segmentEl.getAttribute('data-node-key') || '');
     }
 });

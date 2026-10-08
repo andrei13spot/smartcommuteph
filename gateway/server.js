@@ -258,6 +258,89 @@ function lineFeature(a, b, mode, pts) {
   };
 }
 
+// the station of this line nearest to a node (within LINK_MAX_KM), or null.
+// a ride boarded at an anchor hub (pasay edsa-taft, monumento circle) really
+// starts at the line's own platform, so the marker goes there
+function lineStation(node, mode) {
+  const stations = (STATION_LINES[mode] || {}).stations || [];
+  let best = null, bestKm = LINK_MAX_KM;
+  for (const s of stations) {
+    const d = haversineKm(node, s);
+    if (d <= bestKm) { best = s; bestKm = d; }
+  }
+  return best;
+}
+
+// the legs of a route, grouped the same way the route breakdown groups them
+// (script.js buildRouteSegmentsFromRouteData): same-mode segments are one
+// leg, except a jeepney boarded at a non-virtual node is a new ride
+function breakdownLegs(segs) {
+  const legs = [];
+  for (const s of segs) {
+    const last = legs[legs.length - 1];
+    const same = last && last.mode === s.mode && (s.mode !== "Jeepney" || String(s.from_id).startsWith("v_"));
+    if (same) { last.to_id = s.to_id; last.to_name = s.to_name; }
+    else legs.push({ mode: s.mode, from_id: s.from_id, from_name: s.from_name, to_id: s.to_id, to_name: s.to_name });
+  }
+  return legs;
+}
+
+// one point per breakdown row: board / alight for a ride, walk from / walk
+// to for a walk. keys match the data-node-key on the breakdown rows so
+// clicking a row flies to its marker. rows on the same spot (getting off a
+// jeepney where the walk starts) share one marker
+function rideStopFeatures(segs, anchors, ends) {
+  // the origin / destination markers go in first so a stop on the same spot
+  // joins them and the end keeps its green / red color
+  const byPos = new Map();
+  for (const f of ends) {
+    const [lng, lat] = f.geometry.coordinates;
+    f.properties.label = f.properties.name;
+    f.properties.keys = [];
+    byPos.set(`${lat.toFixed(6)},${lng.toFixed(6)}`, f);
+  }
+  for (const leg of breakdownLegs(segs)) {
+    const walk = leg.mode === "Walk";
+    for (const role of walk ? ["walk_from", "walk_to"] : ["board", "alight"]) {
+      const start = role === "board" || role === "walk_from";
+      const id = start ? leg.from_id : leg.to_id;
+      const rawName = start ? leg.from_name : leg.to_name;
+      const n = anchors.get(id);
+      if (!n) continue;
+      // a ride's stop sits on that line's own station; a walk starts and
+      // ends at the node itself
+      const st = walk ? null : lineStation(n, leg.mode);
+      const at = st || n;
+      const jeep = String(rawName || "").match(/^Jeepney Stop \((.*)\)$/);
+      const place = st ? st.name : jeep ? `Jeepney Stop - ${jeep[1]}` : n.name;
+      const label = walk
+        ? `${start ? "Walk from" : "Walk to"} ${place}`
+        : `${start ? "Board" : "Alight"} ${leg.mode} at ${place}`;
+      const key = `${role}|${id}|${leg.mode}`;
+      const pos = `${at.lat.toFixed(6)},${at.lng.toFixed(6)}`;
+      const seen = byPos.get(pos);
+      if (seen) {
+        seen.properties.label += ` / ${label}`;
+        seen.properties.keys.push(key);
+        // a shared walk / ride marker takes the ride's color
+        if (!walk && seen.properties.role.startsWith("walk")) {
+          Object.assign(seen.properties, { role, mode: leg.mode, color: MODE_COLORS[leg.mode] || nodeColor(leg.mode) });
+        }
+        continue;
+      }
+      byPos.set(pos, {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [at.lng, at.lat] },
+        properties: {
+          id, name: place, rawName, role, mode: leg.mode, label, keys: [key],
+          color: walk ? WALK_COLOR : MODE_COLORS[leg.mode] || nodeColor(leg.mode),
+        },
+      });
+    }
+  }
+  return [...byPos.values()];
+}
+
 // turn a python route response into geojson + bounds
 async function routeToGeoJSON(route) {
   const anchors = await getAnchorIndex();
@@ -271,72 +354,15 @@ async function routeToGeoJSON(route) {
       if (a) features.push(pointFeature(a, role));
     }
   } else {
-    // node list in order: first leg's origin, then every leg's target
-    const nodeIds = [segs[0].from_id, ...segs.map((s) => s.to_id)];
-    const anchorStationMap = {
-        "MRT-3": {
-            "SM City North EDSA": "North Avenue MRT",
-            "Cubao Gateway": "Cubao MRT",
-            "Shaw Boulevard": "Shaw MRT",
-            "Pasay EDSA-Taft": "Taft Ave MRT"
-        },
-        "LRT-1": {
-            "Doroteo Jose": "Doroteo Jose LRT",
-            "Monumento Circle": "Monumento LRT",
-            "SM City North EDSA": "Roosevelt LRT",
-            "Pasay EDSA-Taft": "EDSA LRT",
-            "PITX": "PITX"
-        },
-        "LRT-2": {
-            "Antipolo LRT-2": "Antipolo LRT",
-            "Cubao Gateway": "Araneta Center-Cubao LRT",
-            "Doroteo Jose": "Recto LRT"
-        },
-        "EDSA-Bus": {
-            "Monumento Circle": "Monumento",
-            "SM City North EDSA": "North Avenue",
-            "Cubao Gateway": "Main Avenue",
-            "Shaw Boulevard": "Ortigas",
-            "Pasay EDSA-Taft": "Taft Avenue",
-            "PITX": "PITX"
-        }
-    };
-
-    nodeIds.forEach((id, i) => {
+    // the two route ends, then a marker for every row of the route
+    // breakdown: board / alight on that line's own station, walk from / to
+    const ends = [];
+    for (const role of ["origin", "destination"]) {
+      const id = role === "origin" ? segs[0].from_id : segs[segs.length - 1].to_id;
       const a = anchors.get(id);
-      if (!a) return;
-      
-      let role = "stop";
-      let displayMode = null;
-
-      if (i === 0) {
-          role = "origin";
-          if (segs.length > 0) displayMode = segs[0].mode;
-      } else if (i === nodeIds.length - 1) {
-          role = "destination";
-          if (segs.length > 0) displayMode = segs[i - 1].mode;
-      } else {
-          const arrivingMode = segs[i - 1].mode;
-          const departingMode = segs[i].mode;
-          if (arrivingMode !== departingMode) {
-              role = "transfer";
-              displayMode = departingMode;
-          } else if (arrivingMode === 'Jeepney' && departingMode === 'Jeepney' && !String(id).startsWith('v_')) {
-              role = "transfer";
-              displayMode = departingMode;
-          }
-      }
-      
-      if (role !== "stop") {
-          let name = a.name;
-          const rawName = a.name;
-          if (displayMode && anchorStationMap[displayMode] && anchorStationMap[displayMode][name]) {
-              name = anchorStationMap[displayMode][name];
-          }
-          const arrivingMode = i > 0 ? segs[i - 1].mode : null;
-          features.push(pointFeature({ ...a, name, rawName }, role, arrivingMode));
-      }
-    });
+      if (a) ends.push(pointFeature(a, role, role === "origin" ? segs[0].mode : segs[segs.length - 1].mode));
+    }
+    features.push(...rideStopFeatures(segs, anchors, ends));
     const bent = bendRoute(segs, anchors);
     segs.forEach((s, i) => {
       const a = anchors.get(s.from_id);

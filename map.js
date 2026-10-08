@@ -38,10 +38,13 @@
 
   function pointToLayer(feature, latlng) {
     const p = feature.properties;
-    const big = p.role === "origin" || p.role === "destination" || p.role === "transfer";
+    const big = ["origin", "destination", "transfer", "board", "alight", "walk_from", "walk_to"].includes(p.role);
     const color = ROLE_COLOR[p.role] || p.color || "#3b82f6";
     const marker = L.marker(latlng, { icon: nodeIcon(color, big), keyboard: false });
-    if (p.name) {
+    if (p.label) {
+      // board / alight stops from the route breakdown
+      marker.bindTooltip(p.label, { direction: "top" });
+    } else if (p.name) {
       const mode = p.mode ? ` · ${p.mode}` : "";
       marker.bindTooltip(`${p.name}${mode}`, { direction: "top" });
     }
