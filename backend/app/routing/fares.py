@@ -24,10 +24,10 @@ _ANCHOR_STATION = {
     "MRT-3": {"SM City North EDSA": "North Avenue MRT", "Cubao Gateway": "Cubao MRT",
               "Shaw Boulevard": "Shaw MRT", "Pasay EDSA-Taft": "Taft Ave MRT"},
     # lrt-1: sm north sits at roosevelt (fernando poe jr.), pasay edsa-taft at
-    # edsa station. pitx is past the 2023 matrix (cavite extension), so legs
-    # that start or end there fall back to the base + per-km structure
+    # edsa station, pitx at pitx station on the cavite extension (in the
+    # 2 april 2025 matrix)
     "LRT-1": {"Doroteo Jose": "Doroteo Jose LRT", "Monumento Circle": "Monumento LRT",
-              "SM City North EDSA": "Roosevelt LRT", "Pasay EDSA-Taft": "EDSA LRT"},
+              "SM City North EDSA": "Roosevelt LRT", "Pasay EDSA-Taft": "EDSA LRT", "PITX": "PITX LRT"},
     # lrt-2: the doroteo jose anchor boards lrt-2 at recto
     "LRT-2": {"Antipolo LRT-2": "Antipolo LRT", "Cubao Gateway": "Araneta Center-Cubao LRT",
               "Doroteo Jose": "Recto LRT"},

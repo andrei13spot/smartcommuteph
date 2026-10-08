@@ -207,9 +207,11 @@ def test_card_fares_use_the_stored_value_matrices():
     assert matrix_leg_fare("LRT-2", "Recto LRT", "Antipolo LRT") == 35.0
     assert matrix_leg_fare("LRT-2", "Recto LRT", "Antipolo LRT", card=True) == 33.0
     assert matrix_leg_fare("LRT-2", "Cubao Gateway", "Antipolo LRT-2", card=True) == 23.0
-    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Roosevelt LRT") == 35.0
-    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Roosevelt LRT", card=True) == 35.0
-    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Monumento LRT", card=True) == 30.0
+    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Roosevelt LRT") == 45.0  # 2 april 2025 matrix
+    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Roosevelt LRT", card=True) == 43.0
+    assert matrix_leg_fare("LRT-1", "Baclaran LRT", "Monumento LRT", card=True) == 37.0
+    # the cavite extension is in the 2025 matrix, so pitx legs are priced from it
+    assert matrix_leg_fare("LRT-1", "Pasay EDSA-Taft", "PITX") == 25.0
     assert matrix_leg_fare("MRT-3", "North Avenue MRT", "Taft Ave MRT", card=True) == 28.0
     assert "stored_value_matrix" in MATRIX_INFO["LRT-1"]["matrices"]
     assert MATRIX_INFO["MRT-3"]["stations"] == 13
